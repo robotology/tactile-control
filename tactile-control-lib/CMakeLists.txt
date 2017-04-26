@@ -21,12 +21,13 @@ endif()
 # This sets the PROJECT_NAME, PROJECT_VERSION as well as other variable
 # listed here: https://cmake.org/cmake/help/latest/command/project.html
 # We use this name to export all the files such that is then possible to use
-# find_package(LibTemplateCMake) in third party projects.
-project(LibTemplateCMake
+# find_package(TactileControl) in third party projects.
+project(TactileControl
         LANGUAGES CXX
         VERSION 0.0.0.0)
 
 find_package(YCM REQUIRED)
+find_package(YARP REQUIRED)
 
 # Defines the CMAKE_INSTALL_LIBDIR, CMAKE_INSTALL_BINDIR and many other useful macros
 # See https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
@@ -44,6 +45,7 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 # from YCM. Files are under the cmake subdirectory.
 # See https://github.com/robotology/ycm/
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
 
 ### Options
 # Shared/Dynamic or Static library?
@@ -64,10 +66,15 @@ add_install_rpath_support(BIN_DIRS "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BIND
                           DEPENDS ENABLE_RPATH
                           USE_LINK_PATH)
 
+# Add Yarp
+add_definitions(${YARP_DEFINES})
+include_directories(${YARP_INCLUDE_DIRS})
+
+						  
 ### Compile- and install-related commands
 add_subdirectory(src)
 
-# Install the files necessary to call find_package(LibTemplateCMake) in CMake projects
+# Install the files necessary to call find_package(TactileControl) in CMake projects
 include(InstallBasicPackageFiles)
 install_basic_package_files(${PROJECT_NAME} VARS_PREFIX ${PROJECT_NAME}
                                             VERSION ${${PROJECT_NAME}_VERSION}
@@ -76,6 +83,8 @@ install_basic_package_files(${PROJECT_NAME} VARS_PREFIX ${PROJECT_NAME}
                                             NO_CHECK_REQUIRED_COMPONENTS_MACRO)
 # Add the uninstall target
 include(AddUninstallTarget)
+
+
 
 # Add integration tests (unit tests for each library should be in each sublibrary directory)
 if(BUILD_TESTING)

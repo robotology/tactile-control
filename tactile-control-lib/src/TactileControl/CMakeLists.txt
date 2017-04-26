@@ -2,16 +2,32 @@
 # The actual file name of the library built is constructed based on conventions
 # of the native platform, such as lib<LIBRARY_TARGET_NAME>.a,
 # lib<LIBRARY_TARGET_NAME>.dylib or <LIBRARY_TARGET_NAME>.lib.
-set(LIBRARY_TARGET_NAME LibTemplateCMake)
+set(LIBRARY_TARGET_NAME TactileControl)
 
 # List of CPP (source) library files
 set(${LIBRARY_TARGET_NAME}_SRC
-        src/LibTemplateCMake.cpp
+        src/TactileControl.cpp
+		
+		src/data/TaskData.cpp
+
+		src/util/ControllerUtil.cpp
+		src/util/PortUtil.cpp
+		src/util/ICubUtil.cpp
+		src/util/CommonUtil.cpp
 )
 
 # List of HPP (header) library files
 set(${LIBRARY_TARGET_NAME}_HDR
-        include/LibTemplateCMake/LibTemplateCMake.h
+        include/TactileControl/TactileControl.h
+		
+		include/TactileControl/data/TaskData.h
+		include/TactileControl/data/Parameters.h
+		
+		include/TactileControl/util/ControllerUtil.h
+		include/TactileControl/util/PortUtil.h
+		include/TactileControl/util/ICubUtil.h
+		include/TactileControl/util/CommonUtil.h
+		
 )
 
 # Adds a library target called ${LIBRARY_TARGET_NAME} to be built from the
