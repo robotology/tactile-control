@@ -26,8 +26,8 @@ namespace tactileControl {
             std::vector<double> overallFingerForceMedian;
 
             std::vector<double> fingerEncodersRawData;
-            std::vector<double> armEncodersAngles;
-            std::vector<double> armEncodersAnglesReferences;
+            std::vector<double> armEncoderAngles;
+            std::vector<double> armEncoderAngleReferences;
 
             // control data
             iCub::plantIdentification::GMMData* gmmDataStandard;
@@ -45,6 +45,7 @@ namespace tactileControl {
             TaskData();
 
             bool init(const yarp::os::Property &options);
+            bool initEncodersData(int numArmJoints);
 
             void set(const yarp::os::ConstString &key,const yarp::os::Value &value,bool overwrite = true);
             void setDefault(const yarp::os::ConstString &key,const yarp::os::Value &value);

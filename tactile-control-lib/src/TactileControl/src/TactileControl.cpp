@@ -1,10 +1,12 @@
 #include "TactileControl/TactileControl.h"
 
+#include "TactileControl/data/Parameters.h"
+
 using tactileControl::HandController;
 
 HandController::HandController(){
 
-    dbg
+    dbgTag = "HandController: ";
 }
 
 
@@ -42,6 +44,21 @@ bool HandController::open(const yarp::os::Property &options){
         return false;
     }
 
+    // start task thread
+    taskThread = new TaskThread(taskData->getInt(PAR_COMMON_TASK_THREAD_PERIOD),taskData,controllerUtil,portUtil);
+    if (!taskThread->start()) {
+        cout << dbgTag << "could not start the task thread\n";
+        return false;
+    }
+    taskThread->suspend();
+
+    dataCollectionThread = new DataCollectionThread(taskData->getInt(PAR_COMMON_DATA_COLLECTION_THREAD_PERIOD),taskData,controllerUtil,portUtil);
+    if (!dataCollectionThread->start()) {
+        cout << dbgTag << "could not start data collection thread\n";
+        return false;
+    }
+
+    return true;
 }
 
 void HandController::set(const yarp::os::Property &options){
@@ -70,11 +87,12 @@ bool HandController::isHandOpen(){
 }
 
 void HandController::setMinForce(double minForce){
-    
+
 }
 
 void HandController::setGripStrength(double gripStrength){
-    
+
+    taskData->set(PAR_CTRL_GRIP_STRENGTH,gripStrength);
 }
 
 bool HandController::close(){

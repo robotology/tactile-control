@@ -4,6 +4,8 @@
 #include "TactileControl/data/TaskData.h"
 #include "TactileControl/util/ControllerUtil.h"
 #include "TactileControl/util/PortUtil.h"
+#include "TactileControl/thread/TaskThread.h"
+#include "TactileControl/thread/DataCollectionThread.h"
 
 #include <yarp/os/Property.h>
 #include <yarp/os/ConstString.h>
@@ -25,10 +27,12 @@ class HandController {
 public:
 
     tactileControl::TaskData *taskData;
-
     tactileControl::ControllerUtil *controllerUtil;
-
     tactileControl::PortUtil *portUtil;
+
+    /* ****** Threads                                 ****** */
+    tactileControl::TaskThread *taskThread;
+    tactileControl::DataCollectionThread *dataCollectionThread;
 
     /* ****** Debug attributes                              ****** */
     std::string dbgTag;

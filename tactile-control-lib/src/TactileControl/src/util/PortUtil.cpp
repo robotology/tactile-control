@@ -260,28 +260,28 @@ bool PortUtil::sendGMMRegressionData(double handAperture,double indMidPosDiff,do
     // filtered thumb distal joint (index 9)
     objGMMRegressionBottle.addDouble(filteredThumbDistalJoint);
     // actual thumb distal joint (index 10)
-    objGMMRegressionBottle.addDouble(taskData->armEncodersAngles[THUMB_DISTAL_JOINT]);
+    objGMMRegressionBottle.addDouble(taskData->armEncoderAngles[THUMB_DISTAL_JOINT]);
 
     // target index distal joint (output variable) (index 11)
     objGMMRegressionBottle.addDouble(targetIndexDistalJoint);
     // filtered index distal joint (index 12)
     objGMMRegressionBottle.addDouble(filteredIndexDistalJoint);
     // actual index distal joint (index 13)
-    objGMMRegressionBottle.addDouble(taskData->armEncodersAngles[INDEX_DISTAL_JOINT]);
+    objGMMRegressionBottle.addDouble(taskData->armEncoderAngles[INDEX_DISTAL_JOINT]);
 
     // target middle distal joint (output variable) (index 14)
     objGMMRegressionBottle.addDouble(targetMiddleDistalJoint);
     // filtered middle distal joint (index 15)
     objGMMRegressionBottle.addDouble(filteredMiddleDistalJoint);
     // actual middle distal joint (index 16)
-    objGMMRegressionBottle.addDouble(taskData->armEncodersAngles[MIDDLE_DISTAL_JOINT]);
+    objGMMRegressionBottle.addDouble(taskData->armEncoderAngles[MIDDLE_DISTAL_JOINT]);
 
     // target thumb abduction joint (output variable) (index 17)
     objGMMRegressionBottle.addDouble(targetThumbAbductionJoint);
     // filtered thumb abduction joint (index 18)
     objGMMRegressionBottle.addDouble(filteredThumbAbductionJoint);
     // actual thumb abduction joint (index 19)
-    objGMMRegressionBottle.addDouble(taskData->armEncodersAngles[THUMB_ABDUCTION_JOINT]);
+    objGMMRegressionBottle.addDouble(taskData->armEncoderAngles[THUMB_ABDUCTION_JOINT]);
 
     // target index/middle force balance (output variable) (index 20)
     objGMMRegressionBottle.addDouble(targetIndMidForceBalance);
@@ -294,8 +294,8 @@ bool PortUtil::sendGMMRegressionData(double handAperture,double indMidPosDiff,do
     objGMMRegressionBottle.addDouble(actualGripStrength);
 
     // arm encoders (16 values, indexes 24-39)
-    for(int i = 0; i < taskData->armEncodersAngles.size(); i++){
-        objGMMRegressionBottle.addDouble(taskData->armEncodersAngles[i]);
+    for(int i = 0; i < taskData->armEncoderAngles.size(); i++){
+        objGMMRegressionBottle.addDouble(taskData->armEncoderAngles[i]);
     }
 
     // fingers overall pressure (5 values, indexes 40-44)
@@ -324,16 +324,18 @@ bool PortUtil::sendGMMRegressionData(double handAperture,double indMidPosDiff,do
 }
 
 
-bool PortUtil::readFingerSkinRawData(std::vector<std::vector<double> > &fingerTaxelsRawData,const std::vector<double> &fingersSensitivityScale){
+bool PortUtil::readFingerSkinRawData(std::vector<std::vector<double> > &fingerTaxelsRawData){
 
     yarp::sig::Vector *iCubSkinData = portSkinRawIn.read(false);
     
     if (iCubSkinData) {
         for(int i = 0; i < NUM_FINGERS; i++){
             for (int j = 0; j < fingerTaxelsRawData[i].size(); j++){
-                fingerTaxelsRawData[i][j] = fingersSensitivityScale[i] * (*iCubSkinData)[12*i + j];
+                fingerTaxelsRawData[i][j] = (*iCubSkinData)[12*i + j];
             }
         }
+    } else {
+        return false;
     }
 
     return true;
@@ -349,6 +351,8 @@ bool PortUtil::readFingerSkinCompData(std::vector<std::vector<double> > &fingerT
                 fingerTaxelsData[i][j] = fingersSensitivityScale[i] * (*iCubSkinData)[12*i + j];
             }
         }
+    } else {
+        return false;
     }
 
     return true;
@@ -364,6 +368,8 @@ bool PortUtil::readFingerEncodersRawData(std::vector<double> &fingerEncodersRawD
         for (size_t i = 0; i < fingerEncodersRawData.size(); i++){
             fingerEncodersRawData[i] = (*iCubEncRawData)[i];
         }
+    } else {
+        return false;
     }
 
     return true;
@@ -371,6 +377,15 @@ bool PortUtil::readFingerEncodersRawData(std::vector<double> &fingerEncodersRawD
 
 
 bool PortUtil::release(){
+
+    portSkinRawIn.interrupt();
+    portSkinCompIn.interrupt();
+    portHandEncodersRawIn.interrupt();
+    portInfoDataOut.interrupt();
+    portControlDataOut.interrupt();
+    portGMMDataOut.interrupt();
+    portGMMRegressionDataOut.interrupt();
+    portGripStrengthDataOut.interrupt();
 
     portSkinRawIn.close();
     portSkinCompIn.close();

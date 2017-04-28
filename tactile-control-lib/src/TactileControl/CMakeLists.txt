@@ -14,6 +14,12 @@ set(${LIBRARY_TARGET_NAME}_SRC
 		src/util/PortUtil.cpp
 		src/util/ICubUtil.cpp
 		src/util/CommonUtil.cpp
+		
+		src/thread/DataCollectionThread.cpp
+		src/thread/TaskThread.cpp
+		
+		src/task/Task.cpp
+		
 )
 
 # List of HPP (header) library files
@@ -22,11 +28,17 @@ set(${LIBRARY_TARGET_NAME}_HDR
 		
 		include/TactileControl/data/TaskData.h
 		include/TactileControl/data/Parameters.h
+		include/TactileControl/data/Enums.h
 		
 		include/TactileControl/util/ControllerUtil.h
 		include/TactileControl/util/PortUtil.h
 		include/TactileControl/util/ICubUtil.h
 		include/TactileControl/util/CommonUtil.h
+		
+		include/TactileControl/thread/DataCollectionThread.h
+		include/TactileControl/thread/TaskThread.h
+		
+		include/TactileControl/task/Task.h
 		
 )
 

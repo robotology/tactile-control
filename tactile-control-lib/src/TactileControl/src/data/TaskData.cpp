@@ -36,6 +36,9 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_COMMON_USING_TWO_HANDS,Value("true"));
     setDefault(PAR_COMMON_EXPERIMENT_INFO,Value("experimentInfo"));
     setDefault(PAR_COMMON_EXPERIMENT_OPTIONAL_INFO,Value("experimentExtra"));
+    setDefault(PAR_COMMON_USE_TACTILE_WEIGHTED_SUM,Value("true"));
+    setDefault(PAR_COMMON_ENABLE_SCREEN_LOGGING,Value("false"));
+    setDefault(PAR_COMMON_SCREEN_LOGGING_RATE,5);
 
     setDefault(PAR_STEP_DURATION,10);
 
@@ -79,37 +82,36 @@ bool TaskData::init(const yarp::os::Property &options) {
 
     /*** INITIALIZE DATA ***/
 
-    commonData.fingerTaxelsData.resize(NUM_FINGERS);
-    for(int i = 0; i < commonData.fingerTaxelsData.size(); i++){
-        commonData.fingerTaxelsData[i].resize(NUM_TAXELS,0.0);
+    fingerTaxelsData.resize(NUM_FINGERS);
+    for(int i = 0; i < fingerTaxelsData.size(); i++){
+        fingerTaxelsData[i].resize(NUM_TAXELS,0.0);
     }
-    commonData.fingerTaxelsRawData.resize(NUM_FINGERS);
-    for(size_t i = 0; i < commonData.fingerTaxelsRawData.size(); i++){
-        commonData.fingerTaxelsRawData[i].resize(NUM_TAXELS,0.0);
+    fingerTaxelsRawData.resize(NUM_FINGERS);
+    for(size_t i = 0; i < fingerTaxelsRawData.size(); i++){
+        fingerTaxelsRawData[i].resize(NUM_TAXELS,0.0);
     }
-    commonData.previousOverallFingerForce.resize(NUM_FINGERS);
-    for(size_t i = 0; i < commonData.previousOverallFingerForce.size(); i++){
-        commonData.previousOverallFingerForce[i].resize(getInt(PAR_COMMON_TACT_MEDIAN_WINDOW_SIZE),0.0);
+    previousOverallFingerForce.resize(NUM_FINGERS);
+    for(size_t i = 0; i < previousOverallFingerForce.size(); i++){
+        previousOverallFingerForce[i].resize(getInt(PAR_COMMON_TACT_MEDIAN_WINDOW_SIZE),0.0);
     }
-    commonData.previousForceIndex.resize(NUM_FINGERS,0);
-    commonData.overallFingerForce.resize(NUM_FINGERS,0.0);
-    commonData.overallFingerForceBySimpleSum.resize(NUM_FINGERS,0.0);
-    commonData.overallFingerForceByWeightedSum.resize(NUM_FINGERS,0.0);
-    commonData.overallFingerForceMedian.resize(NUM_FINGERS,0.0);
+    previousForceIndex.resize(NUM_FINGERS,0);
+    overallFingerForce.resize(NUM_FINGERS,0.0);
+    overallFingerForceBySimpleSum.resize(NUM_FINGERS,0.0);
+    overallFingerForceByWeightedSum.resize(NUM_FINGERS,0.0);
+    overallFingerForceMedian.resize(NUM_FINGERS,0.0);
 
-//TODO    commonData.armEncodersAngles.resize(controllersUtil->armJointsNum,0.0);      
-//TODO    commonData.armEncodersAnglesReferences.resize(controllersUtil->armJointsNum,0.0);      
+    fingerEncodersRawData.resize(NUM_HAND_ENCODERS,0.0);
 
-    commonData.fingerEncodersRawData.resize(NUM_HAND_ENCODERS,0.0);      
-
-//TODO    controllersUtil->getArmEncodersAngles(commonData.armEncodersAngles,true);
-//TODO    controllersUtil->getArmEncodersAnglesReferences(commonData.armEncodersAnglesReferences,true);
-
-    controlData.gmmDataStandard = new GMMData(STANDARD);
+    gmmDataStandard = new GMMData(STANDARD);
 
     return true;
 }
 
+bool TaskData::initEncodersData(int numArmJoints){
+
+    armEncoderAngles.resize(numArmJoints,0.0);      
+    armEncoderAngleReferences.resize(numArmJoints,0.0);      
+}
 
 void TaskData::set(const yarp::os::ConstString &key,const yarp::os::Value &value,bool overwrite){
 

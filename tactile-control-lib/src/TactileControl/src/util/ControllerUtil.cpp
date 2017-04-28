@@ -96,9 +96,15 @@ bool ControllerUtil::init(tactileControl::TaskData *taskData){
         return false;
     }
 
+    // initialize encoders data
+    int numArmJoints;
+    iPos->getAxes(&numArmJoints);
+    taskData->initEncodersData(numArmJoints);
+
     // Set reference speeds
-    for(int i = 0; i < NUM_HAND_JOINTS; i++)
+    for(int i = 0; i < NUM_HAND_JOINTS; i++){
         iPos->setRefSpeed(FIRST_HAND_JOINT + i,taskData->getDouble(PAR_COMMON_REF_VELOCITY));
+    }
 
     return true;
 }
@@ -123,62 +129,53 @@ bool ControllerUtil::sendVelocity(int joint,double velocity){
 }
 
 
-bool ControllerUtil::getHandEncoderAngles(std::vector<double> &handEncoderAngles,bool wait){
+bool ControllerUtil::getArmEncoderAngles(std::vector<double> &armEncoderAngles,bool wait){
     using yarp::os::Time;
     
-    yarp::sig::Vector handEncoderAnglesVector;
-    handEncoderAnglesVector.resize(NUM_HAND_JOINTS);
+    yarp::sig::Vector armEncoderAnglesVector;
+    armEncoderAnglesVector.resize(NUM_HAND_JOINTS);
 
-    bool encodersDataAcquired = true;
-    for(int i = 0; i < NUM_HAND_JOINTS && encodersDataAcquired; i++)
-        encodersDataAcquired = encodersDataAcquired && iEncs->getEncoder(FIRST_HAND_JOINT + i,&handEncoderAnglesVector[i]);
+    bool encodersDataAcquired = encodersDataAcquired && iEncs->getEncoders(armEncoderAnglesVector.data());
 
     while(wait && !encodersDataAcquired) {
 
         Time::delay(0.1);
 
-        encodersDataAcquired = true;
-        for(int i = 0; i < NUM_HAND_JOINTS && encodersDataAcquired; i++)
-            encodersDataAcquired = encodersDataAcquired && iEncs->getEncoder(FIRST_HAND_JOINT + i,&handEncoderAnglesVector[i]);
-    
+        encodersDataAcquired = iEncs->getEncoders(armEncoderAnglesVector.data());
     }
 
     if (encodersDataAcquired){
 
-        for(int i = 0; i < handEncoderAngles.size(); i++)
-            handEncoderAngles[i] = handEncoderAnglesVector[i];
-
+        for(int i = 0; i < armEncoderAngles.size(); i++){
+            armEncoderAngles[i] = armEncoderAnglesVector[i];
+        }
         return true;
     }
 
     return false;
 }
 
-bool ControllerUtil::getHandEncoderAngleReferences(std::vector<double> &handEncoderAngleReferences,bool wait){
+bool ControllerUtil::getArmEncoderAngleReferences(std::vector<double> &armEncoderAngleReferences,bool wait){
 
     using yarp::os::Time;
     
-    yarp::sig::Vector handEncoderAngleReferencesVector;
-    handEncoderAngleReferencesVector.resize(NUM_HAND_JOINTS);
+    yarp::sig::Vector armEncoderAngleReferencesVector;
+    armEncoderAngleReferencesVector.resize(NUM_HAND_JOINTS);
 
-    bool encodersDataAcquired = true;
-    for(int i = 0; i < NUM_HAND_JOINTS && encodersDataAcquired; i++)
-        encodersDataAcquired = encodersDataAcquired && iPosCtrl->getTargetPosition(FIRST_HAND_JOINT + i,&handEncoderAngleReferencesVector[i]);
+    bool encodersDataAcquired = iPosCtrl->getTargetPositions(armEncoderAngleReferencesVector.data());
 
     while(wait && !encodersDataAcquired) {
 
         Time::delay(0.1);
 
-        encodersDataAcquired = true;
-        for(int i = 0; i < NUM_HAND_JOINTS && encodersDataAcquired; i++)
-            encodersDataAcquired = encodersDataAcquired && iPosCtrl->getTargetPosition(FIRST_HAND_JOINT + i,&handEncoderAngleReferencesVector[i]);
-    
+        encodersDataAcquired = iPosCtrl->getTargetPositions(armEncoderAngleReferencesVector.data());
     }
 
     if (encodersDataAcquired){
 
-        for(int i = 0; i < handEncoderAngleReferences.size(); i++)
-            handEncoderAngleReferences[i] = handEncoderAngleReferencesVector[i];
+        for(int i = 0; i < armEncoderAngleReferences.size(); i++){
+            armEncoderAngleReferences[i] = armEncoderAngleReferencesVector[i];
+        }
 
         return true;
     }

@@ -1,6 +1,8 @@
 #ifndef TACTILECONTROL_ICUBUTIL_H
 #define TACTILECONTROL_ICUBUTIL_H
 
+#include "TactileControl/data/Enums.h"
+
 #include <vector>
 
 //#include "iCub/plantIdentification/PlantIdentificationEnums.h"
@@ -36,14 +38,14 @@ namespace tactileControl {
 
         static double getGripStrength(const std::vector<double> &overallFingerForce);
 
-        //static double getForce(std::vector<double>& tactileData,iCub::plantIdentification::ForceCalculationMode forceCalculationMode);
+        static double getForce(const std::vector<double>& fingerTaxelsData,tactileControl::ForceCalculationMode forceCalculationMode);
+
 
         //static void getNNOptionsForErrorPrediction2Fingers(yarp::os::Bottle& bottle);
         //static void getNNOptionsForErrorPrediction3Fingers(yarp::os::Bottle& bottle);
         //static void rotateFingersData(std::vector<double>& fingersAngles,std::vector<double>& rotatedFingersAngles);
 
-        //static bool updateExternalData(iCub::plantIdentification::ControllersUtil *controllersUtil,iCub::plantIdentification::PortsUtil *portsUtil,iCub::plantIdentification::TaskCommonData *commonData,bool xyzCoordEnabled,int &forceSensorBiasCounter,std::vector<double> &forceSensorBiasPartial);
-
+ 
         //static void putDataIntoVector(const double *dataIn,int size,yarp::sig::Vector &dataOut);
         //static void putDataIntoMatrix(const double *dataIn,int rows,int columns,yarp::sig::Matrix &dataOut);
         //static void putSelectedElementsIntoVector(const yarp::sig::Vector &dataIn,const std::vector<int> &selectedIndexes,yarp::sig::Vector &dataOut);
@@ -57,16 +59,14 @@ namespace tactileControl {
 
     private:
 
-        //static void processTactileData(iCub::plantIdentification::TaskCommonData *commonData,bool realForceMappingEnabled);
+        static double getForceBySimpleSum(const std::vector<double>& fingerTaxelsData);
 
-        //static void processForceSensorData(iCub::plantIdentification::TaskCommonData *commonData,int &forceSensorBiasCounter,std::vector<double> &forceSensorBiasPartial);
+        static double getForceByWeightedSum(const std::vector<double>& fingerTaxelsData);
 
-        //static double getForceBySimpleSum(std::vector<double>& tactileData);
+        static void getUnitVector(int index,std::vector<double>& unitVector);
 
-        //static double getForceByWeightedSum(std::vector<double>& tactileData);
-        //static void getUnitVector(int index,std::vector<double>& unitVector);
 
-        //static double getForceByLearntMapping(std::vector<double>& tactileData);
+
 
         //static void addOption(yarp::os::Bottle &bottle,const char *paramName,yarp::os::Value paramValue);
 

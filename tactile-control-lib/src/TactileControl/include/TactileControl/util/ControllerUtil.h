@@ -41,16 +41,15 @@ namespace tactileControl {
 
             ControllerUtil();
 
-
             bool init(tactileControl::TaskData *taskData);
 
             bool sendPwm(int joint,double pwm);
 
             bool sendVelocity(int joint,double velocity);
 
-            bool getHandEncoderAngles(std::vector<double> &handEncoderAngles,bool wait = false);
+            bool getArmEncoderAngles(std::vector<double> &armEncoderAngles,bool wait = false);
 
-            bool getHandEncoderAngleReferences(std::vector<double> &handEncoderAngleReferences,bool wait = false);
+            bool getArmEncoderAngleReferences(std::vector<double> &armEncoderAngleReferences,bool wait = false);
 
             bool saveCurrentControlMode();
 

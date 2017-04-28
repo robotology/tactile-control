@@ -36,7 +36,7 @@ namespace tactileControl {
 
             bool init(tactileControl::TaskData *taskData);
 
-            bool sendInfoData(tactileControl::TaskData *commonData);
+            bool sendInfoData(tactileControl::TaskData *taskData);
 
             bool sendControlData(std::string taskId,std::string experimentDescription,std::string previousExperimentDescription,double targetGripStrength,double actualGripStrength,double u,double error,double svCurrentPosition,double actualCurrentTargetPose,double finalTargetPose,double estimatedFinalPose,double svKp,double svKi,double svKd,double thumbEnc,double indexEnc,double middleEnc,double enc8,const std::vector<double> &pressureTarget,const std::vector<double> &actualPressure,const std::vector<double> &pwm,const std::vector<int> &fingersList);
 
@@ -46,7 +46,7 @@ namespace tactileControl {
 
             bool sendGripStrengthData(std::string experimentDescription,std::string previousExperimentDescription,double targetGripStrength,double actualGripStrength,tactileControl::TaskData *taskData);
 
-            bool readFingerSkinRawData(std::vector<std::vector<double> > &fingerTaxelsRawData,const std::vector<double> &fingersSensitivityScale);
+            bool readFingerSkinRawData(std::vector<std::vector<double> > &fingerTaxelsRawData);
 
             bool readFingerSkinCompData(std::vector<std::vector<double> > &fingerTaxelsData,const std::vector<double> &fingersSensitivityScale);
 

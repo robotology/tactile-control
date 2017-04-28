@@ -17,6 +17,9 @@
 #define PAR_COMMON_USING_TWO_HANDS "usingTwoHands"
 #define PAR_COMMON_EXPERIMENT_INFO "experimentInfo"
 #define PAR_COMMON_EXPERIMENT_OPTIONAL_INFO "experimentOptionalInfo"
+#define PAR_COMMON_USE_TACTILE_WEIGHTED_SUM "useTactileWeightedSum"
+#define PAR_COMMON_ENABLE_SCREEN_LOGGING "enableScreenLogging"
+#define PAR_COMMON_SCREEN_LOGGING_RATE "screenLoggingRate"
 
 /*** Parameters related to the step task ***/
 #define PAR_STEP_DURATION "step.duration"
