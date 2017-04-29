@@ -5,19 +5,6 @@
 #include <ctime>
 #include <string>
 
-//#include "iCub/plantIdentification/PlantIdentificationEnums.h"
-//#include "iCub/plantIdentification/util/ICubUtil.h"
-//
-//
-//#include <yarp/os/Time.h>
-//
-//
-//using iCub::plantIdentification::Task;
-//using iCub::plantIdentification::LogData;
-//using iCub::plantIdentification::ControllersUtil;
-//using iCub::plantIdentification::PortsUtil;
-//using iCub::plantIdentification::TaskCommonData;
-//using iCub::plantIdentification::ICubUtil;
 
 using tactileControl::Task;
 
@@ -61,9 +48,7 @@ bool Task::manage(bool keepActive){
 
     portUtil->sendInfoData(taskData);
 
-    if (loggingEnabled && callsNumber%loggingBreak == 0){
-        printScreenLog();
-    }
+    printScreenLog();
 
     saveProgress();
 
@@ -73,6 +58,24 @@ bool Task::manage(bool keepActive){
     }
 
     return true;
+}
+
+int Task::getNumThreadCalls(double seconds){
+
+    return static_cast<int>(seconds*1000/taskThreadPeriod);
+}
+
+double Task::timeElapsed(){
+
+    return callsNumber*taskThreadPeriod/1000.0;
+}
+
+void Task::expandTargets(const std::vector<double> &targets,std::vector<double> &expandedTargets){
+
+    expandedTargets.resize(controlledJoints.size());
+    for(int i = 0; i < expandedTargets.size(); i++){
+        expandedTargets[i] = (i >= targets.size() ? targets[targets.size()-1] : targets[i]);
+    }
 }
 
 void Task::createTaskId(){
@@ -96,20 +99,24 @@ void Task::sendCommands(){
 void Task::printScreenLog(){
     using std::cout;
     
-    cout << dbgTag << "Fng: ";
-    
-    for(int i = 0; i < controlledFingers.size(); i++){
-        cout << taskData->overallFingerForce[controlledFingers[i]] << "(" << controlledFingers[i] << ") ";
-    }
-    cout << "\t   In: ";
+    if (loggingEnabled && callsNumber%loggingBreak == 0){
 
-    for(size_t i = 0; i < controlledJoints.size(); i++){
-        cout << inputCommandValue[i] << "(" << controlledJoints[i] << ") ";
-    }
+        cout << dbgTag << "Fng: ";
     
-    cout << optionalLogString << "\n";
+        for(int i = 0; i < controlledFingers.size(); i++){
+            cout << taskData->overallFingerForce[controlledFingers[i]] << "(" << controlledFingers[i] << ") ";
+        }
+        cout << "\t   In: ";
 
-    optionalLogString.clear();
+        for(size_t i = 0; i < controlledJoints.size(); i++){
+            cout << inputCommandValue[i] << "(" << controlledJoints[i] << ") ";
+        }
+    
+        cout << optionalLogStream << "\n";
+
+    }
+
+    optionalLogStream.clear();
 }
 
 
@@ -130,15 +137,5 @@ void Task::saveProgress(){
 bool Task::taskIsOver(){
 
     return callsNumber >= maxCallsNumber;
-}
-
-int Task::getNumThreadCalls(double seconds){
-
-    return static_cast<int>(seconds*1000/taskThreadPeriod);
-}
-
-double Task::timeElapsed(){
-
-    return callsNumber*taskThreadPeriod/1000.0;
 }
 

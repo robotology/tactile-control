@@ -19,6 +19,8 @@ set(${LIBRARY_TARGET_NAME}_SRC
 		src/thread/TaskThread.cpp
 		
 		src/task/Task.cpp
+		src/task/StepTask.cpp
+		src/task/ApproachTask.cpp
 		
 )
 
@@ -39,6 +41,8 @@ set(${LIBRARY_TARGET_NAME}_HDR
 		include/TactileControl/thread/TaskThread.h
 		
 		include/TactileControl/task/Task.h
+		include/TactileControl/task/StepTask.h
+		include/TactileControl/task/ApproachTask.h
 		
 )
 

@@ -1,5 +1,7 @@
 #include "TactileControl/thread/TaskThread.h"
 
+#include "TactileControl/task/StepTask.h"
+
 using tactileControl::TaskThread;
 
 
@@ -29,7 +31,6 @@ bool TaskThread::threadInit() {
 }
 
 
-
 void TaskThread::run() {
 
     if (runEnabled){
@@ -49,7 +50,6 @@ void TaskThread::run() {
 }
 
 
-
 bool TaskThread::initializeGrasping(){
 
     if (!controllerUtil->saveCurrentControlMode()) return false;
@@ -61,7 +61,6 @@ bool TaskThread::initializeGrasping(){
 
 
 bool TaskThread::afterRun(bool openHand){
-
 
     if (!controllerUtil->restorePreviousControlMode()) return false;
 
@@ -93,7 +92,7 @@ void TaskThread::threadRelease() {
 
 bool TaskThread::addStepTask(const std::vector<double> &targets){
 
-    taskList.push_back(new StepTask(controllerUtil,portUtil,taskData,targets));
+    taskList.push_back(new StepTask(taskData,controllerUtil,portUtil,targets));
 }
 
 bool TaskThread::addApproachTask(){
@@ -103,7 +102,7 @@ bool TaskThread::addApproachTask(){
 
 bool TaskThread::addControlTask(const std::vector<double> &targets){
 
-    taskList.push_back(new StepTask(controllerUtil,portUtil,taskData,targets));
+    taskList.push_back(new ControlTask(controllerUtil,portUtil,taskData,targets));
 }
 
 bool TaskThread::clearTaskList(){

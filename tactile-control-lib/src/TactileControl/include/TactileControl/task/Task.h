@@ -6,8 +6,9 @@
 #include "TactileControl/util/PortUtil.h"
 #include "TactileControl/data/Enums.h"
 
-
 #include <string>
+#include <sstream>
+#include <vector>
 
 namespace tactileControl {
 
@@ -17,10 +18,6 @@ namespace tactileControl {
 
             bool isFirstCall;
             int taskThreadPeriod;
-            int callsNumber;
-            int maxCallsNumber;
-            int loggingBreak;
-            bool loggingEnabled;
             bool isClean;
             int pwmSign;
 
@@ -35,11 +32,14 @@ namespace tactileControl {
             std::vector<int> controlledJoints;
             std::vector<int> controlledFingers;
             std::vector<double> inputCommandValue;
-            std::string optionalLogString;
+            std::stringstream optionalLogStream;
             std::string taskId;
+            int loggingBreak;
+            bool loggingEnabled;
+            int callsNumber;
+            int maxCallsNumber;
 
-
-        //    /* ******* Debug attributes.                ******* */
+            /* ******* Debug attributes.                ******* */
             std::string dbgTag;
 
 
@@ -53,11 +53,17 @@ namespace tactileControl {
 
             void clean();
 
+            virtual std::string getTargetsDescription(){ return "";}
+
         protected:
 
             int getNumThreadCalls(double seconds);
 
             double timeElapsed();
+
+            void expandTargets(const std::vector<double> &targets,std::vector<double> &expandedTargets);
+
+            bool is
 
         private:
 

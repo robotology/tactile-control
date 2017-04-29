@@ -51,6 +51,9 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_APPR_VELOCITY,*Value::makeList("20 20 20"));
     setDefault(PAR_APPR_MAX_PWM,*Value::makeList("450 350 350"));
     setDefault(PAR_APPR_PWM_LIMIT_ENABLED,Value("true"));
+    setDefault(PAR_APPR_WINDOW_SIZE,25);
+    setDefault(PAR_APPR_THRESHOLD,1.5);
+    setDefault(PAR_APPR_TIMEOUT,0.7);
 
     setDefault(PAR_CTRL_DURATION,10);
     setDefault(PAR_CTRL_LOW_PID_KP,*Value::makeList("4.8 4.8 4.8"));

@@ -55,7 +55,9 @@ namespace tactileControl {
 
             bool restorePreviousControlMode();
 
-            bool setTaskControlMode(std::vector<int> &jointsList,int controlMode);
+            bool setControlMode(int joint,int controlMode);
+
+            bool setControlMode(const std::vector<int> &jointsList,int controlMode);
 
             bool waitMotionDone(double timeout, double delay);
 

@@ -208,17 +208,25 @@ bool ControllerUtil::restorePreviousControlMode(){
 
 }
 
-bool ControllerUtil::setTaskControlMode(std::vector<int> &jointsList,int controlMode){
+bool ControllerUtil::setControlMode(int joint,int controlMode){
+
+    if (!iCtrl->setControlMode(joint,controlMode)){
+        std::cout << dbgTag << "could not set control mode\n";
+        return false;
+    }
+    return true;
+}
+
+bool ControllerUtil::setControlMode(const std::vector<int> &jointsList,int controlMode){
 
     for(int i = 0; i < jointsList.size(); i++){
         if (!iCtrl->setControlMode(jointsList[i],controlMode)){
-            std::cout << dbgTag << "could not set all control modes\n";
+            std::cout << dbgTag << "could not set control mode\n";
             return false;
         }
     }
     return true;
 }
-
 
 bool ControllerUtil::waitMotionDone(double timeout, double delay) {
     using yarp::os::Time;
