@@ -1,6 +1,7 @@
 #include "TactileControl/data/TaskData.h"
 
 #include "TactileControl/data/Parameters.h"
+#include "TactileControl/data/Enums.h"
 #include "TactileControl/util/ICubUtil.h"
 
 
@@ -9,7 +10,7 @@ using tactileControl::TaskData;
 
 
 TaskData::TaskData() {
-
+    
     dbgTag = "TaskData: ";
 }
 
@@ -21,6 +22,8 @@ bool TaskData::init(const yarp::os::Property &options) {
 
     /*** SET DEFAULT VALUES ***/
 
+    Value trueValue("true");
+    Value falseValue("false");
     setDefault(PAR_COMMON_TASK_THREAD_PERIOD,20);
     setDefault(PAR_COMMON_DATA_COLLECTION_THREAD_PERIOD,15);
     setDefault(PAR_COMMON_PORT_PREFIX,Value("stableGrasp"));
@@ -30,14 +33,14 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_COMMON_PWM_SIGN,1);
     setDefault(PAR_COMMON_FINGER_SENSITIVITY,*Value::makeList("1.0 0.6 0.6"));
     setDefault(PAR_COMMON_OPEN_HAND_JOINTS,*Value::makeList("23 3 40 2 40 3 40 1"));
-    setDefault(PAR_COMMON_DISABLE_PWM,Value("false"));
+    setDefault(PAR_COMMON_DISABLE_PWM,falseValue);
     setDefault(PAR_COMMON_TACT_MEDIAN_WINDOW_SIZE,50);
     setDefault(PAR_COMMON_REF_VELOCITY,100.0);
-    setDefault(PAR_COMMON_USING_TWO_HANDS,Value("true"));
+    setDefault(PAR_COMMON_USING_TWO_HANDS,trueValue);
     setDefault(PAR_COMMON_EXPERIMENT_INFO,Value("experimentInfo"));
     setDefault(PAR_COMMON_EXPERIMENT_OPTIONAL_INFO,Value("experimentExtra"));
-    setDefault(PAR_COMMON_USE_TACTILE_WEIGHTED_SUM,Value("true"));
-    setDefault(PAR_COMMON_ENABLE_SCREEN_LOGGING,Value("false"));
+    setDefault(PAR_COMMON_USE_TACTILE_WEIGHTED_SUM,trueValue);
+    setDefault(PAR_COMMON_ENABLE_SCREEN_LOGGING,falseValue);
     setDefault(PAR_COMMON_SCREEN_LOGGING_RATE,5);
 
     setDefault(PAR_STEP_DURATION,10);
@@ -50,17 +53,25 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_APPR_DURATION,5);
     setDefault(PAR_APPR_VELOCITY,*Value::makeList("20 20 20"));
     setDefault(PAR_APPR_MAX_PWM,*Value::makeList("450 350 350"));
-    setDefault(PAR_APPR_PWM_LIMIT_ENABLED,Value("true"));
+    setDefault(PAR_APPR_PWM_LIMIT_ENABLED,trueValue);
     setDefault(PAR_APPR_WINDOW_SIZE,25);
     setDefault(PAR_APPR_THRESHOLD,1.5);
     setDefault(PAR_APPR_TIMEOUT,0.7);
 
     setDefault(PAR_CTRL_DURATION,10);
+    setDefault(PAR_CTRL_DEFAULT_FORCE_TARGET,20.0);
     setDefault(PAR_CTRL_LOW_PID_KP,*Value::makeList("4.8 4.8 4.8"));
     setDefault(PAR_CTRL_LOW_PID_KI,*Value::makeList("10.6 10.6 10.6"));
+    setDefault(PAR_CTRL_LOW_PID_WP,1.0);
+    setDefault(PAR_CTRL_LOW_PID_WI,1.0);
+    setDefault(PAR_CTRL_LOW_PID_WD,1.0);
+    setDefault(PAR_CTRL_LOW_PID_N,1.0);
+    setDefault(PAR_CTRL_LOW_PID_WIND_UP_COEFF,0.5);
+    setDefault(PAR_CTRL_LOW_PID_MIN_SAT_LIM,-2666.0);
+    setDefault(PAR_CTRL_LOW_PID_MAX_SAT_LIM,2666.0);
     setDefault(PAR_CTRL_LOW_PID_SCALE,0.0);
-    setDefault(PAR_CTRL_LOW_PID_INTEGRAL_DISABLED,Value("true"));
-    setDefault(PAR_CTRL_SUPERVISOR_ENABLED,Value("true"));
+    setDefault(PAR_CTRL_LOW_PID_INTEGRAL_DISABLED,trueValue);
+    setDefault(PAR_CTRL_SUPERVISOR_ENABLED,trueValue);
     setDefault(PAR_CTRL_HIGH_PID_KP,30);
     setDefault(PAR_CTRL_HIGH_PID_KI,0.5);
     setDefault(PAR_CTRL_HIGH_PID_KD,0.8);
@@ -69,20 +80,22 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_CTRL_HIGH_PID_WD,1.0);
     setDefault(PAR_CTRL_HIGH_PID_N,1.0);
     setDefault(PAR_CTRL_HIGH_PID_WIND_UP_COEFF,0.5);
-    setDefault(PAR_CTRL_HIGH_PID_MIN_SAT_LIM,-2666.0);
-    setDefault(PAR_CTRL_HIGH_PID_MAX_SAT_LIM,2666.0);
+    setDefault(PAR_CTRL_HIGH_PID_MIN_SAT_LIM,-100000.0);
+    setDefault(PAR_CTRL_HIGH_PID_MAX_SAT_LIM,100000.0);
     setDefault(PAR_CTRL_HIGH_PID_SCALE,1.0);
     setDefault(PAR_CTRL_GRIP_STRENGTH,50.0);
     setDefault(PAR_CTRL_THUMB_ABDUCTION_OFFSET,-30.0);
-    setDefault(PAR_CTRL_MIN_JERK_TRACK_ENABLED,Value("true"));
+    setDefault(PAR_CTRL_MIN_JERK_TRACK_ENABLED,trueValue);
     setDefault(PAR_CTRL_MIN_JERK_TRACK_REF_TIME,2.0);
-    setDefault(PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_ENABLED,Value("true"));
+    setDefault(PAR_CTRL_SUPERVISOR_MODE,GMM_MODE);
+    setDefault(PAR_CTRL_GMM_BEST_POSE_LOG_ONE_SHOT,falseValue);
+    setDefault(PAR_CTRL_GMM_JOINTS_REGRESSION_ENABLED,falseValue);
+    setDefault(PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_ENABLED,trueValue);
     setDefault(PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_REF_TIME,4.0);
-    setDefault(PAR_CTRL_HAND_FREEZE_ENABLED,Value("false"));
-    setDefault(PAR_CTRL_MIN_FORCE_ENABLED,Value("false"));
+    setDefault(PAR_CTRL_MIN_FORCE_ENABLED,falseValue);
     setDefault(PAR_CTRL_MIN_FORCE,0.0);
 
-
+    
     /*** INITIALIZE DATA ***/
 
     fingerTaxelsData.resize(NUM_FINGERS);
@@ -105,7 +118,9 @@ bool TaskData::init(const yarp::os::Property &options) {
 
     fingerEncodersRawData.resize(NUM_HAND_ENCODERS,0.0);
 
-    gmmDataStandard = new GMMData(STANDARD);
+    // control task data
+    gmmDataStandard = new GMMData(STANDARD_GMM);
+    graspIsStable - false;
 
     return true;
 }
@@ -273,3 +288,14 @@ int TaskData::getFingerNum(){
     return controlledFingers.size();
 }
 
+
+tactileControl::SupervisorMode TaskData::getSupervisorControlMode(){
+    
+    return static_cast<tactileControl::SupervisorMode>(getInt(PAR_CTRL_SUPERVISOR_MODE));
+}
+
+void TaskData::release(){
+
+    delete(options);
+    delete(gmmDataStandard);
+}

@@ -27,7 +27,7 @@ Task::Task(tactileControl::TaskData *taskData,tactileControl::ControllerUtil *co
     loggingEnabled = taskData->getBool(PAR_COMMON_ENABLE_SCREEN_LOGGING);
     isClean = false;
     pwmSign = taskData->getInt(PAR_COMMON_PWM_SIGN);
-    optionalLogString = "";
+    optionalLogStream.clear();
 }
 
 
@@ -44,8 +44,9 @@ bool Task::manage(bool keepActive){
     calculateControlInput();
 
     // send the control signals to the robot
-    sendCommands();
+    sendPwm();
 
+    // send task data to port
     portUtil->sendInfoData(taskData);
 
     printScreenLog();
@@ -89,7 +90,7 @@ void Task::createTaskId(){
     taskId = std::string(myDate);
 }
 
-void Task::sendCommands(){
+void Task::sendPwm(){
 
     for(size_t i = 0; i < inputCommandValue.size(); i++){
         controllerUtil->sendPwm(controlledJoints[i],pwmSign*inputCommandValue[i]);
@@ -113,7 +114,6 @@ void Task::printScreenLog(){
         }
     
         cout << optionalLogStream << "\n";
-
     }
 
     optionalLogStream.clear();

@@ -3,7 +3,6 @@
 #include "TactileControl/data/Parameters.h"
 
 #include <sstream>
-
 using tactileControl::StepTask;
 
 
@@ -19,7 +18,7 @@ StepTask::StepTask(TaskData *taskData,ControllerUtil * controllerUtil,PortUtil *
 void StepTask::init(){
     using std::cout;
 
-    controllerUtil->setControlMode(controlledJoints,VOCAB_CM_OPENLOOP);
+    controllerUtil->setControlMode(controlledJoints,VOCAB_CM_PWM);
 
     if (loggingEnabled){
 

@@ -1,6 +1,8 @@
 #include "TactileControl/thread/TaskThread.h"
 
 #include "TactileControl/task/StepTask.h"
+#include "TactileControl/task/ApproachTask.h"
+#include "TactileControl/task/ControlTask.h"
 
 using tactileControl::TaskThread;
 
@@ -80,14 +82,10 @@ bool TaskThread::afterRun(bool openHand){
 
 void TaskThread::threadRelease() {
 
-    portUtil->release();
-
-    controllerUtil->release();
-
-    delete(portUtil);
-    delete(controllerUtil);
-    delete(taskData);
-
+    if (runEnabled == true){
+        taskList[currentTaskIndex]->clean();
+        clearTaskList();
+    }
 }
 
 bool TaskThread::addStepTask(const std::vector<double> &targets){
@@ -97,12 +95,17 @@ bool TaskThread::addStepTask(const std::vector<double> &targets){
 
 bool TaskThread::addApproachTask(){
 
-    taskList.push_back(new ApproachTask(controllerUtil,portUtil,taskData));
+    taskList.push_back(new ApproachTask(taskData,controllerUtil,portUtil));
+}
+
+bool TaskThread::addControlTask(){
+
+    taskList.push_back(new ControlTask(taskData,controllerUtil,portUtil));
 }
 
 bool TaskThread::addControlTask(const std::vector<double> &targets){
 
-    taskList.push_back(new ControlTask(controllerUtil,portUtil,taskData,targets));
+    taskList.push_back(new ControlTask(taskData,controllerUtil,portUtil,targets));
 }
 
 bool TaskThread::clearTaskList(){

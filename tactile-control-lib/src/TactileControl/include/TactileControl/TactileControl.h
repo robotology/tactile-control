@@ -14,125 +14,104 @@
 namespace tactileControl {
 
 /**
-* \class TactileControl::TactileControl
+* \class tactileControl::HandController
 * \headerfile template-lib.h <TemplateLib/templatelib.h>
 *
 * \brief A class from TactileControl namespace.
 *
-* This class that does a summation.
 */
 
-class HandController {
+    class HandController {
 
-public:
+    public:
 
-    tactileControl::TaskData *taskData;
-    tactileControl::ControllerUtil *controllerUtil;
-    tactileControl::PortUtil *portUtil;
+        tactileControl::TaskData *taskData;
+        tactileControl::ControllerUtil *controllerUtil;
+        tactileControl::PortUtil *portUtil;
 
-    /* ****** Threads                                 ****** */
-    tactileControl::TaskThread *taskThread;
-    tactileControl::DataCollectionThread *dataCollectionThread;
+        bool taskRunning;
 
-    /* ****** Debug attributes                              ****** */
-    std::string dbgTag;
+        /* ****** Threads                                 ****** */
+        tactileControl::TaskThread *taskThread;
+        tactileControl::DataCollectionThread *dataCollectionThread;
 
-public:
-    /**
-    * Constructor
-    */
-    HandController();
+        /* ****** Debug attributes                              ****** */
+        std::string dbgTag;
 
-    /**
-    * Destructory
-    */
-    ~HandController();
+    public:
+        /**
+        * Constructor
+        */
+        HandController();
 
-    /**
-    * Initializes the hand controller. Returns true in case of success.
-    */
-    bool open();
+        /**
+        * Destructory
+        */
+        ~HandController();
 
-    /**
-    * Sets the given properties and initializes the hand controller. Returns true in case of success.
-    */
-    bool open(const yarp::os::Property &options);
+        /**
+        * Initializes the hand controller. Returns true in case of success.
+        */
+        bool open();
 
-    /**
-    * Sets the given properties.
-    */
-    void set(const yarp::os::Property &options);
+        /**
+        * Sets the given properties and initializes the hand controller. Returns true in case of success.
+        */
+        bool open(const yarp::os::Property &options);
 
-    /**
-    * Sets the given property.
-    */
-    void set(const yarp::os::ConstString key, yarp::os::Value value);
+        /**
+        * Sets the given property.
+        */
+        void set(const yarp::os::ConstString key, yarp::os::Value value);
 
-    /**
-    * Starts the grasping task (including the approach phase). If wait == true it waits for the grasp to be stable, otherwise it returns immediately. Returns true in case of success.
-    */
-    bool closeHand(bool wait = true);
+        /**
+        * Starts the grasping task (including the approach phase). If wait == true it waits for the grasp to be stable, otherwise it returns immediately. Returns true in case of success.
+        */
+        bool closeHand(bool wait = true);
 
-    /**
-    * Checks if the grasp is stable.
-    */
-    bool isHandClose();
+        /**
+        * Checks if the grasp is stable.
+        */
+        bool isHandClose();
 
-    /**
-    * Opens the hand. If wait == true it waits for the hand to be open, otherwise it returns immediately. Returns true in case of success.
-    */
-    bool openHand(bool wide, bool wait = true);
+        /**
+        * Opens the hand. If wait == true it waits for the hand to be open, otherwise it returns immediately. Returns true in case of success.
+        */
+        bool openHand(bool fullyOpen, bool wait = true);
 
-    /**
-    * Checks if the hand is open.
-    */
-    bool isHandOpen();
+        /**
+        * Checks if the hand is open.
+        */
+        bool isHandOpen();
 
-    /**
-    * Sets the minimum value of force at each fingertip used for grasping.
-    */
-    void setMinForce(double minForce);
+        /**
+        * Sets the minimum value of force at each fingertip used for grasping.
+        */
+        void setMinForce(double minForce);
 
-    /**
-    * Sets the grip strength.
-    */
-    void setGripStrength(double gripStrength);
+        /**
+        * Disables the minimum force functionality.
+        */
+        void disableMinForce();
 
-    /**
-    * Closes the hand controller and releases all the resources. Returns true in case of success.
-    */
-    bool close();
+        /**
+        * Sets the grip strength.
+        */
+        void setGripStrength(double gripStrength);
 
-};
+        /**
+        * Closes the hand controller and releases all the resources. Returns true in case of success.
+        */
+        bool close();
+
+    private:
+
+        bool start();
+
+        bool waitForGraspStabilization(double timeout, double delay);
 
 
-///**
-//* \class TactileControl::anotherClass
-//* \headerfile template-lib.h <TemplateLib/templatelib.h>
-//*
-//* \brief A derived class from TactileControl namespace.
-//*
-//* This class performs a difference.
-//*/
-//class differenceClass : public summationClass
-//{
-//public:
-//    /**
-//    * Constructor
-//    */
-//    differenceClass();
-//
-//    /**
-//    * Destructory
-//    */
-//    virtual ~differenceClass();
-//
-//    /**
-//    * A method that does something
-//    */
-//    virtual double doSomething(double op1, double op2);
-//};
-
+    };
 
 } // namespace tactileControl
 

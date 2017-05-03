@@ -9,6 +9,7 @@ set(${LIBRARY_TARGET_NAME}_SRC
         src/TactileControl.cpp
 		
 		src/data/TaskData.cpp
+		src/data/GMMData.cpp
 
 		src/util/ControllerUtil.cpp
 		src/util/PortUtil.cpp
@@ -21,6 +22,7 @@ set(${LIBRARY_TARGET_NAME}_SRC
 		src/task/Task.cpp
 		src/task/StepTask.cpp
 		src/task/ApproachTask.cpp
+		src/task/ControlTask.cpp
 		
 )
 
@@ -29,6 +31,7 @@ set(${LIBRARY_TARGET_NAME}_HDR
         include/TactileControl/TactileControl.h
 		
 		include/TactileControl/data/TaskData.h
+		include/TactileControl/data/GMMData.h
 		include/TactileControl/data/Parameters.h
 		include/TactileControl/data/Enums.h
 		
@@ -43,6 +46,7 @@ set(${LIBRARY_TARGET_NAME}_HDR
 		include/TactileControl/task/Task.h
 		include/TactileControl/task/StepTask.h
 		include/TactileControl/task/ApproachTask.h
+		include/TactileControl/task/ControlTask.h
 		
 )
 

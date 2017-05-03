@@ -40,14 +40,48 @@ bool ICubUtil::isRingOrLittleFinger(int joint){
     return joint == RING_LITTLE_JOINT;
 }
 
-double ICubUtil::getGripStrength(const std::vector<double> &overallFingerForce){
+double ICubUtil::getGripStrength(int numFingers,const std::vector<double> &overallFingerForce){
 
     double thumbForce = overallFingerForce[THUMB_FINGERTIP];
     double indexFingerForce = overallFingerForce[INDEX_FINGERTIP];
     double middleFingerForce = overallFingerForce[MIDDLE_FINGERTIP];
 
-    return 2.0/3.0 * thumbForce + 1.0/3.0 * (indexFingerForce + middleFingerForce);
+    if (numFingers == 2){
+        return (thumbForce + middleFingerForce)/2;
+    } else {
+        return 2.0/3.0 * thumbForce + 1.0/3.0 * (indexFingerForce + middleFingerForce);
+    }
 }
+
+double ICubUtil::getObjectPosition(int numFingers,const std::vector<double> &armEncoderAngles){
+
+    if (numFingers == 2){
+        return (armEncoderAngles[MIDDLE_PROXIMAL_JOINT] - armEncoderAngles[THUMB_PROXIMAL_JOINT])/2;
+    } else {
+        return ((armEncoderAngles[MIDDLE_PROXIMAL_JOINT] + armEncoderAngles[INDEX_PROXIMAL_JOINT])/2 - armEncoderAngles[THUMB_PROXIMAL_JOINT])/2;
+    }
+}
+
+double ICubUtil::getHandAperture(int numFingers,const std::vector<double> &armEncoderAngles){
+
+    if (numFingers == 2){
+        return 180 - armEncoderAngles[MIDDLE_PROXIMAL_JOINT] - armEncoderAngles[THUMB_PROXIMAL_JOINT];
+    } else {
+        return 180 - (armEncoderAngles[MIDDLE_PROXIMAL_JOINT] + armEncoderAngles[INDEX_PROXIMAL_JOINT])/2 - armEncoderAngles[THUMB_PROXIMAL_JOINT];
+    }
+}
+
+double ICubUtil::getIndexMiddleDifference(int numFingers,const std::vector<double> &armEncoderAngles){
+
+    if (numFingers == 2){
+        return 0;
+    } else {
+        return armEncoderAngles[MIDDLE_PROXIMAL_JOINT] - armEncoderAngles[INDEX_PROXIMAL_JOINT];
+    }
+}
+
+
+
 
 double ICubUtil::getForce(const std::vector<double>& fingerTaxelsData,tactileControl::ForceCalculationMode forceCalculationMode){
 

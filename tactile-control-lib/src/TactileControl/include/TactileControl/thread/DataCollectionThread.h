@@ -7,13 +7,6 @@
 
 #include <yarp/os/RateThread.h>
 
-//#include "iCub/plantIdentification/action/WaveAction.h"
-//#include "iCub/plantIdentification/PlantIdentificationEnums.h"
-//
-//#include <yarp/os/ResourceFinder.h>
-//
-//#include <vector>
-//#include <string>
 
 namespace tactileControl {
         
@@ -31,7 +24,7 @@ namespace tactileControl {
 
         public:
 
-            DataCollectionThread(int period,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil,tactileControl::TaskData *taskData);
+            DataCollectionThread(int period, tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil);
 
             virtual void run();
 

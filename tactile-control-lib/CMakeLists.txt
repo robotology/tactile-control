@@ -28,6 +28,8 @@ project(TactileControl
 
 find_package(YCM REQUIRED)
 find_package(YARP REQUIRED)
+find_package(ICUB REQUIRED)
+find_package(GSL)
 
 # Defines the CMAKE_INSTALL_LIBDIR, CMAKE_INSTALL_BINDIR and many other useful macros
 # See https://cmake.org/cmake/help/latest/module/GNUInstallDirs.html
@@ -46,6 +48,7 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 # See https://github.com/robotology/ycm/
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
+list(APPEND CMAKE_MODULE_PATH ${ICUB_MODULE_PATH})
 
 ### Options
 # Shared/Dynamic or Static library?
@@ -68,8 +71,9 @@ add_install_rpath_support(BIN_DIRS "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BIND
 
 # Add Yarp
 add_definitions(${YARP_DEFINES})
-include_directories(${YARP_INCLUDE_DIRS})
 
+
+include_directories(${YARP_INCLUDE_DIRS} ${ICUB_INCLUDE_DIRS} ${GSL_INCLUDE_DIRS})
 						  
 ### Compile- and install-related commands
 add_subdirectory(src)

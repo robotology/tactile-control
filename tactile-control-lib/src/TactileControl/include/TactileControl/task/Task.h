@@ -17,7 +17,6 @@ namespace tactileControl {
         private:
 
             bool isFirstCall;
-            int taskThreadPeriod;
             bool isClean;
             int pwmSign;
 
@@ -38,6 +37,7 @@ namespace tactileControl {
             bool loggingEnabled;
             int callsNumber;
             int maxCallsNumber;
+            int taskThreadPeriod;
 
             /* ******* Debug attributes.                ******* */
             std::string dbgTag;
@@ -63,8 +63,6 @@ namespace tactileControl {
 
             void expandTargets(const std::vector<double> &targets,std::vector<double> &expandedTargets);
 
-            bool is
-
         private:
 
             void createTaskId();
@@ -73,7 +71,7 @@ namespace tactileControl {
 
             virtual void calculateControlInput() = 0;
 
-            virtual void sendCommands();
+            virtual void sendPwm();
 
             virtual void printScreenLog();
 

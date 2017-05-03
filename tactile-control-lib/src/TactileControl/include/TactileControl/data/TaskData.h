@@ -1,6 +1,9 @@
 #ifndef TACTILECONTROL_TASKDATA_H
 #define TACTILECONTROL_TASKDATA_H
 
+#include "TactileControl/data/Enums.h"
+#include "TactileControl/data/GMMData.h"
+
 #include <yarp/os/Property.h>
 #include <yarp/os/ConstString.h>
 #include <yarp/os/Value.h>
@@ -29,9 +32,9 @@ namespace tactileControl {
             std::vector<double> armEncoderAngles;
             std::vector<double> armEncoderAngleReferences;
 
-            // control data
-            iCub::plantIdentification::GMMData* gmmDataStandard;
-
+            // control task data
+            tactileControl::GMMData* gmmDataStandard;
+            bool graspIsStable;
 
         private:
 
@@ -72,6 +75,9 @@ namespace tactileControl {
             // parameters non directly settable
             void getControlledFingers(std::vector<int> &controlledFingers);
             int getFingerNum();
+            tactileControl::SupervisorMode getSupervisorControlMode();
+
+            void release();
 
     };
 

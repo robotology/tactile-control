@@ -60,9 +60,9 @@ bool ControllerUtil::init(tactileControl::TaskData *taskData){
         cout << dbgTag << "could not open encoders interface\n";
         return false;
     }
-    clientArm.view(iOLC);
-    if (!iOLC) {
-        cout << dbgTag << "could not open open-loop interface\n";
+    clientArm.view(iPwm);
+    if (!iPwm) {
+        cout << dbgTag << "could not open pwm interface\n";
         return false;
     }
     clientArm.view(iCtrl);
@@ -100,6 +100,11 @@ bool ControllerUtil::init(tactileControl::TaskData *taskData){
     int numArmJoints;
     iPos->getAxes(&numArmJoints);
     taskData->initEncodersData(numArmJoints);
+    armJointControlModes.resize(numArmJoints);
+    for(int i = 0; i < armJointControlModes.size(); i++){
+        iCtrl->getControlMode(i,&armJointControlModes[i]);
+    }
+
 
     // Set reference speeds
     for(int i = 0; i < NUM_HAND_JOINTS; i++){
@@ -112,7 +117,8 @@ bool ControllerUtil::init(tactileControl::TaskData *taskData){
 
 bool ControllerUtil::sendPwm(int joint,double pwm){
 
-    if (!iOLC->setRefOutput(joint,pwm)){
+    double dutyCycle = (pwm/1333)*100;
+    if (!iPwm->setRefDutyCycle(joint,dutyCycle)){
         std::cout << dbgTag << "could not send pwm\n";
         return false;
     }
@@ -120,7 +126,7 @@ bool ControllerUtil::sendPwm(int joint,double pwm){
 }
 
 bool ControllerUtil::sendVelocity(int joint,double velocity){
-
+    
     if (!iVel->velocityMove(joint,velocity)){
         std::cout << dbgTag << "could not send velocity\n";
         return false;
@@ -145,7 +151,7 @@ bool ControllerUtil::getArmEncoderAngles(std::vector<double> &armEncoderAngles,b
     }
 
     if (encodersDataAcquired){
-
+        
         for(int i = 0; i < armEncoderAngles.size(); i++){
             armEncoderAngles[i] = armEncoderAnglesVector[i];
         }
@@ -159,28 +165,26 @@ bool ControllerUtil::getArmEncoderAngleReferences(std::vector<double> &armEncode
 
     using yarp::os::Time;
     
-    yarp::sig::Vector armEncoderAngleReferencesVector;
-    armEncoderAngleReferencesVector.resize(NUM_HAND_JOINTS);
+    for(int i = 0; i < armEncoderAngleReferences.size(); i++){
 
-    bool encodersDataAcquired = iPosCtrl->getTargetPositions(armEncoderAngleReferencesVector.data());
+        switch(armJointControlModes[i]){
 
-    while(wait && !encodersDataAcquired) {
-
-        Time::delay(0.1);
-
-        encodersDataAcquired = iPosCtrl->getTargetPositions(armEncoderAngleReferencesVector.data());
-    }
-
-    if (encodersDataAcquired){
-
-        for(int i = 0; i < armEncoderAngleReferences.size(); i++){
-            armEncoderAngleReferences[i] = armEncoderAngleReferencesVector[i];
+        case VOCAB_CM_POSITION:
+            iPosCtrl->getTargetPosition(i,&armEncoderAngleReferences[i]);
+            break;
+        case VOCAB_CM_PWM:
+            iEncs->getEncoder(i,&armEncoderAngleReferences[i]);
+            break;
+        case VOCAB_CM_VELOCITY:
+            iEncs->getEncoder(i,&armEncoderAngleReferences[i]);
+            break;
+        case VOCAB_CM_POSITION_DIRECT:
+            iPosDir->getRefPosition(i,&armEncoderAngleReferences[i]);
+            break;
         }
-
-        return true;
     }
 
-    return false;
+    return true;
 }
 
 
@@ -213,6 +217,8 @@ bool ControllerUtil::setControlMode(int joint,int controlMode){
     if (!iCtrl->setControlMode(joint,controlMode)){
         std::cout << dbgTag << "could not set control mode\n";
         return false;
+    } else {
+        armJointControlModes[joint] = controlMode;
     }
     return true;
 }
@@ -223,6 +229,8 @@ bool ControllerUtil::setControlMode(const std::vector<int> &jointsList,int contr
         if (!iCtrl->setControlMode(jointsList[i],controlMode)){
             std::cout << dbgTag << "could not set control mode\n";
             return false;
+        } else {
+            armJointControlModes[jointsList[i]] = controlMode;
         }
     }
     return true;
@@ -230,27 +238,33 @@ bool ControllerUtil::setControlMode(const std::vector<int> &jointsList,int contr
 
 bool ControllerUtil::waitMotionDone(double timeout, double delay) {
     using yarp::os::Time;
-    
-    bool ok = false;
-    
-    double start = Time::now();
 
-    while (!ok && (start - Time::now() <= timeout)) {
-        iPos->checkMotionDone(&ok);
+    double startTime = Time::now();
+
+    bool motionDone = isMotionDone();
+
+    while (!motionDone && (Time::now() - startTime < timeout)) {
         Time::delay(delay);
+        motionDone = isMotionDone();
     }
 
-    return ok;
+    return motionDone;
 }
 
+bool ControllerUtil::isMotionDone(){
 
+    bool done;
+    iPos->checkMotionDone(&done);
+
+    return done;
+}
 
 bool ControllerUtil::getEncoderAngle(int joint,double &encoderData){
     
     bool ok;
 
     ok = iEncs->getEncoder(joint,&encoderData);
-    
+
     if (!ok){
         std::cout << dbgTag << "could not get encoder value\n";
     }
@@ -258,18 +272,16 @@ bool ControllerUtil::getEncoderAngle(int joint,double &encoderData){
 }
 
 
-bool ControllerUtil::openHand(bool fingersAreStraight) {
+bool ControllerUtil::openHand(bool fullyOpen,bool wait) {
     using tactileControl::ICubUtil;
 
-    std::cout << dbgTag << "Opening hand... \t";
-    
     iVel->stop();
 
     for(int i = 0; i < NUM_HAND_JOINTS; i++){
 
         double jointAngle;
 
-        if (fingersAreStraight && ICubUtil::isDistal(FIRST_HAND_JOINT + i) || i == INDEX_DISTAL_JOINT && numFingers == 2){
+        if (fullyOpen && ICubUtil::isDistal(FIRST_HAND_JOINT + i) || i == INDEX_DISTAL_JOINT && numFingers == 2){
 
             jointAngle = STRAIGHT_DISTAL_ANGLE;
 
@@ -282,10 +294,13 @@ bool ControllerUtil::openHand(bool fingersAreStraight) {
 
     }
 
-    // Check motion done
-    waitMotionDone(10, 1);
+    if (wait == true){
+        // Wait for the hand to be open
+        std::cout << dbgTag << "Opening hand... \t";
+        waitMotionDone(10, 1);
+        std::cout << "done \n";
+    }
 
-    std::cout << "done \n";
 
     return true;
 }

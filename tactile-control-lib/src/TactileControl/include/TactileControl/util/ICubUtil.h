@@ -36,23 +36,16 @@ namespace tactileControl {
 
         static bool isRingOrLittleFinger(int joint);
 
-        static double getGripStrength(const std::vector<double> &overallFingerForce);
+        static double getGripStrength(int numFingers,const std::vector<double> &overallFingerForce);
+
+        static double getObjectPosition(int numFingers,const std::vector<double> &armEncoderAngles);
+
+        static double getHandAperture(int numFingers,const std::vector<double> &armEncoderAngles);
+
+        static double getIndexMiddleDifference(int numFingers,const std::vector<double> &armEncoderAngles);
 
         static double getForce(const std::vector<double>& fingerTaxelsData,tactileControl::ForceCalculationMode forceCalculationMode);
-
-
-        //static void getNNOptionsForErrorPrediction2Fingers(yarp::os::Bottle& bottle);
-        //static void getNNOptionsForErrorPrediction3Fingers(yarp::os::Bottle& bottle);
-        //static void rotateFingersData(std::vector<double>& fingersAngles,std::vector<double>& rotatedFingersAngles);
-
  
-        //static void putDataIntoVector(const double *dataIn,int size,yarp::sig::Vector &dataOut);
-        //static void putDataIntoMatrix(const double *dataIn,int rows,int columns,yarp::sig::Matrix &dataOut);
-        //static void putSelectedElementsIntoVector(const yarp::sig::Vector &dataIn,const std::vector<int> &selectedIndexes,yarp::sig::Vector &dataOut);
-        //static void putSelectedElementsIntoMatrix(const yarp::sig::Matrix &dataIn,const std::vector<int> &selectedRowIndexes,const std::vector<int> &selectedColumnIndexes,yarp::sig::Matrix &dataOut);
-        //
-        //static void makeObjectRecognitionBottle(yarp::os::Bottle &objRecBottle,std::string taskId,int objectId,iCub::plantIdentification::ObjectRecognitionTask objRecTask,int extraCode1,int extraCode2,int skipPreviousRepetition,std::string experimentDescription,std::string previousExperimentDescription,double handAperture,double actualHandPosition,double targetHandPosition,double actualGripStrength,double targetGripStrength,std::vector<double> &pwm,iCub::plantIdentification::TaskCommonData *commonData); 
-
         //static void printBottleIntoFile(std::ofstream &file,yarp::os::Bottle &bottle);
 
         //static void normalizeVector(const std::vector<double> &inputVector,std::vector<double> &outputVector);

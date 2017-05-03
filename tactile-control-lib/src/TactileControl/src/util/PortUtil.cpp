@@ -116,7 +116,7 @@ bool PortUtil::sendInfoData(tactileControl::TaskData *taskData){
     return true;
 }
 
-bool PortUtil::sendControlData(string taskId,string experimentDescription,string previousExperimentDescription,double targetGripStrength,double actualGripStrength,double u,double error,double svCurrentPosition,double actualCurrentTargetPose,double finalTargetPose,double estimatedFinalPose,double svKp,double svKi,double svKd,double thumbEnc,double indexEnc,double middleEnc,double enc8,const std::vector<double> &pressureTarget,const std::vector<double> &actualPressure,const std::vector<double> &pwm,const std::vector<int> &fingersList){
+bool PortUtil::sendControlData(string taskId,string experimentInfo,string experimentOptionalInfo,double targetGripStrength,double actualGripStrength,double u,double error,double svCurrentPosition,double currentTargetObjectPosition,double targetObjectPosition,const std::vector<double> &forceTargetValue,const std::vector<double> &pwm,const std::vector<int> &controlledFingers,tactileControl::TaskData *taskData){
 
     using yarp::os::Bottle;
 
@@ -126,30 +126,26 @@ bool PortUtil::sendControlData(string taskId,string experimentDescription,string
     double fingerJoint;
 
     ctrlBottle.addString(taskId);// index 1
-    ctrlBottle.addString(experimentDescription);// index 2
-    ctrlBottle.addString(previousExperimentDescription);// index 3
-    ctrlBottle.addInt(pressureTarget.size());// index 4
+    ctrlBottle.addString(experimentInfo);// index 2
+    ctrlBottle.addString(experimentOptionalInfo);// index 3
+    ctrlBottle.addInt(forceTargetValue.size());// index 4
     ctrlBottle.addDouble(targetGripStrength);// index 5
     ctrlBottle.addDouble(actualGripStrength);// index 6
     ctrlBottle.addDouble(u);// index 7
     ctrlBottle.addDouble(error);// index 8
-    ctrlBottle.addDouble(actualCurrentTargetPose);// index 9
-    ctrlBottle.addDouble(finalTargetPose);// index 10
+    ctrlBottle.addDouble(currentTargetObjectPosition);// index 9
+    ctrlBottle.addDouble(targetObjectPosition);// index 10
     ctrlBottle.addDouble(svCurrentPosition);// index 11
-    ctrlBottle.addDouble(estimatedFinalPose);// index 12
-    ctrlBottle.addDouble(svKp);// index 13
-    ctrlBottle.addDouble(svKi);// index 14
-    ctrlBottle.addDouble(svKd);// index 15
-    ctrlBottle.addDouble(thumbEnc);// index 16
-    ctrlBottle.addDouble(indexEnc);// index 17
-    ctrlBottle.addDouble(middleEnc);// index 18
-    ctrlBottle.addDouble(enc8);// index 19
-    for(int i = 0; i < pressureTarget.size(); i++){
+    ctrlBottle.addDouble(taskData->armEncoderAngles[THUMB_PROXIMAL_JOINT]);// index 12
+    ctrlBottle.addDouble(taskData->armEncoderAngles[INDEX_PROXIMAL_JOINT]);// index 13
+    ctrlBottle.addDouble(taskData->armEncoderAngles[MIDDLE_PROXIMAL_JOINT]);// index 14
+    ctrlBottle.addDouble(taskData->armEncoderAngles[THUMB_ABDUCTION_JOINT]);// index 15
+    for(int i = 0; i < forceTargetValue.size(); i++){
         
-        ctrlBottle.addInt(fingersList[i]);// index 20 ... 24 ...
-        ctrlBottle.addDouble(pwm[i]);// index 21 ... 25 ...
-        ctrlBottle.addDouble(pressureTarget[i]);// index 22 ... 26 ...
-        ctrlBottle.addDouble(actualPressure[fingersList[i]]);// index 23 ... 27...
+        ctrlBottle.addInt(controlledFingers[i]);// index 16 ... 20 ...
+        ctrlBottle.addDouble(pwm[i]);// index 17 ... 21 ...
+        ctrlBottle.addDouble(forceTargetValue[i]);// index 18 ... 22 ...
+        ctrlBottle.addDouble(taskData->overallFingerForce[controlledFingers[i]]);// index 19 ... 23...
     }
 
     portControlDataOut.write();
@@ -158,15 +154,15 @@ bool PortUtil::sendControlData(string taskId,string experimentDescription,string
 }
 
 
-bool PortUtil::sendGripStrengthData(std::string experimentDescription,std::string previousExperimentDescription,double targetGripStrength,double actualGripStrength,tactileControl::TaskData *taskData){
+bool PortUtil::sendGripStrengthData(std::string experimentInfo,std::string experimentOptionalInfo,double targetGripStrength,double actualGripStrength,tactileControl::TaskData *taskData){
 
     using yarp::os::Bottle;
 
     Bottle& gripStrengthBottle = portGripStrengthDataOut.prepare();
     gripStrengthBottle.clear();
 
-    gripStrengthBottle.addString(experimentDescription);// index 1
-    gripStrengthBottle.addString(previousExperimentDescription);// index 2
+    gripStrengthBottle.addString(experimentInfo);// index 1
+    gripStrengthBottle.addString(experimentOptionalInfo);// index 2
     gripStrengthBottle.addDouble(targetGripStrength);// index 3
     gripStrengthBottle.addDouble(actualGripStrength);// index 4
 
@@ -187,7 +183,7 @@ bool PortUtil::sendGripStrengthData(std::string experimentDescription,std::strin
     return true;
 }
 
-bool PortUtil::sendGMMData(double gripStrength,double indexMiddleFingerPressureBalance,tactileControl::TaskData *taskData){
+bool PortUtil::sendGMMData(double gripStrength,tactileControl::TaskData *taskData){
 
     using yarp::os::Bottle;
 
@@ -197,27 +193,24 @@ bool PortUtil::sendGMMData(double gripStrength,double indexMiddleFingerPressureB
     // grip strength (1 value, index 1)
     objGMMBottle.addDouble(gripStrength);
 
-    // index / middle finger pressure balance (1 value, index 2)
-    objGMMBottle.addDouble(indexMiddleFingerPressureBalance);
-
-    // compensated taxels feedback (60 values, indexes 3-62)
+    // compensated taxels feedback (60 values, indexes 2-61)
     for(int i = 0; i < taskData->fingerTaxelsData.size(); i++){
         for(int j = 0; j < taskData->fingerTaxelsData[i].size(); j++){
             objGMMBottle.addDouble(taskData->fingerTaxelsData[i][j]);
         }
     }
 
-    // fingers overall pressure (5 values, indexes 63-67)
+    // fingers overall pressure (5 values, indexes 62-66)
     for(int i = 0; i < taskData->overallFingerForceByWeightedSum.size(); i++){
         objGMMBottle.addDouble(taskData->overallFingerForceByWeightedSum[i]);
     }
 
-    // arm encoders (16 values) (indexes 68-83)
-    for(int i = 0; i < taskData->armEncodersAngles.size(); i++){
-        objGMMBottle.addDouble(taskData->armEncodersAnglesReferences[i]);
+    // arm encoder references (16 values) (indexes 67-82)
+    for(int i = 0; i < taskData->armEncoderAngleReferences.size(); i++){
+        objGMMBottle.addDouble(taskData->armEncoderAngleReferences[i]);
     }
 
-    // raw taxels feedback (60 values) (indexes 84-143)
+    // raw taxels feedback (60 values) (indexes 83-142)
     for(int i = 0; i < taskData->fingerTaxelsRawData.size(); i++){
         for(int j = 0; j < taskData->fingerTaxelsRawData[i].size(); j++){
             objGMMBottle.addDouble(taskData->fingerTaxelsRawData[i][j]);
@@ -230,7 +223,7 @@ bool PortUtil::sendGMMData(double gripStrength,double indexMiddleFingerPressureB
 
 }
 
-bool PortUtil::sendGMMRegressionData(double handAperture,double indMidPosDiff,double targetHandPosition,double actualHandPosition,double filteredHandPosition,double targetThumbDistalJoint,double filteredThumbDistalJoint,double targetIndexDistalJoint,double filteredIndexDistalJoint,double targetMiddleDistalJoint,double filteredMiddleDistalJoint,double targetThumbAbductionJoint,double filteredThumbAbductionJoint, double targetIndMidForceBalance, double actualIndMidForceBalance,double targetGripStrength,double actualGripStrength,tactileControl::TaskData *taskData){
+bool PortUtil::sendGMMRegressionData(double handAperture,double indMidPosDiff,double targetObjectPosition,double objectPosition,double currentTargetObjectPosition,double gmmThumbDistalJoint,double filteredThumbDistalJoint,double gmmIndexDistalJoint,double filteredIndexDistalJoint,double gmmMiddleDistalJoint,double filteredMiddleDistalJoint,double gmmThumbAbductionJoint,double filteredThumbAbductionJoint,double targetGripStrength,double actualGripStrength,tactileControl::TaskData *taskData){
 
     using yarp::os::Bottle;
 
@@ -248,62 +241,57 @@ bool PortUtil::sendGMMRegressionData(double handAperture,double indMidPosDiff,do
     // index/middle finger position difference (query variable) (index 4)
     objGMMRegressionBottle.addDouble(indMidPosDiff);
 
-    // target hand position (output variable) (index 5)
-    objGMMRegressionBottle.addDouble(targetHandPosition);
-    // filtered hand position (index 6)
-    objGMMRegressionBottle.addDouble(filteredHandPosition);
-    // actual hand position (index 7)
-    objGMMRegressionBottle.addDouble(actualHandPosition);
+    // target object position (output variable) (index 5)
+    objGMMRegressionBottle.addDouble(targetObjectPosition);
+    // current target object position (index 6)
+    objGMMRegressionBottle.addDouble(currentTargetObjectPosition);
+    // actual object position (index 7)
+    objGMMRegressionBottle.addDouble(objectPosition);
 
     // target thumb distal joint (output variable) (index 8)
-    objGMMRegressionBottle.addDouble(targetThumbDistalJoint);
+    objGMMRegressionBottle.addDouble(gmmThumbDistalJoint);
     // filtered thumb distal joint (index 9)
     objGMMRegressionBottle.addDouble(filteredThumbDistalJoint);
     // actual thumb distal joint (index 10)
     objGMMRegressionBottle.addDouble(taskData->armEncoderAngles[THUMB_DISTAL_JOINT]);
 
     // target index distal joint (output variable) (index 11)
-    objGMMRegressionBottle.addDouble(targetIndexDistalJoint);
+    objGMMRegressionBottle.addDouble(gmmIndexDistalJoint);
     // filtered index distal joint (index 12)
     objGMMRegressionBottle.addDouble(filteredIndexDistalJoint);
     // actual index distal joint (index 13)
     objGMMRegressionBottle.addDouble(taskData->armEncoderAngles[INDEX_DISTAL_JOINT]);
 
     // target middle distal joint (output variable) (index 14)
-    objGMMRegressionBottle.addDouble(targetMiddleDistalJoint);
+    objGMMRegressionBottle.addDouble(gmmMiddleDistalJoint);
     // filtered middle distal joint (index 15)
     objGMMRegressionBottle.addDouble(filteredMiddleDistalJoint);
     // actual middle distal joint (index 16)
     objGMMRegressionBottle.addDouble(taskData->armEncoderAngles[MIDDLE_DISTAL_JOINT]);
 
     // target thumb abduction joint (output variable) (index 17)
-    objGMMRegressionBottle.addDouble(targetThumbAbductionJoint);
+    objGMMRegressionBottle.addDouble(gmmThumbAbductionJoint);
     // filtered thumb abduction joint (index 18)
     objGMMRegressionBottle.addDouble(filteredThumbAbductionJoint);
     // actual thumb abduction joint (index 19)
     objGMMRegressionBottle.addDouble(taskData->armEncoderAngles[THUMB_ABDUCTION_JOINT]);
 
-    // target index/middle force balance (output variable) (index 20)
-    objGMMRegressionBottle.addDouble(targetIndMidForceBalance);
-    // actual index/middle force balance (index 21)
-    objGMMRegressionBottle.addDouble(actualIndMidForceBalance);
-
-    // target grip strength (output variable) (index 22)
+    // target grip strength (output variable) (index 20)
     objGMMRegressionBottle.addDouble(targetGripStrength);
-    // actual grip strength (index 23)
+    // actual grip strength (index 21)
     objGMMRegressionBottle.addDouble(actualGripStrength);
 
-    // arm encoders (16 values, indexes 24-39)
+    // arm encoders (16 values, indexes 22-37)
     for(int i = 0; i < taskData->armEncoderAngles.size(); i++){
         objGMMRegressionBottle.addDouble(taskData->armEncoderAngles[i]);
     }
 
-    // fingers overall pressure (5 values, indexes 40-44)
+    // fingers overall pressure (5 values, indexes 38-42)
     for(int i = 0; i < taskData->overallFingerForceByWeightedSum.size(); i++){
         objGMMRegressionBottle.addDouble(taskData->overallFingerForceByWeightedSum[i]);
     }
 
-    // compensated taxels feedback (60 values, indexes 45-104)
+    // compensated taxels feedback (60 values, indexes 43-102)
     for(int i = 0; i < taskData->fingerTaxelsData.size(); i++){
         for(size_t j = 0; j < taskData->fingerTaxelsData[i].size(); j++){
             objGMMRegressionBottle.addDouble(taskData->fingerTaxelsData[i][j]);

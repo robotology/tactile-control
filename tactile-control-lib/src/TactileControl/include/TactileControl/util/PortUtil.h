@@ -38,13 +38,13 @@ namespace tactileControl {
 
             bool sendInfoData(tactileControl::TaskData *taskData);
 
-            bool sendControlData(std::string taskId,std::string experimentDescription,std::string previousExperimentDescription,double targetGripStrength,double actualGripStrength,double u,double error,double svCurrentPosition,double actualCurrentTargetPose,double finalTargetPose,double estimatedFinalPose,double svKp,double svKi,double svKd,double thumbEnc,double indexEnc,double middleEnc,double enc8,const std::vector<double> &pressureTarget,const std::vector<double> &actualPressure,const std::vector<double> &pwm,const std::vector<int> &fingersList);
+            bool sendControlData(std::string taskId,std::string experimentInfo,std::string experimentOptionalInfo,double targetGripStrength,double actualGripStrength,double u,double error,double svCurrentPosition,double currentTargetObjectPosition,double targetObjectPosition,const std::vector<double> &forceTargetValue,const std::vector<double> &pwm,const std::vector<int> &controlledFingers,tactileControl::TaskData *taskData);
 
-            bool sendGMMData(double gripStrength,double indexMiddleFingerPressureBalance,tactileControl::TaskData *taskData);
+            bool sendGMMData(double gripStrength,tactileControl::TaskData *taskData);
 
-            bool sendGMMRegressionData(double handAperture,double indMidPosDiff,double targetHandPosition,double actualHandPosition,double filteredHandPosition,double targetThumbDistalJoint,double filteredThumbDistalJoint,double targetIndexDistalJoint,double filteredIndexDistalJoint,double targetMiddleDistalJoint,double filteredMiddleDistalJoint,double targetThumbAbductionJoint,double filteredThumbAbductionJoint, double targetIndMidForceBalance, double actualIndMidForceBalance,double targetGripStrength,double actualGripStrength,tactileControl::TaskData *taskData);
+            bool sendGMMRegressionData(double handAperture,double indMidPosDiff,double targetObjectPosition,double objectPosition,double currentTargetObjectPosition,double gmmThumbDistalJoint,double filteredThumbDistalJoint,double gmmIndexDistalJoint,double filteredIndexDistalJoint,double gmmMiddleDistalJoint,double filteredMiddleDistalJoint,double gmmThumbAbductionJoint,double filteredThumbAbductionJoint,double targetGripStrength,double actualGripStrength,tactileControl::TaskData *taskData);
 
-            bool sendGripStrengthData(std::string experimentDescription,std::string previousExperimentDescription,double targetGripStrength,double actualGripStrength,tactileControl::TaskData *taskData);
+            bool sendGripStrengthData(std::string experimentInfo,std::string experimentOptionalInfo,double targetGripStrength,double actualGripStrength,tactileControl::TaskData *taskData);
 
             bool readFingerSkinRawData(std::vector<std::vector<double> > &fingerTaxelsRawData);
 

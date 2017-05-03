@@ -21,10 +21,11 @@ namespace tactileControl {
             std::vector<double> storedHandJointsMaxPwmLimits;
             double storedPIDIntegralGain;
             std::vector<double> openHandJoints;
+            std::vector<int> armJointControlModes;
 
             yarp::dev::PolyDriver clientArm;
             yarp::dev::IEncoders *iEncs;
-            yarp::dev::IOpenLoopControl *iOLC;
+            yarp::dev::IPWMControl *iPwm;
             yarp::dev::IControlMode2 *iCtrl;
             yarp::dev::IPositionControl *iPos;
             yarp::dev::IVelocityControl *iVel;
@@ -61,9 +62,11 @@ namespace tactileControl {
 
             bool waitMotionDone(double timeout, double delay);
 
+            bool isMotionDone();
+
             bool getEncoderAngle(int joint,double &encoderData);
 
-            bool openHand(bool fingersAreStraight);
+            bool openHand(bool fullyOpen,bool wait);
 
             bool setJointMaxPwmLimit(int joint,double maxPwm);
 

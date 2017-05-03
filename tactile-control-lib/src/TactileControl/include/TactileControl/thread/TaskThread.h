@@ -44,7 +44,6 @@ namespace tactileControl {
             ///* ****** Debug attributes                              ****** */
             std::string dbgTag;
 
-
         public:
 
 
@@ -63,10 +62,10 @@ namespace tactileControl {
 
             bool addApproachTask();
 
+            bool addControlTask();
             bool addControlTask(const std::vector<double> &targets);
 
             bool clearTaskList();
-
 
     };
 

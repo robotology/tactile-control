@@ -11,16 +11,14 @@
 using tactileControl::DataCollectionThread;
 
 
-DataCollectionThread::DataCollectionThread(int period,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil,tactileControl::TaskData *taskData)
+DataCollectionThread::DataCollectionThread(int period, tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil)
     : RateThread(period){
 
-    //this->period = period;
     this->controllerUtil = controllerUtil;
     this->portUtil = portUtil;
     this->taskData = taskData;
 
-
-    dbgTag = "EventsThread: ";
+    dbgTag = "DataCollectionThread: ";
 }
 
 
@@ -28,7 +26,6 @@ void DataCollectionThread::run(){
 
     // update tactile and encoders data
     updateRobotData();
-
 }
 
 
@@ -37,7 +34,6 @@ bool DataCollectionThread::updateRobotData(){
     
     std::vector<double> fingersSensitivityScale(5);
     taskData->getList(PAR_COMMON_FINGER_SENSITIVITY,fingersSensitivityScale);
-
 
     // read raw tactile data
     portUtil->readFingerSkinRawData(taskData->fingerTaxelsRawData);
@@ -55,7 +51,6 @@ bool DataCollectionThread::updateRobotData(){
     processTactileData();
 
     return true;
-
 }
 
 bool DataCollectionThread::processTactileData(){
@@ -89,5 +84,4 @@ bool DataCollectionThread::processTactileData(){
         taskData->overallFingerForceMedian[i] = gsl_stats_median_from_sorted_data(&previousOverallFingerForceCopy[0],1,previousOverallFingerForceCopy.size());
 
     }
-
 }
