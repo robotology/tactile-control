@@ -9,22 +9,8 @@
 #include <yarp/os/RateThread.h>
 
 #include <vector>
+#include <string>
 
-//#include "iCub/plantIdentification/task/Task.h"
-//#include "iCub/plantIdentification/data/RPCCommandsData.h"
-//#include "iCub/plantIdentification/data/LogData.h"
-//#include "iCub/plantIdentification/util/ControllersUtil.h"
-//#include "iCub/plantIdentification/util/PortsUtil.h"
-//#include "iCub/plantIdentification/util/MLUtil.h"
-//#include "iCub/plantIdentification/PlantIdentificationEnums.h"
-//
-//#include <yarp/os/ResourceFinder.h>
-//#include <yarp/os/Value.h>
-//#include <yarp/sig/Vector.h>
-//
-//#include <fstream>
-//#include <string>
-//#include <deque>
 
 namespace tactileControl {
 
@@ -56,7 +42,7 @@ namespace tactileControl {
             virtual void threadRelease();
 
             bool initializeGrasping();
-            bool afterRun(bool openHand);
+            bool afterRun(bool fullyOpen,bool wait);
 
             bool addStepTask(const std::vector<double> &targets);
 
@@ -66,6 +52,8 @@ namespace tactileControl {
             bool addControlTask(const std::vector<double> &targets);
 
             bool clearTaskList();
+
+            std::string TaskThread::getTaskListDescription();
 
     };
 

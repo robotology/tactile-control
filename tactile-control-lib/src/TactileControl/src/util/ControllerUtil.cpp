@@ -105,7 +105,6 @@ bool ControllerUtil::init(tactileControl::TaskData *taskData){
         iCtrl->getControlMode(i,&armJointControlModes[i]);
     }
 
-
     // Set reference speeds
     for(int i = 0; i < NUM_HAND_JOINTS; i++){
         iPos->setRefSpeed(FIRST_HAND_JOINT + i,taskData->getDouble(PAR_COMMON_REF_VELOCITY));
@@ -141,7 +140,7 @@ bool ControllerUtil::getArmEncoderAngles(std::vector<double> &armEncoderAngles,b
     yarp::sig::Vector armEncoderAnglesVector;
     armEncoderAnglesVector.resize(NUM_HAND_JOINTS);
 
-    bool encodersDataAcquired = encodersDataAcquired && iEncs->getEncoders(armEncoderAnglesVector.data());
+    bool encodersDataAcquired = iEncs->getEncoders(armEncoderAnglesVector.data());
 
     while(wait && !encodersDataAcquired) {
 
@@ -378,7 +377,7 @@ bool ControllerUtil::restoreHandJointsMaxPwmLimits(){
     return true;
 }
 
-bool ControllerUtil::resetPIDIntegralGain(double joint){
+bool ControllerUtil::resetPIDIntegralGain(int joint){
 
     yarp::dev::Pid pid;
 
@@ -402,7 +401,7 @@ bool ControllerUtil::resetPIDIntegralGain(double joint){
     return false;
 }
 
-bool ControllerUtil::restorePIDIntegralGain(double joint){
+bool ControllerUtil::restorePIDIntegralGain(int joint){
 
     yarp::dev::Pid pid;
 

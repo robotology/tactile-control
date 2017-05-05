@@ -6,7 +6,7 @@ set(LIBRARY_TARGET_NAME TactileControl)
 
 # List of CPP (source) library files
 set(${LIBRARY_TARGET_NAME}_SRC
-        src/TactileControl.cpp
+        src/HandController.cpp
 		
 		src/data/TaskData.cpp
 		src/data/GMMData.cpp
@@ -28,7 +28,7 @@ set(${LIBRARY_TARGET_NAME}_SRC
 
 # List of HPP (header) library files
 set(${LIBRARY_TARGET_NAME}_HDR
-        include/TactileControl/TactileControl.h
+        include/TactileControl/HandController.h
 		
 		include/TactileControl/data/TaskData.h
 		include/TactileControl/data/GMMData.h

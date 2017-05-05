@@ -29,7 +29,7 @@ void CommonUtil::putDataIntoVector(const double *dataIn,int size,yarp::sig::Vect
 
     dataOut.resize(size);
 
-    for(size_t i = 0; i < size; i++){
+    for(int i = 0; i < size; i++){
         dataOut[i] = dataIn[i];
     }
 }
@@ -38,8 +38,8 @@ void CommonUtil::putDataIntoMatrix(const double *dataIn,int rows,int columns,yar
 
     dataOut.resize(rows,columns);
 
-    for(size_t i = 0; i < rows; i++){
-        for(size_t j = 0; j < columns; j++){
+    for(int i = 0; i < rows; i++){
+        for(int j = 0; j < columns; j++){
             dataOut[i][j] = dataIn[columns*i + j];
         }
     }
@@ -50,7 +50,7 @@ void CommonUtil::putSelectedElementsIntoVector(const yarp::sig::Vector &dataIn,c
 
     dataOut.resize(selectedIndexes.size());
 
-    for(size_t i = 0; i < dataOut.size(); i++){
+    for(int i = 0; i < dataOut.size(); i++){
         dataOut[i] = dataIn[selectedIndexes[i]];
     }
 }
@@ -59,8 +59,8 @@ void CommonUtil::putSelectedElementsIntoMatrix(const yarp::sig::Matrix &dataIn,c
 
     dataOut.resize(selectedRowIndexes.size(),selectedColumnIndexes.size());
 
-    for(size_t i = 0; i < dataOut.rows(); i++){
-        for(size_t j = 0; j < dataOut.cols(); j++){
+    for(int i = 0; i < dataOut.rows(); i++){
+        for(int j = 0; j < dataOut.cols(); j++){
             dataOut[i][j] = dataIn[selectedRowIndexes[i]][selectedColumnIndexes[j]];
         }
     }

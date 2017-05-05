@@ -53,6 +53,7 @@ namespace tactileControl {
             void set(const yarp::os::ConstString &key,const yarp::os::Value &value,bool overwrite = true);
             void setDefault(const yarp::os::ConstString &key,const yarp::os::Value &value);
             void setToList(const yarp::os::ConstString &key,const yarp::os::Value &value,int index);
+            bool get(const yarp::os::ConstString &key,yarp::os::Value &value);
 
             yarp::os::Value getValue(const yarp::os::ConstString &key);
             int getInt(const yarp::os::ConstString &key);
@@ -72,12 +73,18 @@ namespace tactileControl {
             void getList(const yarp::os::ConstString &key,std::vector<std::string> &list);
             void getList(const yarp::os::ConstString &key,std::vector<bool> &list);
 
+            std::string getDataDescription();
+
             // parameters non directly settable
             void getControlledFingers(std::vector<int> &controlledFingers);
             int getFingerNum();
             tactileControl::SupervisorMode getSupervisorControlMode();
 
             void release();
+
+    private:
+
+            std::string getParameterDescription(const yarp::os::ConstString &key);
 
     };
 

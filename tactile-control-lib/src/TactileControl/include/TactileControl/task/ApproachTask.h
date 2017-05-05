@@ -37,6 +37,8 @@ namespace tactileControl {
 
             virtual bool taskIsOver();
 
+            virtual std::string getTaskDescription();
+
         private:
 
             void moveFinger(int finger);

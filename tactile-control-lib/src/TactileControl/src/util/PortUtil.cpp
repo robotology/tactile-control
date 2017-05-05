@@ -104,10 +104,10 @@ bool PortUtil::sendInfoData(tactileControl::TaskData *taskData){
     Bottle& infoBottle = portInfoDataOut.prepare();
     infoBottle.clear();
 
-    for(size_t i = 0; i < taskData->overallFingerForceByWeightedSum.size(); i++){
+    for(int i = 0; i < taskData->overallFingerForceByWeightedSum.size(); i++){
         infoBottle.add(taskData->overallFingerForceByWeightedSum[i]);
     }
-    for(size_t i = 0; i < taskData->overallFingerForceBySimpleSum.size(); i++){
+    for(int i = 0; i < taskData->overallFingerForceBySimpleSum.size(); i++){
         infoBottle.add(taskData->overallFingerForceBySimpleSum[i]);
     }
 
@@ -122,8 +122,6 @@ bool PortUtil::sendControlData(string taskId,string experimentInfo,string experi
 
     Bottle& ctrlBottle = portControlDataOut.prepare();
     ctrlBottle.clear();
-
-    double fingerJoint;
 
     ctrlBottle.addString(taskId);// index 1
     ctrlBottle.addString(experimentInfo);// index 2
@@ -293,7 +291,7 @@ bool PortUtil::sendGMMRegressionData(double handAperture,double indMidPosDiff,do
 
     // compensated taxels feedback (60 values, indexes 43-102)
     for(int i = 0; i < taskData->fingerTaxelsData.size(); i++){
-        for(size_t j = 0; j < taskData->fingerTaxelsData[i].size(); j++){
+        for(int j = 0; j < taskData->fingerTaxelsData[i].size(); j++){
             objGMMRegressionBottle.addDouble(taskData->fingerTaxelsData[i][j]);
         }
     }
@@ -334,8 +332,8 @@ bool PortUtil::readFingerSkinCompData(std::vector<std::vector<double> > &fingerT
     yarp::sig::Vector *iCubSkinData = portSkinCompIn.read(false);
 
     if (iCubSkinData) {
-        for(size_t i = 0; i < NUM_FINGERS; i++){
-            for (size_t j = 0; j < fingerTaxelsData[i].size(); j++){
+        for(int i = 0; i < NUM_FINGERS; i++){
+            for (int j = 0; j < fingerTaxelsData[i].size(); j++){
                 fingerTaxelsData[i][j] = fingersSensitivityScale[i] * (*iCubSkinData)[12*i + j];
             }
         }
@@ -353,7 +351,7 @@ bool PortUtil::readFingerEncodersRawData(std::vector<double> &fingerEncodersRawD
     Vector *iCubEncRawData = portHandEncodersRawIn.read(false);
     
     if (iCubEncRawData) {
-        for (size_t i = 0; i < fingerEncodersRawData.size(); i++){
+        for (int i = 0; i < fingerEncodersRawData.size(); i++){
             fingerEncodersRawData[i] = (*iCubEncRawData)[i];
         }
     } else {

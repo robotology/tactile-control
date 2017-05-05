@@ -76,9 +76,9 @@ namespace tactileControl {
 
             bool restoreHandJointsMaxPwmLimits();
 
-            bool resetPIDIntegralGain(double joint);
+            bool resetPIDIntegralGain(int joint);
 
-            bool restorePIDIntegralGain(double joint);
+            bool restorePIDIntegralGain(int joint);
 
             bool setJointAngle(int joint,double angle);
 

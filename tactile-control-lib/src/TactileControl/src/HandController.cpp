@@ -1,4 +1,4 @@
-#include "TactileControl/TactileControl.h"
+#include "TactileControl/HandController.h"
 
 #include "TactileControl/data/Parameters.h"
 
@@ -17,7 +17,7 @@ HandController::HandController(){
 bool HandController::open(){
 
     yarp::os::Property options;
-    open(options);
+    return open(options);
 }
 
 bool HandController::open(const yarp::os::Property &options){
@@ -52,6 +52,7 @@ bool HandController::open(const yarp::os::Property &options){
     }
     taskThread->suspend();
 
+    // start data collection thread
     dataCollectionThread = new DataCollectionThread(taskData->getInt(PAR_COMMON_DATA_COLLECTION_THREAD_PERIOD),taskData,controllerUtil,portUtil);
     if (!dataCollectionThread->start()) {
         cout << dbgTag << "could not start data collection thread\n";
@@ -61,12 +62,17 @@ bool HandController::open(const yarp::os::Property &options){
     return true;
 }
 
-void HandController::set(const yarp::os::ConstString key, yarp::os::Value value){
+void HandController::set(const yarp::os::ConstString key,const yarp::os::Value &value){
 
     taskData->set(key,value);
 }
 
-bool HandController::closeHand(bool wait = true){
+bool HandController::get(const yarp::os::ConstString key,yarp::os::Value &value){
+
+    return taskData->get(key,value);
+ }
+
+bool HandController::closeHand(bool wait){
 
     if (taskRunning == true){
 
@@ -76,7 +82,7 @@ bool HandController::closeHand(bool wait = true){
 
         taskThread->addApproachTask();
         taskThread->addControlTask();
-        bool success = start();
+        bool success = startTask();
 
         if (wait == true){
             success = waitForGraspStabilization(15,1);
@@ -91,13 +97,13 @@ bool HandController::isHandClose(){
     return taskData->graspIsStable;
 }
 
-bool HandController::openHand(bool fullyOpen, bool wait = true){
+bool HandController::openHand(bool fullyOpen, bool wait){
 
     if (taskRunning == true){
 
         taskRunning = false;
         taskThread->suspend();
-        taskThread->afterRun(true);
+        taskThread->afterRun(fullyOpen,wait);
 
     } else {
 
@@ -157,7 +163,7 @@ bool HandController::close(){
     return true;
 }
 
-bool HandController::start(){
+bool HandController::startTask(){
 
     if (taskRunning){
 
@@ -173,7 +179,7 @@ bool HandController::start(){
 }
 
 
-bool HandController::waitForGraspStabilization(double timeout, double delay{
+bool HandController::waitForGraspStabilization(double timeout, double delay){
     using yarp::os::Time;
 
     double startTime = Time::now();
@@ -183,4 +189,39 @@ bool HandController::waitForGraspStabilization(double timeout, double delay{
     }
 
     return taskData->graspIsStable;
+}
+
+
+bool HandController::addStepTask(const std::vector<double> &targets){
+
+    return taskThread->addStepTask(targets);
+}
+
+bool HandController::addApproachTask(){
+
+    return taskThread->addApproachTask();
+}
+
+bool HandController::addControlTask(){
+
+    return taskThread->addControlTask();
+}
+bool HandController::addControlTask(const std::vector<double> &targets){
+
+    return taskThread->addControlTask(targets);
+}
+
+bool HandController::clearTaskList(){
+
+    return taskThread->clearTaskList();
+}
+
+std::string HandController::getDataDescription(){
+
+    return taskData->getDataDescription();
+}
+
+std::string HandController::getTaskListDescription(){
+
+    return taskThread->getTaskListDescription();
 }

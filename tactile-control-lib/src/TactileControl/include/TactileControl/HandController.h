@@ -45,7 +45,7 @@ namespace tactileControl {
         HandController();
 
         /**
-        * Destructory
+        * Destructor
         */
         ~HandController();
 
@@ -62,7 +62,12 @@ namespace tactileControl {
         /**
         * Sets the given property.
         */
-        void set(const yarp::os::ConstString key, yarp::os::Value value);
+        void set(const yarp::os::ConstString key,const yarp::os::Value &value);
+
+        /**
+        * Gets the given property. Returns true in case of success.
+        */
+        bool get(const yarp::os::ConstString key,yarp::os::Value &value);
 
         /**
         * Starts the grasping task (including the approach phase). If wait == true it waits for the grasp to be stable, otherwise it returns immediately. Returns true in case of success.
@@ -75,7 +80,7 @@ namespace tactileControl {
         bool isHandClose();
 
         /**
-        * Opens the hand. If wait == true it waits for the hand to be open, otherwise it returns immediately. Returns true in case of success.
+        * Opens the hand and stops any running task. If wait == true it waits for the hand to be open, otherwise it returns immediately. Returns true in case of success.
         */
         bool openHand(bool fullyOpen, bool wait = true);
 
@@ -100,13 +105,52 @@ namespace tactileControl {
         void setGripStrength(double gripStrength);
 
         /**
+        * Add the step task to the task list. Returns true in case of success.
+        */
+        bool addStepTask(const std::vector<double> &targets);
+
+        /**
+        * Add the approach task to the task list. Returns true in case of success.
+        */
+        bool addApproachTask();
+
+        /**
+        * Add the control task to the task list. Returns true in case of success.
+        */
+        bool addControlTask();
+
+        /**
+        * Add the control task to the task list. Returns true in case of success.
+        */
+        bool addControlTask(const std::vector<double> &targets);
+
+        /**
+        * Clears the task list. Returns true in case of success.
+        */
+        bool clearTaskList();
+
+        /**
+        * Starts all the tasks in the task list. Returns true in case of success.
+        */
+        bool startTask();
+
+        /**
+        * Returns a text description of the data
+        */
+        std::string getDataDescription();
+
+        /**
+        * Returns a text description of the task list
+        */
+        std::string getTaskListDescription();
+
+        /**
         * Closes the hand controller and releases all the resources. Returns true in case of success.
         */
         bool close();
 
-    private:
 
-        bool start();
+    private:
 
         bool waitForGraspStabilization(double timeout, double delay);
 

@@ -12,10 +12,8 @@
 #include <yarp/os/Bottle.h>
 #include <yarp/sig/Vector.h>
 
-//#include <yarp/os/Value.h>
-//
-//#include <string>
-//#include <fstream>
+
+#include <string>
 
 namespace tactileControl {
 
@@ -26,12 +24,12 @@ namespace tactileControl {
             std::vector<iCub::ctrl::parallelPID*> pid;
             std::vector<yarp::os::Bottle> pidOptions;
             std::vector<double> forceTargetValue;
+            int numFingers;
 
-            ///* variables used for supervisor mode */
+            // variables used for supervisor mode
             iCub::ctrl::parallelPID *highPid;
             bool supervisorEnabled;
             tactileControl::SupervisorMode supervisorControlMode;
-
             double highPidKp,highPidKi,highPidKd;
             bool minJerkTrackingModeInitialized;
             bool gmmJointsMinJerkTrackingModeInitialized;
@@ -40,15 +38,9 @@ namespace tactileControl {
             iCub::ctrl::minJerkTrajGen* thDistMinJerkTrajectory;
             iCub::ctrl::minJerkTrajGen* indDistMinJerkTrajectory;
             iCub::ctrl::minJerkTrajGen* midDistMinJerkTrajectory;
-
             bool disablePIDIntegralGain;
             bool gmmJointsRegressionEnabled;
-            int numFingers;
-
-
-
             bool gmmCtrlModeIsSet;
-
             double initialObjectPosition;
 
         public:
@@ -60,7 +52,7 @@ namespace tactileControl {
 
             virtual void calculateControlInput();
 
-            std::string getforceTargetValueDescription();
+            virtual std::string getTaskDescription();
 
             virtual void release();
 

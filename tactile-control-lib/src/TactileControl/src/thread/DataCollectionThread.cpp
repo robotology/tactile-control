@@ -55,8 +55,6 @@ bool DataCollectionThread::updateRobotData(){
 
 bool DataCollectionThread::processTactileData(){
 
-    double partialOverallFingerForce;
-    
     bool useTactileWeightedSum = taskData->getBool(PAR_COMMON_USE_TACTILE_WEIGHTED_SUM);
 
     for(int i = 0; i < taskData->fingerTaxelsData.size(); i++){
@@ -84,4 +82,6 @@ bool DataCollectionThread::processTactileData(){
         taskData->overallFingerForceMedian[i] = gsl_stats_median_from_sorted_data(&previousOverallFingerForceCopy[0],1,previousOverallFingerForceCopy.size());
 
     }
+
+    return true;
 }

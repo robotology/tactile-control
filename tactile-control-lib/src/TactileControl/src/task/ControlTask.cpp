@@ -19,14 +19,14 @@ using yarp::sig::Vector;
 using yarp::sig::Matrix;
 
 
-ControlTask::ControlTask(TaskData *taskData,ControllerUtil * controllerUtil,PortUtil * portUtil):Task(taskData,controllerUtil,portUtil,taskData->getDouble(PAR_CTRL_DURATION)) {
+ControlTask::ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil):Task(taskData,controllerUtil,portUtil,taskData->getDouble(PAR_CTRL_DURATION)) {
 
     std::vector<double> targets(1,taskData->getDouble(PAR_CTRL_DEFAULT_FORCE_TARGET));
 
     ControlTask(taskData,controllerUtil,portUtil,targets);
 }
 
-ControlTask::ControlTask(TaskData *taskData,ControllerUtil * controllerUtil,PortUtil * portUtil,const std::vector<double> &targets):Task(taskData,controllerUtil,portUtil,taskData->getDouble(PAR_CTRL_DURATION)) {
+ControlTask::ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil,const std::vector<double> &targets):Task(taskData,controllerUtil,portUtil,taskData->getDouble(PAR_CTRL_DURATION)) {
 
     expandTargets(targets,forceTargetValue);
 
@@ -83,7 +83,7 @@ void ControlTask::init(){
     controllerUtil->setControlMode(controlledJoints,VOCAB_CM_PWM);
 
     cout << "\n\n" << dbgTag << "TASK STARTED - Target: ";
-    for(size_t i = 0; i < forceTargetValue.size(); i++){
+    for(int i = 0; i < forceTargetValue.size(); i++){
         cout << forceTargetValue[i] << " ";
     }
     cout << "\n\n";
@@ -271,6 +271,9 @@ void ControlTask::calculateControlInput(){
         // compute the actual grip strength (used for logging)
         double actualGripStrength = ICubUtil::getGripStrength(numFingers,taskData->overallFingerForce);
 
+        // log control data
+        portUtil->sendControlData(taskId,taskData->getString(PAR_COMMON_EXPERIMENT_INFO),taskData->getString(PAR_COMMON_EXPERIMENT_OPTIONAL_INFO),gripStrength,actualGripStrength,svControlSignal,svErr,objectPosition,currentTargetObjectPosition,targetObjectPosition,forceTargetValue,inputCommandValue,controlledFingers,taskData);
+
         // log gaussian mixture model regression data
         if (supervisorControlMode == GMM_MODE){
             portUtil->sendGMMRegressionData(handAperture,indMidPosDiff,targetObjectPosition,objectPosition,currentTargetObjectPosition,gmmThumbDistalJoint,filteredThumbDistalJoint,gmmIndexDistalJoint,filteredIndexDistalJoint,gmmMiddleDistalJoint,filteredMiddleDistalJoint,gmmThumbAbductionJoint,filteredThumbAbductionJoint,gripStrength,actualGripStrength,taskData);
@@ -302,9 +305,6 @@ void ControlTask::calculateControlInput(){
             inputCommandValue[i] = 0.0;
         }
     }
-
-    // log control data
-    portUtil->sendControlData(taskId,taskData->getString(PAR_COMMON_EXPERIMENT_INFO),taskData->getString(PAR_COMMON_EXPERIMENT_OPTIONAL_INFO),gripStrength,actualGripStrength,svControlSignal,svErr,svCurrentPosition,currentTargetObjectPosition,targetObjectPosition,forceTargetValue,inputCommandValue,controlledFingers,taskData);
 
 }
 
@@ -360,14 +360,15 @@ double ControlTask::calculateTt(double kp,double ki,double kd,double windUp){
     return tt;
 }
 
-std::string ControlTask::getforceTargetValueDescription(){
+std::string ControlTask::getTaskDescription(){
 
     std::stringstream description("");
 
+    description << "Control task: ";
     for(int i = 0; i < forceTargetValue.size(); i++){
         description << forceTargetValue[i] << " ";
     }
-    
+
     return description.str();
 }
 

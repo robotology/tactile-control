@@ -58,12 +58,12 @@ void ApproachTask::calculateControlInput(){
 
     // log state
     optionalLogStream << " [state ";
-    for(size_t i = 0; i < controlledJoints.size(); i++){
+    for(int i = 0; i < controlledJoints.size(); i++){
         optionalLogStream << (fingerIsInContact[i] == true ? 1 : 0) << " ";
     }
     optionalLogStream << "]";
     optionalLogStream << " [pDiff ";
-    for(size_t i = 0; i < controlledJoints.size(); i++){
+    for(int i = 0; i < controlledJoints.size(); i++){
         optionalLogStream << taskData->armEncoderAngles[controlledJoints[i]] << "/" <<  fingerPositions[i][(positionIndex + 1)%windowSize] << " ";
     }
     optionalLogStream << "]";
@@ -135,4 +135,9 @@ bool ApproachTask::eachFingerIsInContact(){
     }
 
     return eachFingerIsInContact;
+}
+
+std::string ApproachTask::getTaskDescription(){
+
+    return "Approach task";
 }

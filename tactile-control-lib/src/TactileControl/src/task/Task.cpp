@@ -92,7 +92,7 @@ void Task::createTaskId(){
 
 void Task::sendPwm(){
 
-    for(size_t i = 0; i < inputCommandValue.size(); i++){
+    for(int i = 0; i < inputCommandValue.size(); i++){
         controllerUtil->sendPwm(controlledJoints[i],pwmSign*inputCommandValue[i]);
     }
 }
@@ -109,7 +109,7 @@ void Task::printScreenLog(){
         }
         cout << "\t   In: ";
 
-        for(size_t i = 0; i < controlledJoints.size(); i++){
+        for(int i = 0; i < controlledJoints.size(); i++){
             cout << inputCommandValue[i] << "(" << controlledJoints[i] << ") ";
         }
     

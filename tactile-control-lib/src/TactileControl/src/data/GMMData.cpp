@@ -83,18 +83,18 @@ void GMMData::runGaussianMixtureRegression(yarp::sig::Vector &queryPoint,yarp::s
     h.resize(numGMComponents);
     hNumerator.resize(numGMComponents);
 
-    for (size_t i = 0; i < numGMComponents; i++){
+    for (int i = 0; i < numGMComponents; i++){
 
         hNumerator[i] = componentsPrior[i] * calculateGMProbability(queryPoint,i);
     }
 
     double hDenominator = 0;
-    for (size_t i = 0; i < numGMComponents; i++){
+    for (int i = 0; i < numGMComponents; i++){
 
         hDenominator = hDenominator + hNumerator[i];
     }
 
-    for (size_t i = 0; i < numGMComponents; i++){
+    for (int i = 0; i < numGMComponents; i++){
     
         h[i] = hNumerator[i]/hDenominator;
     }
@@ -102,7 +102,7 @@ void GMMData::runGaussianMixtureRegression(yarp::sig::Vector &queryPoint,yarp::s
     
     output.resize(muR[0].length(),0.0);
 
-    for (size_t i = 0; i < numGMComponents; i++){
+    for (int i = 0; i < numGMComponents; i++){
 
         output = output + h[i] * (muR[i] + (sigmaRQ[i] * (sigmaQQInv[i] * (queryPoint - muQ[i]))));
     }
@@ -114,7 +114,7 @@ void GMMData::buildQRStructures(std::vector<int> &qIndexes,std::vector<int> &rIn
     int dimQ = qIndexes.size();
     int dimR = rIndexes.size();
 
-    for(size_t i = 0; i < numComponents; i++){
+    for(int i = 0; i < numComponents; i++){
         
         CommonUtil::putSelectedElementsIntoVector(mu[i],qIndexes,muQ[i]);
         CommonUtil::putSelectedElementsIntoVector(mu[i],rIndexes,muR[i]);

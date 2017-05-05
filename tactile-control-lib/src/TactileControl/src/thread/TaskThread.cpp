@@ -62,13 +62,11 @@ bool TaskThread::initializeGrasping(){
 }
 
 
-bool TaskThread::afterRun(bool openHand){
+bool TaskThread::afterRun(bool fullyOpen,bool wait){
 
     if (!controllerUtil->restorePreviousControlMode()) return false;
 
-    if (openHand) {
-        if (!controllerUtil->openHand(false)) return false;
-    }
+    if (!controllerUtil->openHand(fullyOpen,wait)) return false;
 
     runEnabled = false;
     taskList[currentTaskIndex]->clean();
@@ -91,21 +89,29 @@ void TaskThread::threadRelease() {
 bool TaskThread::addStepTask(const std::vector<double> &targets){
 
     taskList.push_back(new StepTask(taskData,controllerUtil,portUtil,targets));
+
+    return true;
 }
 
 bool TaskThread::addApproachTask(){
 
     taskList.push_back(new ApproachTask(taskData,controllerUtil,portUtil));
+
+    return true;
 }
 
 bool TaskThread::addControlTask(){
 
     taskList.push_back(new ControlTask(taskData,controllerUtil,portUtil));
+
+    return true;
 }
 
 bool TaskThread::addControlTask(const std::vector<double> &targets){
 
     taskList.push_back(new ControlTask(taskData,controllerUtil,portUtil,targets));
+
+    return true;
 }
 
 bool TaskThread::clearTaskList(){
@@ -114,5 +120,22 @@ bool TaskThread::clearTaskList(){
         delete(taskList[i]);
     }
     taskList.clear();
+
+    return true;
 }
 
+std::string TaskThread::getTaskListDescription(){
+    using std::endl;
+
+    std::stringstream description("");
+
+    description << "<<< Task List >>>" << endl;
+    description << endl;
+
+    for(int i = 0; i < taskList.size(); i++){
+        taskList[i]->getTaskDescription();
+        description << endl;
+    }
+
+    return description.str();
+}

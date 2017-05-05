@@ -6,6 +6,8 @@
 #include "TactileControl/util/ControllerUtil.h"
 #include "TactileControl/util/PortUtil.h"
 
+#include <string>
+
 namespace tactileControl {
 
     class StepTask : public Task {
@@ -20,7 +22,7 @@ namespace tactileControl {
 
             virtual void init();
 
-            virtual std::string getTargetsDescription();
+            virtual std::string getTaskDescription();
 
             virtual void calculateControlInput();
      };

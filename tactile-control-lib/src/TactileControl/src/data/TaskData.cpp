@@ -4,7 +4,7 @@
 #include "TactileControl/data/Enums.h"
 #include "TactileControl/util/ICubUtil.h"
 
-
+#include <sstream>
 
 using tactileControl::TaskData;
 
@@ -103,11 +103,11 @@ bool TaskData::init(const yarp::os::Property &options) {
         fingerTaxelsData[i].resize(NUM_TAXELS,0.0);
     }
     fingerTaxelsRawData.resize(NUM_FINGERS);
-    for(size_t i = 0; i < fingerTaxelsRawData.size(); i++){
+    for(int i = 0; i < fingerTaxelsRawData.size(); i++){
         fingerTaxelsRawData[i].resize(NUM_TAXELS,0.0);
     }
     previousOverallFingerForce.resize(NUM_FINGERS);
-    for(size_t i = 0; i < previousOverallFingerForce.size(); i++){
+    for(int i = 0; i < previousOverallFingerForce.size(); i++){
         previousOverallFingerForce[i].resize(getInt(PAR_COMMON_TACT_MEDIAN_WINDOW_SIZE),0.0);
     }
     previousForceIndex.resize(NUM_FINGERS,0);
@@ -120,15 +120,17 @@ bool TaskData::init(const yarp::os::Property &options) {
 
     // control task data
     gmmDataStandard = new GMMData(STANDARD_GMM);
-    graspIsStable - false;
+    graspIsStable = false;
 
     return true;
 }
 
 bool TaskData::initEncodersData(int numArmJoints){
 
-    armEncoderAngles.resize(numArmJoints,0.0);      
-    armEncoderAngleReferences.resize(numArmJoints,0.0);      
+    armEncoderAngles.resize(numArmJoints,0.0);
+    armEncoderAngleReferences.resize(numArmJoints,0.0);
+
+    return true;
 }
 
 void TaskData::set(const yarp::os::ConstString &key,const yarp::os::Value &value,bool overwrite){
@@ -165,6 +167,11 @@ void TaskData::setToList(const yarp::os::ConstString &key,const yarp::os::Value 
     options->put(key,*Value::makeList(newData.toString().c_str()));
 }
 
+bool TaskData::get(const yarp::os::ConstString &key,yarp::os::Value &value){
+
+    value = options->find(key);
+    return value.isNull();
+ }
 
 
 
@@ -298,4 +305,114 @@ void TaskData::release(){
 
     delete(options);
     delete(gmmDataStandard);
+}
+
+std::string TaskData::getDataDescription(){
+    using std::endl;
+
+    std::stringstream description("");
+
+    description << "<<< Common Data >>>" << endl;
+    description << endl;
+    description << getParameterDescription(PAR_COMMON_TASK_THREAD_PERIOD) << endl;
+    description << getParameterDescription(PAR_COMMON_DATA_COLLECTION_THREAD_PERIOD) << endl;
+    description << getParameterDescription(PAR_COMMON_PORT_PREFIX) << endl;
+    description << getParameterDescription(PAR_COMMON_HAND) << endl;
+    description << getParameterDescription(PAR_COMMON_ICUB) << endl;
+    description << getParameterDescription(PAR_COMMON_CONTROLLED_JOINTS) << endl;
+    description << getParameterDescription(PAR_COMMON_PWM_SIGN) << endl;
+    description << getParameterDescription(PAR_COMMON_FINGER_SENSITIVITY) << endl;
+    description << getParameterDescription(PAR_COMMON_OPEN_HAND_JOINTS) << endl;
+    description << getParameterDescription(PAR_COMMON_DISABLE_PWM) << endl;
+    description << getParameterDescription(PAR_COMMON_TACT_MEDIAN_WINDOW_SIZE) << endl;
+    description << getParameterDescription(PAR_COMMON_REF_VELOCITY) << endl;
+    description << getParameterDescription(PAR_COMMON_USING_TWO_HANDS) << endl;
+    description << getParameterDescription(PAR_COMMON_EXPERIMENT_INFO) << endl;
+    description << getParameterDescription(PAR_COMMON_EXPERIMENT_OPTIONAL_INFO) << endl;
+    description << getParameterDescription(PAR_COMMON_USE_TACTILE_WEIGHTED_SUM) << endl;
+    description << getParameterDescription(PAR_COMMON_ENABLE_SCREEN_LOGGING) << endl;
+    description << getParameterDescription(PAR_COMMON_SCREEN_LOGGING_RATE) << endl;
+    description << endl;
+
+    description << "<<< Step task Data >>>" << endl;
+    description << endl;
+    description << getParameterDescription(PAR_STEP_DURATION) << endl;
+    description << endl;
+
+    description << "<<< Ramp task Data >>>" << endl;
+    description << endl;
+    description << getParameterDescription(PAR_RAMP_DURATION) << endl;
+    description << getParameterDescription(PAR_RAMP_DURATION_AFTER_STABILIZATION) << endl;
+    description << getParameterDescription(PAR_RAMP_SLOPE) << endl;
+    description << getParameterDescription(PAR_RAMP_INTERCEPT) << endl;
+    description << endl;
+
+    description << "<<< Approach task Data >>>" << endl;
+    description << endl;
+    description << getParameterDescription(PAR_APPR_DURATION) << endl;
+    description << getParameterDescription(PAR_APPR_VELOCITY) << endl;
+    description << getParameterDescription(PAR_APPR_MAX_PWM) << endl;
+    description << getParameterDescription(PAR_APPR_PWM_LIMIT_ENABLED) << endl;
+    description << getParameterDescription(PAR_APPR_WINDOW_SIZE) << endl;
+    description << getParameterDescription(PAR_APPR_THRESHOLD) << endl;
+    description << getParameterDescription(PAR_APPR_TIMEOUT) << endl;
+    description << endl;
+
+    description << "<<< Control task Data >>>" << endl;
+    description << endl;
+    description << getParameterDescription(PAR_CTRL_DURATION) << endl;
+    description << getParameterDescription(PAR_CTRL_DEFAULT_FORCE_TARGET) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_KP) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_KI) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_WP) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_WI) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_WD) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_N) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_WIND_UP_COEFF) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_MIN_SAT_LIM) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_MAX_SAT_LIM) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_SCALE) << endl;
+    description << getParameterDescription(PAR_CTRL_LOW_PID_INTEGRAL_DISABLED) << endl;
+    description << endl;
+    description << getParameterDescription(PAR_CTRL_SUPERVISOR_ENABLED) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_KP) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_KI) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_KD) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_WP) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_WI) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_WD) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_N) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_WIND_UP_COEFF) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_MIN_SAT_LIM) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_MAX_SAT_LIM) << endl;
+    description << getParameterDescription(PAR_CTRL_HIGH_PID_SCALE) << endl;
+    description << getParameterDescription(PAR_CTRL_GRIP_STRENGTH) << endl;
+    description << getParameterDescription(PAR_CTRL_THUMB_ABDUCTION_OFFSET) << endl;
+    description << getParameterDescription(PAR_CTRL_MIN_JERK_TRACK_ENABLED) << endl;
+    description << getParameterDescription(PAR_CTRL_MIN_JERK_TRACK_REF_TIME) << endl;
+    description << getParameterDescription(PAR_CTRL_TARGET_OBJECT_POSITION) << endl;
+    description << getParameterDescription(PAR_CTRL_SUPERVISOR_MODE) << endl;
+    description << getParameterDescription(PAR_CTRL_GMM_JOINTS_REGRESSION_ENABLED) << endl;
+    description << getParameterDescription(PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_ENABLED) << endl;
+    description << getParameterDescription(PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_REF_TIME) << endl;
+    description << getParameterDescription(PAR_CTRL_MIN_FORCE_ENABLED) << endl;
+    description << getParameterDescription(PAR_CTRL_MIN_FORCE) << endl;
+    description << endl;
+
+    return description.str();
+}
+
+std::string TaskData::getParameterDescription(const yarp::os::ConstString &key){
+
+    std::stringstream description("");
+    yarp::os::Value value = options->find(key);
+
+    description << key << ": ";
+    if (value.isNull()){
+        description << "not set";
+    } else {
+        description << value.toString();
+    }
+
+    return description.str();
 }

@@ -53,7 +53,7 @@ namespace tactileControl {
 
             void clean();
 
-            virtual std::string getTargetsDescription(){ return "";}
+            virtual std::string getTaskDescription(){ return "Unspecified task";}
 
         protected:
 

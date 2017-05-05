@@ -6,7 +6,7 @@
 using tactileControl::StepTask;
 
 
-StepTask::StepTask(TaskData *taskData,ControllerUtil * controllerUtil,PortUtil * portUtil,const std::vector<double> &targets):Task(taskData,controllerUtil,portUtil,taskData->getDouble(PAR_STEP_DURATION)){
+StepTask::StepTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil,const std::vector<double> &targets):Task(taskData,controllerUtil,portUtil,taskData->getDouble(PAR_STEP_DURATION)){
 
     expandTargets(targets,constantPwm);
 
@@ -39,13 +39,14 @@ void StepTask::calculateControlInput(){
     }
 }
 
-std::string StepTask::getTargetsDescription(){
+std::string StepTask::getTaskDescription(){
 
     std::stringstream description("");
 
+    description << "Step Task: ";
     for(int i = 0; i < constantPwm.size(); i++){
         description << constantPwm[i] << " ";
     }
-    
+
     return description.str();
 }
