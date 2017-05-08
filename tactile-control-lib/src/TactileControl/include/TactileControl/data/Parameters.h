@@ -72,7 +72,7 @@
 #define PAR_CTRL_MIN_JERK_TRACK_REF_TIME "control.high.minJerkTrackingRefTime" // 30
 #define PAR_CTRL_TARGET_OBJECT_POSITION "control.high.targetObjectPosition"
 #define PAR_CTRL_SUPERVISOR_MODE "control.high.supervisorMode"
-#define PAR_CTRL_GMM_BEST_POSE_LOG_ONE_SHOT "control.high.gmmBestPoseLogOneShot_"
+#define PAR_CTRL_GMM_BEST_POSE_LOG_ONE_SHOT "control.high.gmmBestPoseLogOneShot"
 #define PAR_CTRL_GMM_JOINTS_REGRESSION_ENABLED "control.high.gmmJointsRegressionEnabled"
 #define PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_ENABLED "control.high.gmmJointsMinJerkTrackingEnabled" // 65
 #define PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_REF_TIME "control.high.gmmJointsMinJerkTrackingRefTime" // 66

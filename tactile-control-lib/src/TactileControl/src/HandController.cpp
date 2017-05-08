@@ -13,7 +13,6 @@ HandController::HandController(){
     dbgTag = "HandController: ";
 }
 
-
 bool HandController::open(){
 
     yarp::os::Property options;
@@ -62,12 +61,12 @@ bool HandController::open(const yarp::os::Property &options){
     return true;
 }
 
-void HandController::set(const yarp::os::ConstString key,const yarp::os::Value &value){
+bool HandController::set(const yarp::os::ConstString &key,const yarp::os::Value &value){
 
-    taskData->set(key,value);
+    return taskData->set(key,value);
 }
 
-bool HandController::get(const yarp::os::ConstString key,yarp::os::Value &value){
+bool HandController::get(const yarp::os::ConstString &key,yarp::os::Value &value){
 
     return taskData->get(key,value);
  }
@@ -135,6 +134,7 @@ void HandController::setGripStrength(double gripStrength){
 }
 
 bool HandController::close(){
+
     std::cout << dbgTag << "Closing... \n";
     
     if (taskThread->isRunning()){

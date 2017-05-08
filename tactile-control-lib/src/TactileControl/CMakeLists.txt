@@ -4,6 +4,16 @@
 # lib<LIBRARY_TARGET_NAME>.dylib or <LIBRARY_TARGET_NAME>.lib.
 set(LIBRARY_TARGET_NAME TactileControl)
 
+find_package(YARP REQUIRED)
+find_package(ICUB REQUIRED)
+
+list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
+list(APPEND CMAKE_MODULE_PATH ${ICUB_MODULE_PATH})
+
+add_definitions(${YARP_DEFINES})
+
+include_directories(${YARP_INCLUDE_DIRS} ${ICUB_INCLUDE_DIRS})
+
 # List of CPP (source) library files
 set(${LIBRARY_TARGET_NAME}_SRC
         src/HandController.cpp
@@ -60,6 +70,11 @@ add_library(${LIBRARY_TARGET_NAME} ${${LIBRARY_TARGET_NAME}_SRC} ${${LIBRARY_TAR
 set_target_properties(${LIBRARY_TARGET_NAME} PROPERTIES VERSION       ${${PROJECT_NAME}_VERSION}
                                                         PUBLIC_HEADER "${${LIBRARY_TARGET_NAME}_HDR}")
 
+														
+target_link_libraries(${LIBRARY_TARGET_NAME} ${YARP_LIBRARIES})
+# ctrlLib skinDynLib iKin ${Gurls_LIBRARIES})
+														
+														
 # Specify include directories for both compilation and installation process.
 target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
                                                          "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}>")

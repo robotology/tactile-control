@@ -26,7 +26,7 @@ bool TaskData::init(const yarp::os::Property &options) {
     Value falseValue("false");
     setDefault(PAR_COMMON_TASK_THREAD_PERIOD,20);
     setDefault(PAR_COMMON_DATA_COLLECTION_THREAD_PERIOD,15);
-    setDefault(PAR_COMMON_PORT_PREFIX,Value("stableGrasp"));
+    setDefault(PAR_COMMON_PORT_PREFIX,Value("handController"));
     setDefault(PAR_COMMON_HAND,Value("left"));
     setDefault(PAR_COMMON_ICUB,Value("iCubGenova01"));
     setDefault(PAR_COMMON_CONTROLLED_JOINTS,*Value::makeList("9 11 13"));
@@ -37,10 +37,10 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_COMMON_TACT_MEDIAN_WINDOW_SIZE,50);
     setDefault(PAR_COMMON_REF_VELOCITY,100.0);
     setDefault(PAR_COMMON_USING_TWO_HANDS,trueValue);
-    setDefault(PAR_COMMON_EXPERIMENT_INFO,Value("experimentInfo"));
-    setDefault(PAR_COMMON_EXPERIMENT_OPTIONAL_INFO,Value("experimentExtra"));
+    setDefault(PAR_COMMON_EXPERIMENT_INFO,Value(""));
+    setDefault(PAR_COMMON_EXPERIMENT_OPTIONAL_INFO,Value(""));
     setDefault(PAR_COMMON_USE_TACTILE_WEIGHTED_SUM,trueValue);
-    setDefault(PAR_COMMON_ENABLE_SCREEN_LOGGING,falseValue);
+    setDefault(PAR_COMMON_ENABLE_SCREEN_LOGGING,trueValue);
     setDefault(PAR_COMMON_SCREEN_LOGGING_RATE,5);
 
     setDefault(PAR_STEP_DURATION,10);
@@ -86,8 +86,9 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_CTRL_GRIP_STRENGTH,50.0);
     setDefault(PAR_CTRL_THUMB_ABDUCTION_OFFSET,-30.0);
     setDefault(PAR_CTRL_MIN_JERK_TRACK_ENABLED,trueValue);
-    setDefault(PAR_CTRL_MIN_JERK_TRACK_REF_TIME,2.0);
-    setDefault(PAR_CTRL_SUPERVISOR_MODE,GMM_MODE);
+	setDefault(PAR_CTRL_MIN_JERK_TRACK_REF_TIME, 2.0);
+	setDefault(PAR_CTRL_TARGET_OBJECT_POSITION, 10.0);
+	setDefault(PAR_CTRL_SUPERVISOR_MODE, GMM_MODE);
     setDefault(PAR_CTRL_GMM_BEST_POSE_LOG_ONE_SHOT,falseValue);
     setDefault(PAR_CTRL_GMM_JOINTS_REGRESSION_ENABLED,falseValue);
     setDefault(PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_ENABLED,trueValue);
@@ -133,16 +134,40 @@ bool TaskData::initEncodersData(int numArmJoints){
     return true;
 }
 
-void TaskData::set(const yarp::os::ConstString &key,const yarp::os::Value &value,bool overwrite){
+bool TaskData::set(const yarp::os::ConstString &key, const yarp::os::Value &value, tactileControl::PropertyWritingMode propertyWritingMode){
 
-    if (overwrite || !options->check(key)){
-        options->put(key,value);
-    }
+	bool propertyWritten = false;
+
+	switch (propertyWritingMode){
+
+	case ALWAYS_WRITE:
+		options->put(key, value);
+		propertyWritten = true;
+		break;
+
+	case WRITE_ONLY_IF_NOT_PRESENT:
+		bool propertyPresent = options->check(key);
+		if (!propertyPresent){
+			options->put(key, value);
+			propertyWritten = true;
+		}
+		break;
+
+	case WRITE_ONLY_IF_PRESENT:
+		bool propertyPresent = options->check(key);
+		if (propertyPresent){
+			options->put(key, value);
+			propertyWritten = true;
+		}
+		break;
+	}
+
+	return propertyWritten;
 }
 
 void TaskData::setDefault(const yarp::os::ConstString &key,const yarp::os::Value &value){
 
-    set(key,value,false);
+    set(key,value,WRITE_ONLY_IF_NOT_PRESENT);
 }
 
 void TaskData::setToList(const yarp::os::ConstString &key,const yarp::os::Value &value,int index){

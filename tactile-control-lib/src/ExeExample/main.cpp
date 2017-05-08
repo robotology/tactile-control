@@ -1,4 +1,4 @@
-#include "TactileControl/TactileControl.h"
+#include "LibTemplateCMake/LibTemplateCMake.h"
 
 #include <cstdlib>
 #include <cmath>
@@ -7,8 +7,8 @@
 int main()
 {
     std::cout << "Example executable" << std::endl;
-    TactileControl::summationClass sumClass;
-    TactileControl::differenceClass diffClass;
+    LibTemplateCMake::summationClass sumClass;
+    LibTemplateCMake::differenceClass diffClass;
 
     double tol = 1e-10;
     double op1 = 15.0;

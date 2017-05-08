@@ -50,7 +50,7 @@ namespace tactileControl {
             bool init(const yarp::os::Property &options);
             bool initEncodersData(int numArmJoints);
 
-            void set(const yarp::os::ConstString &key,const yarp::os::Value &value,bool overwrite = true);
+			bool set(const yarp::os::ConstString &key, const yarp::os::Value &value, tactileControl::PropertyWritingMode propertyWritingMode = WRITE_ONLY_IF_PRESENT);
             void setDefault(const yarp::os::ConstString &key,const yarp::os::Value &value);
             void setToList(const yarp::os::ConstString &key,const yarp::os::Value &value,int index);
             bool get(const yarp::os::ConstString &key,yarp::os::Value &value);
@@ -75,7 +75,7 @@ namespace tactileControl {
 
             std::string getDataDescription();
 
-            // parameters non directly settable
+            // parameters non directly specified
             void getControlledFingers(std::vector<int> &controlledFingers);
             int getFingerNum();
             tactileControl::SupervisorMode getSupervisorControlMode();

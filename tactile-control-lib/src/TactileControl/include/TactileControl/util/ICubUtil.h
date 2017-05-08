@@ -5,19 +5,6 @@
 
 #include <vector>
 
-//#include "iCub/plantIdentification/PlantIdentificationEnums.h"
-//#include "iCub/plantIdentification/data/TaskData.h"
-//#include "iCub/plantIdentification/util/ControllersUtil.h"
-//#include "iCub/plantIdentification/util/PortsUtil.h"
-//
-//#include <yarp/os/Bottle.h>
-//#include <yarp/os/Value.h>
-//#include <yarp/sig/Vector.h>
-//#include <yarp/sig/Matrix.h>
-//
-//
-//#include <fstream>
-
 namespace tactileControl {
 
     class ICubUtil {

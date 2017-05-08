@@ -13,13 +13,6 @@
 
 namespace tactileControl {
 
-/**
-* \class tactileControl::HandController
-* \headerfile template-lib.h <TemplateLib/templatelib.h>
-*
-* \brief A class from TactileControl namespace.
-*
-*/
 
     class HandController {
 
@@ -60,14 +53,14 @@ namespace tactileControl {
         bool open(const yarp::os::Property &options);
 
         /**
-        * Sets the given property.
+        * Sets the given property. Returns true in case of success.
         */
-        void set(const yarp::os::ConstString key,const yarp::os::Value &value);
+        bool set(const yarp::os::ConstString &key,const yarp::os::Value &value);
 
         /**
         * Gets the given property. Returns true in case of success.
         */
-        bool get(const yarp::os::ConstString key,yarp::os::Value &value);
+        bool get(const yarp::os::ConstString &key,yarp::os::Value &value);
 
         /**
         * Starts the grasping task (including the approach phase). If wait == true it waits for the grasp to be stable, otherwise it returns immediately. Returns true in case of success.
