@@ -1,7 +1,7 @@
 #ifndef TACTILECONTROLWRAPPER_HANDCONTROLLERWRAPPER_H
 #define TACTILECONTROLWRAPPER_HANDCONTROLLERWRAPPER_H
 
-#include "tactileControlWrapper/HandController.h"
+#include "TactileControl/HandController.h"
 #include "tactileControlWrapper/RPCUtil.h"
 #include "tactileControlWrapper/RPCData.h"
 

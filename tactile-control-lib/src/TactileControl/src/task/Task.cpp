@@ -2,6 +2,7 @@
 
 #include "TactileControl/data/Parameters.h"
 
+#include <algorithm>
 #include <ctime>
 #include <string>
 
@@ -113,7 +114,7 @@ void Task::printScreenLog(){
             cout << inputCommandValue[i] << "(" << controlledJoints[i] << ") ";
         }
     
-        cout << optionalLogStream << "\n";
+        cout << optionalLogStream.str() << "\n";
     }
 
     optionalLogStream.clear();

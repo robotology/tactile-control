@@ -34,7 +34,6 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
 	string libConfigFileContext = rf.check("libConfigFileContext", Value("tactileControlWrapper")).asString();
 	moduleThreadPeriod = rf.check("moduleThreadPeriod", 1000).asInt();
 
-
     // open ports
     portPlantIdentificationRPC.open(portPrefix + "/cmd:i");
     attach(portPlantIdentificationRPC);

@@ -13,8 +13,6 @@
 
 namespace tactileControl {
 
-
-
     class TaskData {
 
         public:
@@ -75,7 +73,7 @@ namespace tactileControl {
 
             std::string getDataDescription();
 
-            // parameters non directly specified
+            // parameters not directly specified
             void getControlledFingers(std::vector<int> &controlledFingers);
             int getFingerNum();
             tactileControl::SupervisorMode getSupervisorControlMode();

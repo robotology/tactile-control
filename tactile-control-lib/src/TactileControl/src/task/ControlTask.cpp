@@ -11,6 +11,7 @@
 
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 using tactileControl::ControlTask;
 using yarp::os::Bottle;

@@ -50,13 +50,13 @@ set(${LIBRARY_TARGET_NAME}_HDR
 		include/TactileControl/util/ICubUtil.h
 		include/TactileControl/util/CommonUtil.h
 		
-		include/TactileControl/thread/DataCollectionThread.h
-		include/TactileControl/thread/TaskThread.h
-		
 		include/TactileControl/task/Task.h
 		include/TactileControl/task/StepTask.h
 		include/TactileControl/task/ApproachTask.h
 		include/TactileControl/task/ControlTask.h
+		
+		include/TactileControl/thread/DataCollectionThread.h
+		include/TactileControl/thread/TaskThread.h
 		
 )
 
@@ -67,11 +67,10 @@ add_library(${LIBRARY_TARGET_NAME} ${${LIBRARY_TARGET_NAME}_SRC} ${${LIBRARY_TAR
 # Set two minimum target properties for the library.
 # See https://cmake.org/cmake/help/latest/command/set_target_properties.html
 # Properties are: 1) Library version number 2) list of corresponding public headers
-set_target_properties(${LIBRARY_TARGET_NAME} PROPERTIES VERSION       ${${PROJECT_NAME}_VERSION}
-                                                        PUBLIC_HEADER "${${LIBRARY_TARGET_NAME}_HDR}")
+set_target_properties(${LIBRARY_TARGET_NAME} PROPERTIES VERSION       ${${PROJECT_NAME}_VERSION})
 
 														
-target_link_libraries(${LIBRARY_TARGET_NAME} ${YARP_LIBRARIES})
+target_link_libraries(${LIBRARY_TARGET_NAME} ${YARP_LIBRARIES} ${ICUB_LIBRARIES})
 # ctrlLib skinDynLib iKin ${Gurls_LIBRARIES})
 														
 														
@@ -84,7 +83,8 @@ install(TARGETS ${LIBRARY_TARGET_NAME}
         EXPORT  ${PROJECT_NAME}
         LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT shlib
         ARCHIVE       DESTINATION "${CMAKE_INSTALL_LIBDIR}"                            COMPONENT lib
-        RUNTIME       DESTINATION "${CMAKE_INSTALL_BINDIR}"                            COMPONENT bin
-        PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${LIBRARY_TARGET_NAME}" COMPONENT dev)
+        RUNTIME       DESTINATION "${CMAKE_INSTALL_BINDIR}"                            COMPONENT bin)
+
+install(DIRECTORY include/${LIBRARY_TARGET_NAME} DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
 set_property(GLOBAL APPEND PROPERTY ${PROJECT_NAME}_TARGETS ${LIBRARY_TARGET_NAME})

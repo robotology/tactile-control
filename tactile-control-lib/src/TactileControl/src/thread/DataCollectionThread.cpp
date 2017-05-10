@@ -7,6 +7,7 @@
 #include <cmath>
 #include <gsl/gsl_sort.h>
 #include <gsl/gsl_statistics.h>
+#include <algorithm>
 
 using tactileControl::DataCollectionThread;
 

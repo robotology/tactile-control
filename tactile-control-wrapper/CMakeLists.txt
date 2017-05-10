@@ -27,7 +27,7 @@ endif(CMAKE_BUILD_TYPE MATCHES Debug)
 
 
 # Find packages
-find_package(YARP)
+find_package(YARP REQUIRED)
 find_package(ICUB)
 find_package(TactileControl REQUIRED)
 list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})

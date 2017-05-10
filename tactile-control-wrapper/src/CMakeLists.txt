@@ -5,12 +5,11 @@
 # 
 
 
-set(MODULENAME stableGrasp)
+set(MODULENAME tactileControlWrapper)
 
 # Search for source code.
 set(INC_HEADERS
 
-    include/tactileControlWrapper/HandController.h
     include/tactileControlWrapper/HandControllerWrapper.h
     include/tactileControlWrapper/Enums.h
     include/tactileControlWrapper/RPCData.h
@@ -35,8 +34,8 @@ include_Directories(${ctrlLib_INCLUDE_DIRS} ${skinDynLib_INCLUDE_DIRS})
 include_directories(include ${iKin_INCLUDE_DIRS})
 
 add_executable(${MODULENAME} ${INC_SOURCES} ${INC_HEADERS})
-target_link_libraries(${MODULENAME} ${YARP_LIBRARIES} ctrlLib skinDynLib iKin TactileControl)
-
+target_link_libraries(${MODULENAME} ${YARP_LIBRARIES} ctrlLib skinDynLib iKin TactileControl::TactileControl)
+message(iKin)
 if(WIN32)
     install(TARGETS ${MODULENAME} DESTINATION bin/${CMAKE_BUILD_TYPE})
 else(WIN32)

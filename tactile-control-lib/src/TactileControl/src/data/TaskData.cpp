@@ -137,6 +137,7 @@ bool TaskData::initEncodersData(int numArmJoints){
 bool TaskData::set(const yarp::os::ConstString &key, const yarp::os::Value &value, tactileControl::PropertyWritingMode propertyWritingMode){
 
 	bool propertyWritten = false;
+	bool propertyPresent;
 
 	switch (propertyWritingMode){
 
@@ -146,7 +147,7 @@ bool TaskData::set(const yarp::os::ConstString &key, const yarp::os::Value &valu
 		break;
 
 	case WRITE_ONLY_IF_NOT_PRESENT:
-		bool propertyPresent = options->check(key);
+		propertyPresent = options->check(key);
 		if (!propertyPresent){
 			options->put(key, value);
 			propertyWritten = true;
@@ -154,7 +155,7 @@ bool TaskData::set(const yarp::os::ConstString &key, const yarp::os::Value &valu
 		break;
 
 	case WRITE_ONLY_IF_PRESENT:
-		bool propertyPresent = options->check(key);
+		propertyPresent = options->check(key);
 		if (propertyPresent){
 			options->put(key, value);
 			propertyWritten = true;

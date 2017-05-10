@@ -38,11 +38,6 @@ namespace tactileControl {
         HandController();
 
         /**
-        * Destructor
-        */
-        ~HandController();
-
-        /**
         * Initializes the hand controller. Returns true in case of success.
         */
         bool open();
