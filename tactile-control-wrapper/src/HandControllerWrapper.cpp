@@ -35,7 +35,7 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
 	moduleThreadPeriod = rf.check("moduleThreadPeriod", 1000).asInt();
 
     // open ports
-    portPlantIdentificationRPC.open(portPrefix + "/cmd:i");
+    portPlantIdentificationRPC.open("/" + portPrefix + "/cmd:i");
     attach(portPlantIdentificationRPC);
 
 	// initialize rpc commands utility
@@ -43,14 +43,14 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
 
 	// load tactile control lib resource finder data
 	yarp::os::ResourceFinder tactileControlLibRF;
-	tactileControlLibRF.setDefaultContext(libConfigFileContext);
+	tactileControlLibRF.setDefaultContext(libConfigFileContext.c_str());
 	tactileControlLibRF.setDefaultConfigFile(libConfigFileName.c_str());
 	char **fakeArgV;
 	tactileControlLibRF.configure(0, fakeArgV, false);
 
 	// initialize the hand controller
 	yarp::os::Property options;
-	options.fromConfigFile("", tactileControlLibRF);
+    options.fromString(tactileControlLibRF.toString());
 	if (!handController.open(options)){
 		cout << dbgTag << "could not open the hand controller. \n";
 		return false;
@@ -141,11 +141,13 @@ bool HandControllerWrapper::respond(const yarp::os::Bottle& command, yarp::os::B
 
 	if (success){
         reply.addString("ack");
-		reply.addString(screenMsg.str());
+//		reply.addString(screenMsg.str());
+        cout << screenMsg.str();
     }
 	else {
 		reply.addString("nack");
-		reply.addString(errMsg.str());
+//		reply.addString(errMsg.str());
+        cout << errMsg.str();
 	}
 
     return true;

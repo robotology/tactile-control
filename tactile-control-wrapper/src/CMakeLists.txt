@@ -35,7 +35,7 @@ include_directories(include ${iKin_INCLUDE_DIRS})
 
 add_executable(${MODULENAME} ${INC_SOURCES} ${INC_HEADERS})
 target_link_libraries(${MODULENAME} ${YARP_LIBRARIES} ctrlLib skinDynLib iKin TactileControl::TactileControl)
-message(iKin)
+
 if(WIN32)
     install(TARGETS ${MODULENAME} DESTINATION bin/${CMAKE_BUILD_TYPE})
 else(WIN32)

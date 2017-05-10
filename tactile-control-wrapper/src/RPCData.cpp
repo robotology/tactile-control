@@ -17,20 +17,20 @@ using std::pair;
 
 RPCData::RPCData(){
 
-    add("help",HELP,"Shows thi help");
+    add("help",HELP,"Shows this help");
 	add("set", SET, "Sets a parameter (usage: 'set <paramName> <paramValue>')");
 	add("get", GET, "Gets a parameter (usage: 'get <paramName>')");
 	add("task", TASK, "Manages tasks (usage: 'task [ clear | add <taskType> <targetValueList> ]')");
-    add("show",SHOW,"Shows settings/tasks (usage: 'view [ set | tasks ]')");
+    add("show",SHOW,"Shows settings/tasks (usage: 'show [ set | tasks ]')");
     add("start",START,"Start tasks");
     add("open",OPEN,"Opens the hand and stops any running task (usage: open <fullyOpen> <wait>)");
     add("arm",ARM,"Sets the arm in home position");
     add("grasp",GRASP,"Executes the grasp task (usage: grasp <wait>)");
 	add("isHandOpen",IS_HAND_OPEN,"checks if the hand is open");
 	add("isHandClose",IS_HAND_CLOSE,"checks if the hand is close and the grasp is stable");
-	add("setGripStrength",SET_GRIP_STRENGTH,"set the desired grip strength (usage: 'setGripStrength <value>')");
-	add("setMinForce", SET_MIN_FORCE, "set the minimum force reference at the fingertips (usage: 'setMinForce <value>')");
-	add("disableMinForce", DISABLE_MIN_FORCE, "disable the minimum force reference mode");
+	add("setGripStrength",SET_GRIP_STRENGTH,"sets the desired grip strength (usage: 'setGripStrength <value>')");
+	add("setMinForce", SET_MIN_FORCE, "sets the minimum force reference at the fingertips (usage: 'setMinForce <value>')");
+	add("disableMinForce", DISABLE_MIN_FORCE, "disables the minimum force reference mode");
 	add("quit", QUIT, "Closes the module");
 
     // TASK <?>
@@ -116,7 +116,8 @@ std::string RPCData::showHelp(){
 
 	std::stringstream help("");
 
-	help << "Available commands:";
+	help << std::endl;
+	help << "<<< Available commands >>>" << std::endl;
 	help << std::endl;
 	help << showCommandHelp(HELP);
 	help << showCommandHelp(SET);

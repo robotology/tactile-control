@@ -53,7 +53,7 @@ namespace tactileControl {
 
             bool clearTaskList();
 
-            std::string TaskThread::getTaskListDescription();
+            std::string getTaskListDescription();
 
     };
 

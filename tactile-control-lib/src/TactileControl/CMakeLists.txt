@@ -12,7 +12,7 @@ list(APPEND CMAKE_MODULE_PATH ${ICUB_MODULE_PATH})
 
 add_definitions(${YARP_DEFINES})
 
-include_directories(${YARP_INCLUDE_DIRS} ${ICUB_INCLUDE_DIRS})
+#include_directories(${YARP_INCLUDE_DIRS} ${ICUB_INCLUDE_DIRS})
 
 # List of CPP (source) library files
 set(${LIBRARY_TARGET_NAME}_SRC
@@ -76,7 +76,9 @@ target_link_libraries(${LIBRARY_TARGET_NAME} ${YARP_LIBRARIES} ${ICUB_LIBRARIES}
 														
 # Specify include directories for both compilation and installation process.
 target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
-                                                         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}>")
+                                                         "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}>"
+							 ${YARP_INCLUDE_DIRS}
+							 ${ICUB_INCLUDE_DIRS})
 
 # Specify installation targets, typology and destination folders.
 install(TARGETS ${LIBRARY_TARGET_NAME}

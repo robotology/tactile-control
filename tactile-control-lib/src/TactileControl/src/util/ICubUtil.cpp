@@ -2,6 +2,8 @@
 
 #include "TactileControl/data/Parameters.h"
 
+#include <math.h> 
+
 using tactileControl::ICubUtil;
 
 

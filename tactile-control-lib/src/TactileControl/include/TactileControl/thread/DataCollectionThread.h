@@ -1,9 +1,9 @@
 #ifndef TACTILECONTROL_DATACOLLECTION_H
 #define TACTILECONTROL_DATACOLLECTION_H
 
-#include "tactileControl/data/TaskData.h"
-#include "tactileControl/util/ControllerUtil.h"
-#include "tactileControl/util/PortUtil.h"
+#include "TactileControl/data/TaskData.h"
+#include "TactileControl/util/ControllerUtil.h"
+#include "TactileControl/util/PortUtil.h"
 
 #include <yarp/os/RateThread.h>
 
