@@ -43,6 +43,8 @@ std::string StepTask::getTaskDescription(){
 
     std::stringstream description("");
 
+	std::cout << "here is ok " << std::endl;
+
     description << "Step Task: ";
     for(int i = 0; i < constantPwm.size(); i++){
         description << constantPwm[i] << " ";

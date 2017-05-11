@@ -132,6 +132,13 @@ std::string TaskThread::getTaskListDescription(){
     description << "<<< Task List >>>" << endl;
     description << endl;
 
+	std::cout << "taskList.size(): " << taskList.size() << endl;
+	std::cout << "<< start debugging >>" << endl;
+
+	std::cout << taskList[0]->getTaskDescription() << endl;
+
+	std::cout << "<< end debugging >>" << endl;
+
     for(int i = 0; i < taskList.size(); i++){
         taskList[i]->getTaskDescription();
         description << endl;
