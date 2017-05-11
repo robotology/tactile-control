@@ -196,7 +196,7 @@ void TaskData::setToList(const yarp::os::ConstString &key,const yarp::os::Value 
 bool TaskData::get(const yarp::os::ConstString &key,yarp::os::Value &value){
 
     value = options->find(key);
-    return value.isNull();
+    return !value.isNull();
  }
 
 

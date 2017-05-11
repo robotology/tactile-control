@@ -65,7 +65,7 @@ bool RPCUtil::processCommand(const Bottle &rpcCmdBottle){
 			return false;
         }
         try {
-            viewCmdArg = rpcData->viewCmdArgRevMap[rpcCmdBottle.get(1).asString()];
+            viewCmdArg = rpcData->viewCmdArgRevMap.at(rpcCmdBottle.get(1).asString());
         } catch(const std::out_of_range& oor){
 			wrongSyntaxMessage(SHOW);
 			return false;
@@ -145,7 +145,7 @@ bool RPCUtil::processCommand(const Bottle &rpcCmdBottle){
 bool RPCUtil::processTaskCommand(const Bottle &rpcCmdBottle){
 
     try {
-        taskCmdArg = rpcData->taskCmdArgRevMap[rpcCmdBottle.get(1).asString()];
+        taskCmdArg = rpcData->taskCmdArgRevMap.at(rpcCmdBottle.get(1).asString());
     } catch(const std::out_of_range& oor){
 		wrongSyntaxMessage(TASK);
         return false;
@@ -159,7 +159,7 @@ bool RPCUtil::processTaskCommand(const Bottle &rpcCmdBottle){
             return false;
         }
         try {
-            task = rpcData->taskRevMap[rpcCmdBottle.get(2).asString()];
+            task = rpcData->taskRevMap.at(rpcCmdBottle.get(2).asString());
         } catch(const std::out_of_range& oor){
 			errMsg << "wrong task name, available: step (STEP task), appr (APPROACH task), ctrl (CONTROL task)" << std::endl;
             return false;

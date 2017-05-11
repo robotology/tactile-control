@@ -9,6 +9,7 @@ using tactileControlWrapper::HandControllerWrapper;
 using yarp::os::ResourceFinder;
 using yarp::os::Value;
 using std::cout;
+using std::endl;
 
 HandControllerWrapper::HandControllerWrapper() 
     : RFModule() {
@@ -67,20 +68,20 @@ bool HandControllerWrapper::updateModule() {
 }
 
 bool HandControllerWrapper::interruptModule() {
-    cout << dbgTag << "Interrupting. \n";
+    cout << dbgTag << "Interrupting... ";
     
     // Interrupt port
     portPlantIdentificationRPC.interrupt();
 
-    cout << dbgTag << "Interrupted correctly. \n";
+    cout << dbgTag << "interrupted correctly." << endl;
 
     return true;
 }
 
 bool HandControllerWrapper::respond(const yarp::os::Bottle& command, yarp::os::Bottle& reply){
 
-	screenMsg.clear();
-	errMsg.clear();
+	screenMsg.str(std::string());
+	errMsg.str(std::string());
 
     bool success = rpcCmdUtil.processCommand(command);
 
@@ -142,12 +143,12 @@ bool HandControllerWrapper::respond(const yarp::os::Bottle& command, yarp::os::B
 	if (success){
         reply.addString("ack");
 //		reply.addString(screenMsg.str());
-        cout << screenMsg.str();
+        cout << screenMsg.str() << endl;
     }
 	else {
 		reply.addString("nack");
 //		reply.addString(errMsg.str());
-        cout << errMsg.str();
+        cout << errMsg.str() << endl;
 	}
 
     return true;
@@ -199,7 +200,7 @@ bool HandControllerWrapper::set(const yarp::os::ConstString &paramName, const Va
 
 	if (handController.set(paramName, paramValue)){
 
-		screenMsg << "'" << paramName << "' set to" << paramValue.toString();
+		screenMsg << "'" << paramName << "' set to " << paramValue.toString();
 
 		return true;
 	}

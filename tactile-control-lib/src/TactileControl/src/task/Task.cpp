@@ -28,7 +28,7 @@ Task::Task(tactileControl::TaskData *taskData,tactileControl::ControllerUtil *co
     loggingEnabled = taskData->getBool(PAR_COMMON_ENABLE_SCREEN_LOGGING);
     isClean = false;
     pwmSign = taskData->getInt(PAR_COMMON_PWM_SIGN);
-    optionalLogStream.clear();
+    optionalLogStream.str(std::string());
 }
 
 
@@ -117,7 +117,7 @@ void Task::printScreenLog(){
         cout << optionalLogStream.str() << "\n";
     }
 
-    optionalLogStream.clear();
+    optionalLogStream.str(std::string());
 }
 
 
