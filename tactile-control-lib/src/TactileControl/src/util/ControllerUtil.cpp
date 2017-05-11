@@ -130,6 +130,7 @@ bool ControllerUtil::sendVelocity(int joint,double velocity){
         std::cout << dbgTag << "could not send velocity\n";
         return false;
     }
+
     return true;
 }
 

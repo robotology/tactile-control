@@ -22,7 +22,6 @@ namespace tactileControl {
         private:
 
             std::vector<iCub::ctrl::parallelPID*> pid;
-            std::vector<yarp::os::Bottle> pidOptions;
             std::vector<double> forceTargetValue;
             int numFingers;
 
@@ -58,11 +57,13 @@ namespace tactileControl {
 
         private:
 
+            void constructorsCommon(const std::vector<double> &targets);
+
             void initLowLevelPID();
 
             void initHighLevelPID();
 
-            void initPID(iCub::ctrl::parallelPID *pid,double kp,double ki,double kd,double wp,double wi,double wd,double n,double tt,double minSatLim,double maxSatLim);
+            void initPID(iCub::ctrl::parallelPID *&pid,double kp,double ki,double kd,double wp,double wi,double wd,double n,double tt,double minSatLim,double maxSatLim);
 
             void addOption(yarp::os::Bottle &bottle,const char *paramName,const yarp::os::Value paramValue);
 

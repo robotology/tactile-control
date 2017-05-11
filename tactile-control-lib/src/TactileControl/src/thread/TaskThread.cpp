@@ -64,12 +64,19 @@ bool TaskThread::initializeGrasping(){
 
 bool TaskThread::afterRun(bool fullyOpen,bool wait){
 
-    if (!controllerUtil->restorePreviousControlMode()) return false;
-
-    if (!controllerUtil->openHand(fullyOpen,wait)) return false;
+    if (!controllerUtil->restorePreviousControlMode()){
+        std::cout << dbgTag << "could not restore previous control mode" << std::endl;
+        return false;
+    }
+    if (!controllerUtil->openHand(fullyOpen,wait)){
+        std::cout << dbgTag << "could not open the hand" << std::endl;
+        return false;
+    }
 
     runEnabled = false;
-    taskList[currentTaskIndex]->clean();
+    if (taskList.size() > 0) {
+        taskList[currentTaskIndex]->clean();
+    }
     currentTaskIndex = 0;
     
     // clear task list
@@ -132,15 +139,8 @@ std::string TaskThread::getTaskListDescription(){
     description << "<<< Task List >>>" << endl;
     description << endl;
 
-	std::cout << "taskList.size(): " << taskList.size() << endl;
-	std::cout << "<< start debugging >>" << endl;
-
-	std::cout << taskList[0]->getTaskDescription() << endl;
-
-	std::cout << "<< end debugging >>" << endl;
-
     for(int i = 0; i < taskList.size(); i++){
-        taskList[i]->getTaskDescription();
+        description << taskList[i]->getTaskDescription();
         description << endl;
     }
 

@@ -102,14 +102,13 @@ bool HandController::openHand(bool fullyOpen, bool wait){
 
         taskRunning = false;
         taskThread->suspend();
-        taskThread->afterRun(fullyOpen,wait);
+        return taskThread->afterRun(fullyOpen,wait);
 
     } else {
 
-        controllerUtil->openHand(fullyOpen,wait);
+        return controllerUtil->openHand(fullyOpen,wait);
     }
 
-    return true;
 }
 
 bool HandController::isHandOpen(){

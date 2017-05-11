@@ -24,17 +24,23 @@ ControlTask::ControlTask(tactileControl::TaskData *taskData,tactileControl::Cont
 
     std::vector<double> targets(1,taskData->getDouble(PAR_CTRL_DEFAULT_FORCE_TARGET));
 
-    ControlTask(taskData,controllerUtil,portUtil,targets);
+    constructorsCommon(targets);
 }
 
 ControlTask::ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil,const std::vector<double> &targets):Task(taskData,controllerUtil,portUtil,taskData->getDouble(PAR_CTRL_DURATION)) {
+
+    constructorsCommon(targets);
+}
+
+void ControlTask::constructorsCommon(const std::vector<double> &targets){
 
     expandTargets(targets,forceTargetValue);
 
     taskName = CONTROL;
 
-    dbgTag = "ControlTask: ";
+    dbgTag = "ControlTask: ";    
 }
+
 
 void ControlTask::init(){
     using iCub::ctrl::minJerkTrajGen;
@@ -105,17 +111,19 @@ void ControlTask::initLowLevelPID(){
     pidWindUp = taskData->getDouble(PAR_CTRL_LOW_PID_WIND_UP_COEFF);
     pidMinSatLim = taskData->getDouble(PAR_CTRL_LOW_PID_MIN_SAT_LIM);
     pidMaxSatLim = taskData->getDouble(PAR_CTRL_LOW_PID_MAX_SAT_LIM);
-    
+ 
     // calculate TT pid option
     std::vector<double> pidTt;
     pidTt.resize(controlledJoints.size());
     for(int i = 0; i < controlledJoints.size(); i++){
         pidTt[i] = calculateTt(pidKp[i],pidKi[i],0.0,pidWindUp);
     }
-    
+     
     // init PID
+    pid.resize(controlledJoints.size());
     for(int i = 0; i < controlledJoints.size(); i++){
         initPID(pid[i],pidKp[i],pidKi[i],0.0,pidWp,pidWi,pidWd,pidN,pidTt[i],pidMinSatLim,pidMaxSatLim);
+std::cout << "pid " << pid[i] << std::endl;
     }
 }
 
@@ -140,8 +148,8 @@ void ControlTask::initHighLevelPID(){
     initPID(highPid,highPidKp,highPidKi,highPidKd,highPidWp,highPidWi,highPidWd,highPidN,highPidTt,highPidMinSatLim,highPidMaxSatLim);
 }
 
-void ControlTask::initPID(iCub::ctrl::parallelPID *pid,double kp,double ki,double kd,double wp,double wi,double wd,double n,double tt,double minSatLim,double maxSatLim){
-
+void ControlTask::initPID(iCub::ctrl::parallelPID *&pid,double kp,double ki,double kd,double wp,double wi,double wd,double n,double tt,double minSatLim,double maxSatLim){
+ 
     // configure yarp Vector and Matrix structures to initialize PID
     Vector kpOptionVect(1,kp);
     Vector kiOptionVect(1,ki);
@@ -151,7 +159,7 @@ void ControlTask::initPID(iCub::ctrl::parallelPID *pid,double kp,double ki,doubl
     Vector wdOptionVect(1,wd);
     Vector nOptionVect(1,n);
     Vector ttOptionVect(1,tt);
-
+  
     Matrix pvSatLimMatrix(1,2);
     pvSatLimMatrix[0][0] = minSatLim;
     pvSatLimMatrix[0][1] = maxSatLim;
@@ -167,10 +175,11 @@ void ControlTask::initPID(iCub::ctrl::parallelPID *pid,double kp,double ki,doubl
     addOption(pidOptions,"Ki",ki);
     addOption(pidOptions,"Kd",kd);
     addOption(pidOptions,"Tt",tt);
-
+ 
     // initialize PID
     pid = new iCub::ctrl::parallelPID(taskThreadPeriod/1000.0,kpOptionVect,kiOptionVect,kdOptionVect,wpOptionVect,wiOptionVect,wdOptionVect,nOptionVect,ttOptionVect,pvSatLimMatrix);
     pid->setOptions(pidOptions);
+ 
 }
 
 void ControlTask::calculateControlInput(){
@@ -247,7 +256,6 @@ void ControlTask::calculateControlInput(){
             currentTargetObjectPosition = targetObjectPosition;
         }
 
-
         // compute supervisor control signal
         double svErr = targetObjectPosition - objectPosition;
         Vector svRef(1,currentTargetObjectPosition);
@@ -291,7 +299,6 @@ void ControlTask::calculateControlInput(){
             taskData->graspIsStable = true;
         }
     }
-
 
     // compute pwm values from force target values
     for(int i = 0; i < controlledJoints.size(); i++){
@@ -366,6 +373,7 @@ std::string ControlTask::getTaskDescription(){
     std::stringstream description("");
 
     description << "Control task: ";
+
     for(int i = 0; i < forceTargetValue.size(); i++){
         description << forceTargetValue[i] << " ";
     }

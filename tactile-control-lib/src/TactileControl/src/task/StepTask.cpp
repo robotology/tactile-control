@@ -3,6 +3,7 @@
 #include "TactileControl/data/Parameters.h"
 
 #include <sstream>
+
 using tactileControl::StepTask;
 
 
@@ -42,8 +43,6 @@ void StepTask::calculateControlInput(){
 std::string StepTask::getTaskDescription(){
 
     std::stringstream description("");
-
-	std::cout << "here is ok " << std::endl;
 
     description << "Step Task: ";
     for(int i = 0; i < constantPwm.size(); i++){

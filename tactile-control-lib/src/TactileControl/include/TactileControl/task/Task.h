@@ -71,7 +71,7 @@ namespace tactileControl {
 
             virtual void calculateControlInput() = 0;
 
-            virtual void sendPwm();
+            virtual void sendControlSignal();
 
             virtual void printScreenLog();
 

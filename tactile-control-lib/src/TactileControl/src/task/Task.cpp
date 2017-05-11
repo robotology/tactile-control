@@ -44,8 +44,8 @@ bool Task::manage(bool keepActive){
     // calculate pwm or velocities to send to the robot
     calculateControlInput();
 
-    // send the control signals to the robot
-    sendPwm();
+    // send the control signal to the robot
+    sendControlSignal();
 
     // send task data to port
     portUtil->sendInfoData(taskData);
@@ -91,7 +91,7 @@ void Task::createTaskId(){
     taskId = std::string(myDate);
 }
 
-void Task::sendPwm(){
+void Task::sendControlSignal(){
 
     for(int i = 0; i < inputCommandValue.size(); i++){
         controllerUtil->sendPwm(controlledJoints[i],pwmSign*inputCommandValue[i]);

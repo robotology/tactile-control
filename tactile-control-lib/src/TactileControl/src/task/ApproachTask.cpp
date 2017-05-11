@@ -106,7 +106,7 @@ void ApproachTask::moveFinger(int finger){
 }
 
 
-void ApproachTask::sendCommands(){
+void ApproachTask::sendControlSignal(){
 
     for(int i = 0; i < inputCommandValue.size(); i++){
         if (!fingerIsInContact[i]) controllerUtil->sendVelocity(controlledJoints[i],inputCommandValue[i]);

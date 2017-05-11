@@ -31,7 +31,7 @@ namespace tactileControl {
 
             virtual void calculateControlInput();
 
-            virtual void sendCommands();
+            virtual void sendControlSignal();
 
             virtual void release();
 
