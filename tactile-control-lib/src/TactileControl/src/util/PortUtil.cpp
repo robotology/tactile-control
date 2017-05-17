@@ -39,8 +39,8 @@ bool PortUtil::init(tactileControl::TaskData *taskData){
     string moduleHandEncodersRawPortName = portFullPrefix + "/encoders_raw:i";
 
     // output ports
-    string infoDataPortName = portFullPrefix + "/info";
-    string controlDataPortName = portFullPrefix + "/control";
+    string infoDataPortName = portFullPrefix + "/info:o";
+    string controlDataPortName = portFullPrefix + "/control:o";
     string gmmDataPortName = portFullPrefix + "/gmm:o";
     string gmmRegressionDataPortName = portFullPrefix + "/gmmRegression:o";
     string gripStrengthDataPortName = portFullPrefix + "/grip_strength:o";
