@@ -1,0 +1,21 @@
+<application>
+     <name>Tactile Control Wrapper</name>
+
+    <module>
+        <name>tactileControlWrapper</name>
+        <parameters>--context tactileControlWrapper --from confTactileControlWrapper.ini --hand left</parameters>
+        <node>icub23</node>
+        <tag>handController</tag>
+    </module>
+
+    <module>
+        <name>yarpscope</name>
+        <parameters>--context tactileControlWrapper --xml gmmRegressionPortScope.xml</parameters>
+        <node>icub24</node>
+        <tag>gmmRegressionPortScope</tag>
+	<dependencies>
+            <port timeout="5.0">/handController/gmmRegression:o</port>
+        </dependencies>
+    </module>
+	
+</application>
