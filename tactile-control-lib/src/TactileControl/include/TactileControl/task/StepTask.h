@@ -12,19 +12,20 @@ namespace tactileControl {
 
     class StepTask : public Task {
 
-        private:
+    private:
 
-            std::vector<double> constantPwm;
+        std::vector<double> constantPwm;
 
-        public:
+    public:
 
-            StepTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil,const std::vector<double> &targets);
+        StepTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil,const std::vector<double> &targets);
 
-            virtual void init();
+        virtual void init();
 
-            virtual std::string getTaskDescription();
+        virtual std::string getTaskDescription();
 
-            virtual void calculateControlInput();
+        virtual void calculateControlInput();
+
      };
 
 } //namespace tactileControl

@@ -92,7 +92,7 @@ bool HandController::closeHand(bool wait){
 }
 
 bool HandController::isHandClose(){
-    
+
     return taskData->graspIsStable;
 }
 
@@ -112,7 +112,7 @@ bool HandController::openHand(bool fullyOpen, bool wait){
 }
 
 bool HandController::isHandOpen(){
-    
+
     return controllerUtil->isMotionDone();
 }
 
@@ -135,7 +135,7 @@ void HandController::setGripStrength(double gripStrength){
 bool HandController::close(){
 
     std::cout << dbgTag << "Closing... \n";
-    
+
     if (taskThread->isRunning()){
         taskThread->suspend();
     }
@@ -158,7 +158,7 @@ bool HandController::close(){
     delete(portUtil);
 
     std::cout << dbgTag << "done \n";
-    
+
     return true;
 }
 
@@ -167,7 +167,7 @@ bool HandController::startTask(){
     if (taskRunning){
 
         return false;
-    
+
     } else {
 
         if (!taskThread->initializeGrasping()) return false;

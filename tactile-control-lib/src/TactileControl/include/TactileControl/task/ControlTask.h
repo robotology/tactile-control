@@ -19,65 +19,65 @@ namespace tactileControl {
 
     class ControlTask : public Task {
 
-        private:
+    private:
 
-            std::vector<iCub::ctrl::parallelPID*> pid;
-            std::vector<double> forceTargetValue;
-            int numFingers;
+        std::vector<iCub::ctrl::parallelPID*> pid;
+        std::vector<double> forceTargetValue;
+        int numFingers;
 
-            // variables used for supervisor mode
-            iCub::ctrl::parallelPID *highPid;
-            bool supervisorEnabled;
-            tactileControl::SupervisorMode supervisorControlMode;
-            double highPidKp,highPidKi,highPidKd;
-            bool minJerkTrackingModeInitialized;
-            bool gmmJointsMinJerkTrackingModeInitialized;
-            iCub::ctrl::minJerkTrajGen* minJerkTrajectory;
-            iCub::ctrl::minJerkTrajGen* thAbdMinJerkTrajectory;
-            iCub::ctrl::minJerkTrajGen* thDistMinJerkTrajectory;
-            iCub::ctrl::minJerkTrajGen* indDistMinJerkTrajectory;
-            iCub::ctrl::minJerkTrajGen* midDistMinJerkTrajectory;
-            bool disablePIDIntegralGain;
-            bool gmmJointsRegressionEnabled;
-            bool gmmCtrlModeIsSet;
-            double initialObjectPosition;
+        // variables used for supervisor mode
+        iCub::ctrl::parallelPID *highPid;
+        bool supervisorEnabled;
+        tactileControl::SupervisorMode supervisorControlMode;
+        double highPidKp,highPidKi,highPidKd;
+        bool minJerkTrackingModeInitialized;
+        bool gmmJointsMinJerkTrackingModeInitialized;
+        iCub::ctrl::minJerkTrajGen* minJerkTrajectory;
+        iCub::ctrl::minJerkTrajGen* thAbdMinJerkTrajectory;
+        iCub::ctrl::minJerkTrajGen* thDistMinJerkTrajectory;
+        iCub::ctrl::minJerkTrajGen* indDistMinJerkTrajectory;
+        iCub::ctrl::minJerkTrajGen* midDistMinJerkTrajectory;
+        bool disablePIDIntegralGain;
+        bool gmmJointsRegressionEnabled;
+        bool gmmCtrlModeIsSet;
+        double initialObjectPosition;
 
-        public:
+    public:
 
-            ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil);
-            ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil,const std::vector<double> &targets);
+        ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil);
+        ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil,const std::vector<double> &targets);
 
-            virtual void init();
+        virtual void init();
 
-            virtual void calculateControlInput();
+        virtual void calculateControlInput();
 
-            virtual std::string getTaskDescription();
+        virtual std::string getTaskDescription();
 
-            virtual void release();
+        virtual void release();
 
-        private:
+    private:
 
-            void constructorsCommon(const std::vector<double> &targets);
+        void constructorsCommon(const std::vector<double> &targets);
 
-            void initLowLevelPID();
+        void initLowLevelPID();
 
-            void initHighLevelPID();
+        void initHighLevelPID();
 
-            void initPID(iCub::ctrl::parallelPID *&pid,double kp,double ki,double kd,double wp,double wi,double wd,double n,double tt,double minSatLim,double maxSatLim);
+        void initPID(iCub::ctrl::parallelPID *&pid,double kp,double ki,double kd,double wp,double wi,double wd,double n,double tt,double minSatLim,double maxSatLim);
 
-            void addOption(yarp::os::Bottle &bottle,const char *paramName,const yarp::os::Value paramValue);
+        void addOption(yarp::os::Bottle &bottle,const char *paramName,const yarp::os::Value paramValue);
 
-            void addOption(yarp::os::Bottle &bottle,const char *paramName,const yarp::os::Value paramValue1,const yarp::os::Value paramValue2);
+        void addOption(yarp::os::Bottle &bottle,const char *paramName,const yarp::os::Value paramValue1,const yarp::os::Value paramValue2);
 
-            void setOptionVect(const std::vector<double> &option,std::vector<yarp::sig::Vector> &optionVect);
+        void setOptionVect(const std::vector<double> &option,std::vector<yarp::sig::Vector> &optionVect);
 
-            double calculateTt(double kp,double ki,double kd,double windUp);
+        double calculateTt(double kp,double ki,double kd,double windUp);
 
-            void setGMMJointsControlMode(int controlMode);
+        void setGMMJointsControlMode(int controlMode);
 
-            void manageGMMRegression(double handAperture,double indMidPosDiff,double &targetObjectPosition,double &gmmThumbAbductionJoint,double &gmmThumbDistalJoint,double &gmmIndexDistalJoint,double &gmmMiddleDistalJoint,double &filteredThumbAbductionJoint,double &filteredThumbDistalJoint,double &filteredIndexDistalJoint,double &filteredMiddleDistalJoint);
+        void manageGMMRegression(double handAperture,double indMidPosDiff,double &targetObjectPosition,double &gmmThumbAbductionJoint,double &gmmThumbDistalJoint,double &gmmIndexDistalJoint,double &gmmMiddleDistalJoint,double &filteredThumbAbductionJoint,double &filteredThumbDistalJoint,double &filteredIndexDistalJoint,double &filteredMiddleDistalJoint);
 
-            void computeForceTargetValues(double gripStrength,double svControlSignal,bool minForceEnabled,double minForce,std::vector<double> &forceTargetValue);
+        void computeForceTargetValues(double gripStrength,double svControlSignal,bool minForceEnabled,double minForce,std::vector<double> &forceTargetValue);
 
     };
 

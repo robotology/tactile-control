@@ -11,28 +11,28 @@
 namespace tactileControl {
         
     class DataCollectionThread : public yarp::os::RateThread {
-           
 
-        private:
 
-            tactileControl::TaskData *taskData;
-            tactileControl::ControllerUtil *controllerUtil;
-            tactileControl::PortUtil *portUtil;
+    private:
 
-            /* ****** Debug attributes                              ****** */
-            std::string dbgTag;
+        tactileControl::TaskData *taskData;
+        tactileControl::ControllerUtil *controllerUtil;
+        tactileControl::PortUtil *portUtil;
 
-        public:
+        /* ****** Debug attributes                              ****** */
+        std::string dbgTag;
 
-            DataCollectionThread(int period, tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil);
+    public:
 
-            virtual void run();
+        DataCollectionThread(int period, tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil);
 
-            bool updateRobotData();
+        virtual void run();
 
-        private:
+        bool updateRobotData();
 
-            bool processTactileData();
+    private:
+
+        bool processTactileData();
 
 
     };

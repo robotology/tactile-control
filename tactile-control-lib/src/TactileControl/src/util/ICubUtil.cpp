@@ -8,12 +8,12 @@ using tactileControl::ICubUtil;
 
 
 int ICubUtil::getFingerFromJoint(int joint){
-    
+
     if (isThumb(joint)) return THUMB_FINGERTIP;
     if (isIndexFinger(joint)) return INDEX_FINGERTIP;
     if (isMiddleFinger(joint)) return MIDDLE_FINGERTIP;
     if (isRingOrLittleFinger(joint)) return RING_FINGERTIP;
-    
+
     return -1;
 }
 
@@ -120,7 +120,7 @@ double ICubUtil::getForceByWeightedSum(const std::vector<double>& fingerTaxelsDa
     std::vector<double> unitVector(3);
 
     for(int i = 0; i < fingerTaxelsData.size(); i++){
-        
+
         getUnitVector(i,unitVector);
 
         partialXSum += fingerTaxelsData[i]*unitVector[0];

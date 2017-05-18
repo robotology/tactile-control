@@ -14,72 +14,72 @@ namespace tactileControl {
 
     class Task {
 
-        private:
+    private:
 
-            bool isFirstCall;
-            bool isClean;
-            int pwmSign;
+        bool isFirstCall;
+        bool isClean;
+        int pwmSign;
 
-        protected:
+    protected:
 
-            tactileControl::TaskData *taskData;
-            tactileControl::ControllerUtil *controllerUtil;
-            tactileControl::PortUtil *portUtil;
+        tactileControl::TaskData *taskData;
+        tactileControl::ControllerUtil *controllerUtil;
+        tactileControl::PortUtil *portUtil;
 
-            tactileControl::TaskName taskName;
+        tactileControl::TaskName taskName;
 
-            std::vector<int> controlledJoints;
-            std::vector<int> controlledFingers;
-            std::vector<double> inputCommandValue;
-            std::stringstream optionalLogStream;
-            std::string taskId;
-            int loggingBreak;
-            bool loggingEnabled;
-            int callsNumber;
-            int maxCallsNumber;
-            int taskThreadPeriod;
+        std::vector<int> controlledJoints;
+        std::vector<int> controlledFingers;
+        std::vector<double> inputCommandValue;
+        std::stringstream optionalLogStream;
+        std::string taskId;
+        int loggingBreak;
+        bool loggingEnabled;
+        int callsNumber;
+        int maxCallsNumber;
+        int taskThreadPeriod;
 
-            /* ******* Debug attributes.                ******* */
-            std::string dbgTag;
+        /* ******* Debug attributes.                ******* */
+        std::string dbgTag;
 
 
-        public:
+    public:
 
-            Task(tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil,double taskDuration);
+        Task(tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil,double taskDuration);
 
-            tactileControl::TaskName getTaskName(){ return taskName; }
+        tactileControl::TaskName getTaskName(){ return taskName; }
 
-            bool manage(bool keepActive);
+        bool manage(bool keepActive);
 
-            void clean();
+        void clean();
 
-            virtual std::string getTaskDescription(){ return "Unspecified task";}
+        virtual std::string getTaskDescription(){ return "Unspecified task";}
 
-        protected:
+    protected:
 
-            int getNumThreadCalls(double seconds);
+        int getNumThreadCalls(double seconds);
 
-            double timeElapsed();
+        double timeElapsed();
 
-            void expandTargets(const std::vector<double> &targets,std::vector<double> &expandedTargets);
+        void expandTargets(const std::vector<double> &targets,std::vector<double> &expandedTargets);
 
-        private:
+    private:
 
-            void createTaskId();
+        void createTaskId();
 
-            virtual void init(){};
+        virtual void init(){};
 
-            virtual void calculateControlInput() = 0;
+        virtual void calculateControlInput() = 0;
 
-            virtual void sendControlSignal();
+        virtual void sendControlSignal();
 
-            virtual void printScreenLog();
+        virtual void printScreenLog();
 
-            virtual void saveProgress();
+        virtual void saveProgress();
 
-            virtual bool taskIsOver();
+        virtual bool taskIsOver();
 
-            virtual void release(){};
+        virtual void release(){};
 
     };
 

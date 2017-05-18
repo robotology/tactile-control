@@ -29,11 +29,11 @@ namespace tactileControlWrapper {
         tactileControlWrapper::RPCTaskCmdArgName taskCmdArg;
         tactileControlWrapper::RPCViewCmdArgName viewCmdArg;
         tactileControlWrapper::TaskName task;
-		yarp::os::ConstString paramName;
-		std::stringstream errMsg;
+        yarp::os::ConstString paramName;
+        std::stringstream errMsg;
 
-		yarp::os::Value argValue;
-		yarp::os::Value waitValue;
+        yarp::os::Value argValue;
+        yarp::os::Value waitValue;
 
 
         RPCUtil();
@@ -46,7 +46,7 @@ namespace tactileControlWrapper {
 
         bool processTaskCommand(const yarp::os::Bottle &rpcCmdBottle);
 
-		void wrongSyntaxMessage(tactileControlWrapper::RPCMainCmdName mainCmd);
+        void wrongSyntaxMessage(tactileControlWrapper::RPCMainCmdName mainCmd);
 
     };
 

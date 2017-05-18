@@ -123,7 +123,6 @@ void ControlTask::initLowLevelPID(){
     pid.resize(controlledJoints.size());
     for(int i = 0; i < controlledJoints.size(); i++){
         initPID(pid[i],pidKp[i],pidKi[i],0.0,pidWp,pidWi,pidWd,pidN,pidTt[i],pidMinSatLim,pidMaxSatLim);
-std::cout << "pid " << pid[i] << std::endl;
     }
 }
 

@@ -80,7 +80,7 @@ void ApproachTask::calculateControlInput(){
 
         if (fingerIsInContact[i] == false && callsNumber > callsNumberForMovementTimeout && tempAngleDifference < finalCheckThreshold){
             fingerIsInContact[i] = true;
-        } 
+        }
 
     }
     positionIndex = nextPositionIndex;

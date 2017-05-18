@@ -18,20 +18,20 @@ using std::pair;
 RPCData::RPCData(){
 
     add("help",HELP,"Shows this help");
-	add("set", SET, "Sets a parameter (usage: 'set <paramName> <paramValue>')");
-	add("get", GET, "Gets a parameter (usage: 'get <paramName>')");
-	add("task", TASK, "Manages tasks (usage: 'task [ clear | add <taskType> <targetValueList> ]')");
+    add("set", SET, "Sets a parameter (usage: 'set <paramName> <paramValue>')");
+    add("get", GET, "Gets a parameter (usage: 'get <paramName>')");
+    add("task", TASK, "Manages tasks (usage: 'task [ clear | add <taskType> <targetValueList> ]')");
     add("show",SHOW,"Shows settings/tasks (usage: 'show [ set | tasks ]')");
     add("start",START,"Start tasks");
     add("open",OPEN,"Opens the hand and stops any running task (usage: open <fullyOpen> <wait>)");
     add("arm",ARM,"Sets the arm in home position");
     add("grasp",GRASP,"Executes the grasp task (usage: grasp <wait>)");
-	add("isHandOpen",IS_HAND_OPEN,"checks if the hand is open");
-	add("isHandClose",IS_HAND_CLOSE,"checks if the hand is close and the grasp is stable");
-	add("setGripStrength",SET_GRIP_STRENGTH,"sets the desired grip strength (usage: 'setGripStrength <value>')");
-	add("setMinForce", SET_MIN_FORCE, "sets the minimum force reference at the fingertips (usage: 'setMinForce <value>')");
-	add("disableMinForce", DISABLE_MIN_FORCE, "disables the minimum force reference mode");
-	add("quit", QUIT, "Closes the module");
+    add("isHandOpen",IS_HAND_OPEN,"checks if the hand is open");
+    add("isHandClose",IS_HAND_CLOSE,"checks if the hand is close and the grasp is stable");
+    add("setGripStrength",SET_GRIP_STRENGTH,"sets the desired grip strength (usage: 'setGripStrength <value>')");
+    add("setMinForce", SET_MIN_FORCE, "sets the minimum force reference at the fingertips (usage: 'setMinForce <value>')");
+    add("disableMinForce", DISABLE_MIN_FORCE, "disables the minimum force reference mode");
+    add("quit", QUIT, "Closes the module");
 
     // TASK <?>
     add("add",ADD,"ADD TASK");
@@ -81,12 +81,12 @@ std::string RPCData::getFullDescription(RPCMainCmdName mainCmdName){
 
 bool RPCData::setTargets(const yarp::os::Value &value,std::vector<double> &targets){
 
-	if (value.isNull()){
+    if (value.isNull()){
 
-		targets.resize(0);
-		return true;
+        targets.resize(0);
+        return true;
 
-	} else if (value.isInt() || value.isDouble()){
+    } else if (value.isInt() || value.isDouble()){
 
         targets.resize(1,value.asDouble());
         return true;
@@ -108,33 +108,33 @@ bool RPCData::setTargets(const yarp::os::Value &value,std::vector<double> &targe
 
 std::string RPCData::showCommandHelp(tactileControlWrapper::RPCMainCmdName mainCmdName){
 
-	return mainCmdMap[mainCmdName] + ": " + mainCmdDescMap[mainCmdName] + "\n";
+    return mainCmdMap[mainCmdName] + ": " + mainCmdDescMap[mainCmdName] + "\n";
 
 }
 
 std::string RPCData::showHelp(){
 
-	std::stringstream help("");
+    std::stringstream help("");
 
-	help << std::endl;
-	help << "<<< Available commands >>>" << std::endl;
-	help << std::endl;
-	help << showCommandHelp(HELP);
-	help << showCommandHelp(SET);
-	help << showCommandHelp(GET);
-	help << showCommandHelp(TASK);
-	help << showCommandHelp(SHOW);
-	help << showCommandHelp(START);
-	help << showCommandHelp(OPEN);
-	help << showCommandHelp(ARM);
-	help << showCommandHelp(GRASP);
-	help << showCommandHelp(IS_HAND_OPEN);
-	help << showCommandHelp(IS_HAND_CLOSE);
-	help << showCommandHelp(SET_GRIP_STRENGTH);
-	help << showCommandHelp(SET_MIN_FORCE);
-	help << showCommandHelp(DISABLE_MIN_FORCE);
-	help << showCommandHelp(QUIT);
-	help << std::endl;
+    help << std::endl;
+    help << "<<< Available commands >>>" << std::endl;
+    help << std::endl;
+    help << showCommandHelp(HELP);
+    help << showCommandHelp(SET);
+    help << showCommandHelp(GET);
+    help << showCommandHelp(TASK);
+    help << showCommandHelp(SHOW);
+    help << showCommandHelp(START);
+    help << showCommandHelp(OPEN);
+    help << showCommandHelp(ARM);
+    help << showCommandHelp(GRASP);
+    help << showCommandHelp(IS_HAND_OPEN);
+    help << showCommandHelp(IS_HAND_CLOSE);
+    help << showCommandHelp(SET_GRIP_STRENGTH);
+    help << showCommandHelp(SET_MIN_FORCE);
+    help << showCommandHelp(DISABLE_MIN_FORCE);
+    help << showCommandHelp(QUIT);
+    help << std::endl;
 
-	return help.str();
+    return help.str();
 }

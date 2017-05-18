@@ -12,38 +12,38 @@ namespace tactileControl {
 
     class ApproachTask : public Task {
 
-        private:
+    private:
+            
+        std::vector<bool> fingerIsInContact;
+        std::vector<bool> fingerSetInPosition;
+        int callsNumberForMovementTimeout;
+        std::vector<double> jointVelocities;
+        std::vector<std::vector<double> > fingerPositions;
+        int windowSize;
+        double finalCheckThreshold;
+        int positionIndex;
 
-            std::vector<bool> fingerIsInContact;
-            std::vector<bool> fingerSetInPosition;
-            int callsNumberForMovementTimeout;
-            std::vector<double> jointVelocities;
-            std::vector<std::vector<double> > fingerPositions;
-            int windowSize;
-            double finalCheckThreshold;
-            int positionIndex;
+    public:
 
-        public:
+        ApproachTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil);
 
-            ApproachTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil);
+        virtual void init();
 
-            virtual void init();
+        virtual void calculateControlInput();
 
-            virtual void calculateControlInput();
+        virtual void sendControlSignal();
 
-            virtual void sendControlSignal();
+        virtual void release();
 
-            virtual void release();
+        virtual bool taskIsOver();
 
-            virtual bool taskIsOver();
+        virtual std::string getTaskDescription();
 
-            virtual std::string getTaskDescription();
+    private:
 
-        private:
+        void moveFinger(int finger);
 
-            void moveFinger(int finger);
-
-            bool eachFingerIsInContact();
+        bool eachFingerIsInContact();
 
     };
 

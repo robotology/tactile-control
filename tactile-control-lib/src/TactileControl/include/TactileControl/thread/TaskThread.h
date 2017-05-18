@@ -16,44 +16,43 @@ namespace tactileControl {
 
     class TaskThread : public yarp::os::RateThread {
 
-        private:
+    private:
 
-            tactileControl::TaskData *taskData;
-            tactileControl::ControllerUtil *controllerUtil;
-            tactileControl::PortUtil *portUtil;
+        tactileControl::TaskData *taskData;
+        tactileControl::ControllerUtil *controllerUtil;
+        tactileControl::PortUtil *portUtil;
 
-            /* ****** Tasks management                              ****** */
-            std::vector<Task*> taskList;
-            int currentTaskIndex;
-            bool runEnabled;
+        /* ****** Tasks management                              ****** */
+        std::vector<Task*> taskList;
+        int currentTaskIndex;
+        bool runEnabled;
 
-            ///* ****** Debug attributes                              ****** */
-            std::string dbgTag;
+        ///* ****** Debug attributes                              ****** */
+        std::string dbgTag;
 
-        public:
+    public:
 
+        TaskThread(int period, tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil);
 
-            TaskThread(int period, tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil);
+        virtual bool threadInit();
 
-            virtual bool threadInit();
+        virtual void run();
 
-            virtual void run();
+        virtual void threadRelease();
 
-            virtual void threadRelease();
+        bool initializeGrasping();
+        bool afterRun(bool fullyOpen,bool wait);
 
-            bool initializeGrasping();
-            bool afterRun(bool fullyOpen,bool wait);
+        bool addStepTask(const std::vector<double> &targets);
 
-            bool addStepTask(const std::vector<double> &targets);
+        bool addApproachTask();
 
-            bool addApproachTask();
+        bool addControlTask();
+        bool addControlTask(const std::vector<double> &targets);
 
-            bool addControlTask();
-            bool addControlTask(const std::vector<double> &targets);
+        bool clearTaskList();
 
-            bool clearTaskList();
-
-            std::string getTaskListDescription();
+        std::string getTaskListDescription();
 
     };
 

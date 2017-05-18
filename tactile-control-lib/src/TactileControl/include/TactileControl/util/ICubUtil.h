@@ -8,7 +8,7 @@
 namespace tactileControl {
 
     class ICubUtil {
-    
+
     public:
 
         static int getFingerFromJoint(int joint);
@@ -32,10 +32,6 @@ namespace tactileControl {
         static double getIndexMiddleDifference(int numFingers,const std::vector<double> &armEncoderAngles);
 
         static double getForce(const std::vector<double>& fingerTaxelsData,tactileControl::ForceCalculationMode forceCalculationMode);
- 
-        //static void printBottleIntoFile(std::ofstream &file,yarp::os::Bottle &bottle);
-
-        //static void normalizeVector(const std::vector<double> &inputVector,std::vector<double> &outputVector);
 
     private:
 
@@ -45,20 +41,8 @@ namespace tactileControl {
 
         static void getUnitVector(int index,std::vector<double>& unitVector);
 
-
-
-
-        //static void addOption(yarp::os::Bottle &bottle,const char *paramName,yarp::os::Value paramValue);
-
-        //static void addOption(yarp::os::Bottle &bottle,const char *paramName,yarp::os::Value paramValue1,yarp::os::Value paramValue2);
-
-        //static void addOption(yarp::os::Bottle &bottle,const char *paramName,yarp::os::Value paramValue1,yarp::os::Value paramValue2,yarp::os::Value paramValue3);
-
-        //static void addOption(yarp::os::Bottle &bottle,const char *paramName,double paramValueList[],int numElem);
-
-        //static void addOption(yarp::os::Bottle &bottle,const char *paramName,yarp::os::Value paramValueList[],int numElem);
-
     };
+
 } //namespace tactileControl
 
 #endif // TACTILECONTROL_ICUBUTIL_H

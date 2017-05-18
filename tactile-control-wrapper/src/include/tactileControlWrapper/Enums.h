@@ -7,18 +7,18 @@ namespace tactileControlWrapper {
 
         HELP,
         SET,
-		GET,
+        GET,
         TASK,
         SHOW,
         START,
         OPEN,
         ARM,
         GRASP,
-		IS_HAND_OPEN,
-		IS_HAND_CLOSE,
-		SET_GRIP_STRENGTH,
-		SET_MIN_FORCE,
-		DISABLE_MIN_FORCE,
+        IS_HAND_OPEN,
+        IS_HAND_CLOSE,
+        SET_GRIP_STRENGTH,
+        SET_MIN_FORCE,
+        DISABLE_MIN_FORCE,
         QUIT
     };
     

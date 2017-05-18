@@ -43,8 +43,8 @@ namespace tactileControlWrapper {
 
         bool setTargets(const yarp::os::Value &value,std::vector<double> &targets);
 
-		std::string showCommandHelp(tactileControlWrapper::RPCMainCmdName mainCmdName);
-		std::string showHelp();
+        std::string showCommandHelp(tactileControlWrapper::RPCMainCmdName mainCmdName);
+        std::string showHelp();
 
     private:
 

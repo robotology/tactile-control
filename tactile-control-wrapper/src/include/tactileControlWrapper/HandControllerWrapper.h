@@ -20,7 +20,7 @@ namespace tactileControlWrapper {
 
         private:
 
-			tactileControl::HandController handController;
+            tactileControl::HandController handController;
 
             /* ****** Module attributes                             ****** */
             int moduleThreadPeriod;
@@ -28,8 +28,8 @@ namespace tactileControlWrapper {
             std::string robotName;
             bool closing;
             bool tasksRunning;
-			std::stringstream errMsg;
-			std::stringstream screenMsg;
+            std::stringstream errMsg;
+            std::stringstream screenMsg;
 
             /* ****** RPC Ports                                     ****** */
             yarp::os::RpcServer portPlantIdentificationRPC;
@@ -53,20 +53,20 @@ namespace tactileControlWrapper {
 
             /* ****** RPC Methods                                  ****** */
             bool start();
-			bool open(const yarp::os::Value &paramValue,const yarp::os::Value &waitValue);
+            bool open(const yarp::os::Value &paramValue,const yarp::os::Value &waitValue);
             bool arm(const yarp::os::Value &paramValue);
-			bool grasp(const yarp::os::Value &waitValue);
+            bool grasp(const yarp::os::Value &waitValue);
             bool quit();
-			bool set(const yarp::os::ConstString &paramName,const yarp::os::Value &paramValue);
-			bool get(const yarp::os::ConstString &paramName);
-			bool task(tactileControlWrapper::RPCTaskCmdArgName paramName, tactileControlWrapper::TaskName taskName, const yarp::os::Value &paramValue);
-			bool show(tactileControlWrapper::RPCViewCmdArgName paramName);
-			bool isHandOpen();
-			bool isHandClose();
-			bool setGripStrength(const yarp::os::Value &paramValue);
-			bool setMinForce(const yarp::os::Value &paramValue);
-			bool disableMinForce();
-			bool help();
+            bool set(const yarp::os::ConstString &paramName,const yarp::os::Value &paramValue);
+            bool get(const yarp::os::ConstString &paramName);
+            bool task(tactileControlWrapper::RPCTaskCmdArgName paramName, tactileControlWrapper::TaskName taskName, const yarp::os::Value &paramValue);
+            bool show(tactileControlWrapper::RPCViewCmdArgName paramName);
+            bool isHandOpen();
+            bool isHandClose();
+            bool setGripStrength(const yarp::os::Value &paramValue);
+            bool setMinForce(const yarp::os::Value &paramValue);
+            bool disableMinForce();
+            bool help();
 
     };
 

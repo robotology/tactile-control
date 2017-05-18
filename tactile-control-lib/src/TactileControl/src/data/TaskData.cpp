@@ -86,9 +86,9 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_CTRL_GRIP_STRENGTH,50.0);
     setDefault(PAR_CTRL_THUMB_ABDUCTION_OFFSET,-30.0);
     setDefault(PAR_CTRL_MIN_JERK_TRACK_ENABLED,trueValue);
-	setDefault(PAR_CTRL_MIN_JERK_TRACK_REF_TIME, 2.0);
-	setDefault(PAR_CTRL_TARGET_OBJECT_POSITION, 10.0);
-	setDefault(PAR_CTRL_SUPERVISOR_MODE, GMM_MODE);
+    setDefault(PAR_CTRL_MIN_JERK_TRACK_REF_TIME, 2.0);
+    setDefault(PAR_CTRL_TARGET_OBJECT_POSITION, 10.0);
+    setDefault(PAR_CTRL_SUPERVISOR_MODE, GMM_MODE);
     setDefault(PAR_CTRL_GMM_BEST_POSE_LOG_ONE_SHOT,falseValue);
     setDefault(PAR_CTRL_GMM_JOINTS_REGRESSION_ENABLED,falseValue);
     setDefault(PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_ENABLED,trueValue);
@@ -136,34 +136,34 @@ bool TaskData::initEncodersData(int numArmJoints){
 
 bool TaskData::set(const yarp::os::ConstString &key, const yarp::os::Value &value, tactileControl::PropertyWritingMode propertyWritingMode){
 
-	bool propertyWritten = false;
-	bool propertyPresent;
+    bool propertyWritten = false;
+    bool propertyPresent;
 
-	switch (propertyWritingMode){
+    switch (propertyWritingMode){
 
-	case ALWAYS_WRITE:
-		options->put(key, value);
-		propertyWritten = true;
-		break;
+    case ALWAYS_WRITE:
+        options->put(key, value);
+        propertyWritten = true;
+        break;
 
-	case WRITE_ONLY_IF_NOT_PRESENT:
-		propertyPresent = options->check(key);
-		if (!propertyPresent){
-			options->put(key, value);
-			propertyWritten = true;
-		}
-		break;
+    case WRITE_ONLY_IF_NOT_PRESENT:
+        propertyPresent = options->check(key);
+        if (!propertyPresent){
+            options->put(key, value);
+            propertyWritten = true;
+        }
+        break;
 
-	case WRITE_ONLY_IF_PRESENT:
-		propertyPresent = options->check(key);
-		if (propertyPresent){
-			options->put(key, value);
-			propertyWritten = true;
-		}
-		break;
-	}
+    case WRITE_ONLY_IF_PRESENT:
+        propertyPresent = options->check(key);
+        if (propertyPresent){
+            options->put(key, value);
+            propertyWritten = true;
+        }
+        break;
+    }
 
-	return propertyWritten;
+    return propertyWritten;
 }
 
 void TaskData::setDefault(const yarp::os::ConstString &key,const yarp::os::Value &value){

@@ -30,12 +30,12 @@ namespace tactileControl {
         STANDARD_GMM
     };
 
-	enum PropertyWritingMode {
+    enum PropertyWritingMode {
 
-		ALWAYS_WRITE, // it always writes the property, also if it is already present
-		WRITE_ONLY_IF_NOT_PRESENT, // it writes the property only if the property is not present (it sets a default, used during the initialization)
-		WRITE_ONLY_IF_PRESENT // it writes the property only if the property is already present (it writes only if the key is legal, used after the initialization)
-	};
+        ALWAYS_WRITE, // it always writes the property, also if it is already present
+        WRITE_ONLY_IF_NOT_PRESENT, // it writes the property only if the property is not present (it sets a default, used during the initialization)
+        WRITE_ONLY_IF_PRESENT // it writes the property only if the property is already present (it writes only if the key is legal, used after the initialization)
+    };
 
 }
 

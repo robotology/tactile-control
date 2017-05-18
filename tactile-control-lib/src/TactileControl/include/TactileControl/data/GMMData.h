@@ -13,38 +13,37 @@ namespace tactileControl {
 
     class GMMData {
 
-        private:
+    private:
 
-            /* ******* Debug attributes.                ******* */
-            std::string dbgTag;
+        /* ******* Debug attributes.                ******* */
+        std::string dbgTag;
 
-            /* ******* Module attributes.               ******* */
-            int numComponents;
+        /* ******* Module attributes.               ******* */
+        int numComponents;
 
-            std::vector<yarp::sig::Vector> mu;
-            std::vector<yarp::sig::Matrix> sigma;
+        std::vector<yarp::sig::Vector> mu;
+        std::vector<yarp::sig::Matrix> sigma;
 
-            std::vector<yarp::sig::Vector> muQ;
-            std::vector<yarp::sig::Vector> muR;
-            std::vector<yarp::sig::Matrix> sigmaQQ;
-            std::vector<yarp::sig::Matrix> sigmaRQ;
-            std::vector<yarp::sig::Matrix> sigmaRR;
-            std::vector<double> componentsPrior;
+        std::vector<yarp::sig::Vector> muQ;
+        std::vector<yarp::sig::Vector> muR;
+        std::vector<yarp::sig::Matrix> sigmaQQ;
+        std::vector<yarp::sig::Matrix> sigmaRQ;
+        std::vector<yarp::sig::Matrix> sigmaRR;
+        std::vector<double> componentsPrior;
                 
-            std::vector<yarp::sig::Matrix> sigmaQQInv;
-            std::vector<double> sigmaQQDet;
+        std::vector<yarp::sig::Matrix> sigmaQQInv;
+        std::vector<double> sigmaQQDet;
 
-            double calculateGMProbability(yarp::sig::Vector &queryPoint, int gmmComponent);
+        double calculateGMProbability(yarp::sig::Vector &queryPoint, int gmmComponent);
 
 
-        public:
+    public:
 
-            GMMData(tactileControl::GMMType gmmType);
+        GMMData(tactileControl::GMMType gmmType);
 
-            void runGaussianMixtureRegression(yarp::sig::Vector &queryPoint,yarp::sig::Vector &output);
-                
-            void buildQRStructures(std::vector<int> &qIndexes,std::vector<int> &rIndexes);
-                
+        void runGaussianMixtureRegression(yarp::sig::Vector &queryPoint,yarp::sig::Vector &output);
+
+        void buildQRStructures(std::vector<int> &qIndexes,std::vector<int> &rIndexes);
 
     };
 

@@ -29,33 +29,33 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
 
     cout << dbgTag << "Starting. \n";
 
-	// get resoource finder data
+    // get resoource finder data
     string portPrefix = rf.check("portPrefix", Value("tactileControlWrapper")).asString();
-	string libConfigFileName = rf.check("libConfigFileName", Value("confTactileControlLib.ini")).asString();
-	string libConfigFileContext = rf.check("libConfigFileContext", Value("tactileControlWrapper")).asString();
-	moduleThreadPeriod = rf.check("moduleThreadPeriod", 1000).asInt();
+    string libConfigFileName = rf.check("libConfigFileName", Value("confTactileControlLib.ini")).asString();
+    string libConfigFileContext = rf.check("libConfigFileContext", Value("tactileControlWrapper")).asString();
+    moduleThreadPeriod = rf.check("moduleThreadPeriod", 1000).asInt();
 
     // open ports
     portPlantIdentificationRPC.open("/" + portPrefix + "/cmd:i");
     attach(portPlantIdentificationRPC);
 
-	// initialize rpc commands utility
+    // initialize rpc commands utility
     rpcCmdUtil.init(&rpcCmdData);
 
-	// load tactile control lib resource finder data
-	yarp::os::ResourceFinder tactileControlLibRF;
-	tactileControlLibRF.setDefaultContext(libConfigFileContext.c_str());
-	tactileControlLibRF.setDefaultConfigFile(libConfigFileName.c_str());
-	char **fakeArgV;
-	tactileControlLibRF.configure(0, fakeArgV, false);
+    // load tactile control lib resource finder data
+    yarp::os::ResourceFinder tactileControlLibRF;
+    tactileControlLibRF.setDefaultContext(libConfigFileContext.c_str());
+    tactileControlLibRF.setDefaultConfigFile(libConfigFileName.c_str());
+    char **fakeArgV;
+    tactileControlLibRF.configure(0, fakeArgV, false);
 
-	// initialize the hand controller
-	yarp::os::Property options;
+    // initialize the hand controller
+    yarp::os::Property options;
     options.fromString(tactileControlLibRF.toString());
-	if (!handController.open(options)){
-		cout << dbgTag << "could not open the hand controller. \n";
-		return false;
-	}
+    if (!handController.open(options)){
+        cout << dbgTag << "could not open the hand controller. \n";
+        return false;
+    }
 
     cout << dbgTag << "Started correctly. \n";
 
@@ -80,84 +80,84 @@ bool HandControllerWrapper::interruptModule() {
 
 bool HandControllerWrapper::respond(const yarp::os::Bottle& command, yarp::os::Bottle& reply){
 
-	screenMsg.str(std::string());
-	errMsg.str(std::string());
+    screenMsg.str(std::string());
+    errMsg.str(std::string());
 
     bool success = rpcCmdUtil.processCommand(command);
 
-	if (!success){
+    if (!success){
 
-		errMsg << rpcCmdUtil.errMsg.str();
+        errMsg << rpcCmdUtil.errMsg.str();
 
-	}
-	else {
+    }
+    else {
 
         switch (rpcCmdUtil.mainCmd){
 
         case HELP:
-			success = help();
+            success = help();
             break;
-		case SET:
-			success = set(rpcCmdUtil.paramName, rpcCmdUtil.argValue);
-			break;
-		case GET:
-			success = get(rpcCmdUtil.paramName);
-			break;
-		case TASK:
-			success = task(rpcCmdUtil.taskCmdArg, rpcCmdUtil.task, rpcCmdUtil.argValue);
+        case SET:
+            success = set(rpcCmdUtil.paramName, rpcCmdUtil.argValue);
+            break;
+        case GET:
+            success = get(rpcCmdUtil.paramName);
+            break;
+        case TASK:
+            success = task(rpcCmdUtil.taskCmdArg, rpcCmdUtil.task, rpcCmdUtil.argValue);
             break;
         case SHOW:
-			success = show(rpcCmdUtil.viewCmdArg);
+            success = show(rpcCmdUtil.viewCmdArg);
             break;
         case START:
-			success = start();
+            success = start();
             break;
         case OPEN:
-			success = open(rpcCmdUtil.argValue, rpcCmdUtil.waitValue);
+            success = open(rpcCmdUtil.argValue, rpcCmdUtil.waitValue);
             break;
-		case GRASP:
-			success = grasp(rpcCmdUtil.waitValue);
-			break;
-		case IS_HAND_OPEN:
-			success = isHandOpen();
-			break;
-		case IS_HAND_CLOSE:
-			success = isHandClose();
-			break;
-		case SET_GRIP_STRENGTH:
-			success = setGripStrength(rpcCmdUtil.argValue);
-			break;
-		case SET_MIN_FORCE:
-			success = setMinForce(rpcCmdUtil.argValue);
-			break;
-		case DISABLE_MIN_FORCE:
-			success = disableMinForce();
-			break;
-		case QUIT:
-			success = quit();
+        case GRASP:
+            success = grasp(rpcCmdUtil.waitValue);
+            break;
+        case IS_HAND_OPEN:
+            success = isHandOpen();
+            break;
+        case IS_HAND_CLOSE:
+            success = isHandClose();
+            break;
+        case SET_GRIP_STRENGTH:
+            success = setGripStrength(rpcCmdUtil.argValue);
+            break;
+        case SET_MIN_FORCE:
+            success = setMinForce(rpcCmdUtil.argValue);
+            break;
+        case DISABLE_MIN_FORCE:
+            success = disableMinForce();
+            break;
+        case QUIT:
+            success = quit();
             break;
         }
-	}
+    }
 
 
-	if (success){
+    if (success){
         reply.addString("ack");
 //		reply.addString(screenMsg.str());
         cout << screenMsg.str() << endl;
     }
-	else {
-		reply.addString("nack");
+    else {
+        reply.addString("nack");
 //		reply.addString(errMsg.str());
         cout << errMsg.str() << endl;
-	}
+    }
 
     return true;
 }
 
 bool HandControllerWrapper::close() {
 
-	// close hand controller
-	handController.close();
+    // close hand controller
+    handController.close();
 
     // close rpc port
     portPlantIdentificationRPC.close();
@@ -167,27 +167,27 @@ bool HandControllerWrapper::close() {
 
 bool HandControllerWrapper::open(const Value &paramValue, const Value &waitValue) {
 
-	if (waitValue.isNull()){
-		return handController.openHand(paramValue.asBool());
-	}
-	else {
-		return handController.openHand(paramValue.asBool(), waitValue.asBool());
-	}
+    if (waitValue.isNull()){
+        return handController.openHand(paramValue.asBool());
+    }
+    else {
+        return handController.openHand(paramValue.asBool(), waitValue.asBool());
+    }
 }
 
 bool HandControllerWrapper::start() {
 
-	return handController.startTask();
+    return handController.startTask();
 }
 
 bool HandControllerWrapper::grasp(const yarp::os::Value &waitValue) {
 
-	if (waitValue.isNull()){
-		return handController.closeHand();
-	}
-	else {
-		return handController.closeHand(waitValue.asBool());
-	}
+    if (waitValue.isNull()){
+        return handController.closeHand();
+    }
+    else {
+        return handController.closeHand(waitValue.asBool());
+    }
 }
 
 bool HandControllerWrapper::quit() {
@@ -198,143 +198,143 @@ bool HandControllerWrapper::quit() {
 
 bool HandControllerWrapper::set(const yarp::os::ConstString &paramName, const Value &paramValue){
 
-	if (handController.set(paramName, paramValue)){
+    if (handController.set(paramName, paramValue)){
 
-		screenMsg << "'" << paramName << "' set to " << paramValue.toString();
+        screenMsg << "'" << paramName << "' set to " << paramValue.toString();
 
-		return true;
-	}
-	else {
-		errMsg << "param '" << paramName << "' is not valid";
+        return true;
+    }
+    else {
+        errMsg << "param '" << paramName << "' is not valid";
 
-		return false;
-	}
+        return false;
+    }
 
 }
 
 bool HandControllerWrapper::get(const yarp::os::ConstString &paramName){
 
-	yarp::os::Value returnValue;
-	if (!handController.get(paramName, returnValue)){
-		screenMsg << "'" << paramName << "' not set";
-	}
-	else {
-		screenMsg << "'" << paramName << "': " << returnValue.toString();
-	}
+    yarp::os::Value returnValue;
+    if (!handController.get(paramName, returnValue)){
+        screenMsg << "'" << paramName << "' not set";
+    }
+    else {
+        screenMsg << "'" << paramName << "': " << returnValue.toString();
+    }
 
-	return true;
+    return true;
 }
 
 bool HandControllerWrapper::task(tactileControlWrapper::RPCTaskCmdArgName paramName, tactileControlWrapper::TaskName taskName, const Value &paramValue){
 
     std::vector<double> targets;
-	bool success = false;
+    bool success = false;
 
     switch (paramName){
 
     case ADD:
 
-		if (!rpcCmdData.setTargets(paramValue, targets)){
-			return false;
-		}
+        if (!rpcCmdData.setTargets(paramValue, targets)){
+            return false;
+        }
 
-		switch (taskName){
+        switch (taskName){
 
-		case STEP:
-			success = handController.addStepTask(targets);
-			break;
+        case STEP:
+            success = handController.addStepTask(targets);
+            break;
 
-		case APPROACH:
-			success = handController.addApproachTask();
-			break;
+        case APPROACH:
+            success = handController.addApproachTask();
+            break;
 
-		case CONTROL:
+        case CONTROL:
 
-			if (targets.empty()){
-				success = handController.addControlTask();
-			}
-			else {
-				success = handController.addControlTask(targets);
-			}
-			break;
+            if (targets.empty()){
+                success = handController.addControlTask();
+            }
+            else {
+                success = handController.addControlTask(targets);
+            }
+            break;
 
-		}
+        }
 
         break;
 
     case CLEAR:
-		success = handController.clearTaskList();
+        success = handController.clearTaskList();
         break;
 
     }
 
-	return success;
+    return success;
 }
 
 bool HandControllerWrapper::show(tactileControlWrapper::RPCViewCmdArgName paramName){
 
-	bool success = false;
+    bool success = false;
 
-	switch (paramName){
+    switch (paramName){
 
-	case TASKS:
-		screenMsg << handController.getTaskListDescription();
-		success = true;
-		break;
+    case TASKS:
+        screenMsg << handController.getTaskListDescription();
+        success = true;
+        break;
 
-	case SETTINGS:
-		screenMsg << handController.getDataDescription();
-		success = true;
-		break;
-	}
+    case SETTINGS:
+        screenMsg << handController.getDataDescription();
+        success = true;
+        break;
+    }
 
-	return success;
+    return success;
 }
 
 bool HandControllerWrapper::help(){
 
-	screenMsg << rpcCmdData.showHelp();
+    screenMsg << rpcCmdData.showHelp();
 
     return true;
 }
 
 bool HandControllerWrapper::isHandOpen(){
 
-	screenMsg << handController.isHandOpen();
+    screenMsg << handController.isHandOpen();
 
-	return true;
+    return true;
 }
 bool HandControllerWrapper::isHandClose(){
 
-	screenMsg << handController.isHandClose();
+    screenMsg << handController.isHandClose();
 
-	return true;
+    return true;
 }
 
 bool HandControllerWrapper::setGripStrength(const yarp::os::Value &paramValue){
 
-	handController.setGripStrength(paramValue.asDouble());
-	
-	screenMsg << "Grip strength set to " << paramValue.toString();
+    handController.setGripStrength(paramValue.asDouble());
+    
+    screenMsg << "Grip strength set to " << paramValue.toString();
 
-	return true;
+    return true;
 }
 
 bool HandControllerWrapper::setMinForce(const yarp::os::Value &paramValue){
 
-	handController.setMinForce(paramValue.asDouble());
+    handController.setMinForce(paramValue.asDouble());
 
-	screenMsg << "Min force mode enabled and min force set to " << paramValue.toString();
+    screenMsg << "Min force mode enabled and min force set to " << paramValue.toString();
 
-	return true;
+    return true;
 
 }
 
 bool HandControllerWrapper::disableMinForce(){
 
-	handController.disableMinForce();
+    handController.disableMinForce();
 
-	screenMsg << "Min force mode disabled";
+    screenMsg << "Min force mode disabled";
 
-	return true;
+    return true;
 }
