@@ -31,7 +31,7 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
 
     // get resoource finder data
     string portPrefix = rf.check("portPrefix", Value("tactileControlWrapper")).asString();
-    string libConfigFileName = rf.check("libConfigFileName", Value("confTactileControlLib.ini")).asString();
+    string libConfigFileName = rf.check("libConfigFileName", Value("confTactileControlLib")).asString();
     string libConfigFileContext = rf.check("libConfigFileContext", Value("tactileControlWrapper")).asString();
     moduleThreadPeriod = rf.check("moduleThreadPeriod", 1000).asInt();
 
@@ -42,20 +42,27 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
     // initialize rpc commands utility
     rpcCmdUtil.init(&rpcCmdData);
 
-    // load tactile control lib resource finder data
-    yarp::os::ResourceFinder tactileControlLibRF;
-    tactileControlLibRF.setDefaultContext(libConfigFileContext.c_str());
-    tactileControlLibRF.setDefaultConfigFile(libConfigFileName.c_str());
-    char **fakeArgV;
-    tactileControlLibRF.configure(0, fakeArgV, false);
-
     // initialize the hand controller
-    yarp::os::Property options;
-    options.fromString(tactileControlLibRF.toString());
-    if (!handController.open(options)){
+    if (!handController.open(libConfigFileContext,libConfigFileName)){
         cout << dbgTag << "could not open the hand controller. \n";
         return false;
     }
+
+
+    //// load tactile control lib resource finder data
+    //yarp::os::ResourceFinder tactileControlLibRF;
+    //tactileControlLibRF.setDefaultContext(libConfigFileContext.c_str());
+    //tactileControlLibRF.setDefaultConfigFile(libConfigFileName.c_str());
+    //char **fakeArgV;
+    //tactileControlLibRF.configure(0, fakeArgV, false);
+
+    //// initialize the hand controller
+    //yarp::os::Property options;
+    //options.fromString(tactileControlLibRF.toString());
+    //if (!handController.open(options)){
+    //    cout << dbgTag << "could not open the hand controller. \n";
+    //    return false;
+    //}
 
     cout << dbgTag << "Started correctly. \n";
 

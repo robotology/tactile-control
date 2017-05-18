@@ -7,9 +7,7 @@
 #include <yarp/os/Time.h>
 #include <yarp/sig/Vector.h>
 
-
 using tactileControl::ControllerUtil;
-
 
 ControllerUtil::ControllerUtil(){
 
@@ -29,7 +27,6 @@ bool ControllerUtil::init(tactileControl::TaskData *taskData){
     numFingers = taskData->getFingerNum();
 
     string portPrefix = taskData->getString(PAR_COMMON_PORT_PREFIX);
-    string iCub = taskData->getString(PAR_COMMON_ICUB);
     string hand = taskData->getString(PAR_COMMON_HAND);
 
     string portFullPrefix;
@@ -43,11 +40,11 @@ bool ControllerUtil::init(tactileControl::TaskData *taskData){
     /* ******* Joint interfaces                     ******* */
     string robotPart = hand + "_arm";
     yarp::os::Property options;
-    options.put("robot", iCub.c_str()); 
+    options.put("robot", "icub"); 
     options.put("device", "remote_controlboard");
     options.put("part", robotPart.c_str());
     options.put("local", (portFullPrefix).c_str());
-    options.put("remote", ("/" + iCub + "/" + robotPart).c_str());
+    options.put("remote", ("/icub/" + robotPart).c_str());
     
     // Open driver
     if (!clientArm.open(options)) {
@@ -186,8 +183,6 @@ bool ControllerUtil::getArmEncoderAngleReferences(std::vector<double> &armEncode
 
     return true;
 }
-
-
 
 bool ControllerUtil::saveCurrentControlMode(){
 

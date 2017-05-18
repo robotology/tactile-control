@@ -11,6 +11,8 @@
 #include <yarp/os/ConstString.h>
 #include <yarp/os/Value.h>
 
+#include <string>
+
 namespace tactileControl {
 
 
@@ -22,6 +24,7 @@ namespace tactileControl {
         tactileControl::ControllerUtil *controllerUtil;
         tactileControl::PortUtil *portUtil;
 
+        bool controllerConfigured;
         bool taskRunning;
 
         /* ****** Threads                                 ****** */
@@ -46,6 +49,12 @@ namespace tactileControl {
         * Sets the given properties and initializes the hand controller. Returns true in case of success.
         */
         bool open(const yarp::os::Property &options);
+
+
+        /**
+        * Sets the properties contained in the given configuration file and initializes the hand controller. Returns true in case of success.
+        */
+        bool open(std::string context, std::string configFile);
 
         /**
         * Sets the given property. Returns true in case of success.
@@ -80,17 +89,17 @@ namespace tactileControl {
         /**
         * Sets the minimum value of force at each fingertip used for grasping.
         */
-        void setMinForce(double minForce);
+        bool setMinForce(double minForce);
 
         /**
         * Disables the minimum force functionality.
         */
-        void disableMinForce();
+        bool disableMinForce();
 
         /**
         * Sets the grip strength.
         */
-        void setGripStrength(double gripStrength);
+        bool setGripStrength(double gripStrength);
 
         /**
         * Add the step task to the task list. Returns true in case of success.

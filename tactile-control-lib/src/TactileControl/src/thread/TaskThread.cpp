@@ -9,11 +9,11 @@ using tactileControl::TaskThread;
 
 TaskThread::TaskThread(int period, tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil) : RateThread(period) {
 
-        this->taskData = taskData;
-        this->controllerUtil = controllerUtil;
-        this->portUtil = portUtil;
+    this->taskData = taskData;
+    this->controllerUtil = controllerUtil;
+    this->portUtil = portUtil;
         
-        dbgTag = "TaskThread: ";
+    dbgTag = "TaskThread: ";
 }
 
 
