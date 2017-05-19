@@ -86,17 +86,14 @@ bool HandController::open(std::string context, std::string configFile){
     ResourceFinder iCubConfigFileRF;
     iCubConfigFileRF.setDefaultContext(context.c_str());
     iCubConfigFileRF.setDefaultConfigFile((configFile + "_" + icub + ".ini").c_str());
-    char **fakeArgV;
     iCubConfigFileRF.configure(0, fakeArgV, false);
 
-    // get settings common to both hands
-    Bottle &iCubSpecificData = iCubConfigFileRF.findGroup("bothHands");
     // get hand-specific settings
     Bottle &iCubHandSpecificData = iCubConfigFileRF.findGroup(hand + "Hand");
 
     // put all settings into Property object
     yarp::os::Property options;
-    options.fromString(mainConfigFileRF.toString() + iCubSpecificData.toString() + iCubHandSpecificData.toString());
+    options.fromString(mainConfigFileRF.toString() + iCubHandSpecificData.toString());
 
     return open(options);
 }
