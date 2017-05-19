@@ -45,7 +45,7 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
 
     // initialize the hand controller
     handController.set(libConfigFileContext,libConfigFileName);
-    handController.set("hand", hand);
+    handController.set("hand", Value(hand));
     if (!handController.open()){
         cout << dbgTag << "could not initialize the hand controller. \n";
         return false;
