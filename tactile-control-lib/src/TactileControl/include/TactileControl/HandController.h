@@ -24,7 +24,8 @@ namespace tactileControl {
         tactileControl::ControllerUtil *controllerUtil;
         tactileControl::PortUtil *portUtil;
 
-        bool controllerConfigured;
+        bool settingsLoaded;
+        bool controllerInitialized;
         bool taskRunning;
 
         /* ****** Threads                                 ****** */
@@ -46,15 +47,14 @@ namespace tactileControl {
         bool open();
 
         /**
-        * Sets the given properties and initializes the hand controller. Returns true in case of success.
+        * Sets the given properties. Returns true in case of success.
         */
-        bool open(const yarp::os::Property &options);
-
+        bool set(const yarp::os::Property &options);
 
         /**
-        * Sets the properties contained in the given configuration file and initializes the hand controller. Returns true in case of success.
+        * Sets the properties contained in the given configuration file. Returns true in case of success.
         */
-        bool open(std::string context, std::string configFile);
+        bool set(std::string context, std::string configFile);
 
         /**
         * Sets the given property. Returns true in case of success.

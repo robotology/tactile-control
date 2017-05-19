@@ -10,28 +10,21 @@ using tactileControl::HandController;
 
 HandController::HandController(){
 
-    controllerConfigured = false;
+    controllerInitialized = false;
     taskRunning = false;
 
     dbgTag = "HandController: ";
 }
 
 bool HandController::open(){
-
-    yarp::os::Property options;
-    return open(options);
-}
-
-bool HandController::open(const yarp::os::Property &options){
     using std::cout;
 
-    if (controllerConfigured) return false;
-
-    // initialize data
-    taskData = new TaskData();
-    if (!taskData->init(options)){
-        cout << dbgTag << "failed to initialize data\n";
-        return false;
+    // initialize data if not already initialized
+    if (!settingsLoaded){
+        yarp::os::Property options;
+        if (!set(options)){
+            return false;
+        }
     }
 
     // initialize motor interfaces
@@ -49,7 +42,7 @@ bool HandController::open(const yarp::os::Property &options){
     }
 
     // start task thread
-    taskThread = new TaskThread(taskData->getInt(PAR_COMMON_TASK_THREAD_PERIOD),taskData,controllerUtil,portUtil);
+    taskThread = new TaskThread(taskData->getInt(PAR_COMMON_TASK_THREAD_PERIOD), taskData, controllerUtil, portUtil);
     if (!taskThread->start()) {
         cout << dbgTag << "could not start the task thread\n";
         return false;
@@ -57,18 +50,34 @@ bool HandController::open(const yarp::os::Property &options){
     taskThread->suspend();
 
     // start data collection thread
-    dataCollectionThread = new DataCollectionThread(taskData->getInt(PAR_COMMON_DATA_COLLECTION_THREAD_PERIOD),taskData,controllerUtil,portUtil);
+    dataCollectionThread = new DataCollectionThread(taskData->getInt(PAR_COMMON_DATA_COLLECTION_THREAD_PERIOD), taskData, controllerUtil, portUtil);
     if (!dataCollectionThread->start()) {
         cout << dbgTag << "could not start data collection thread\n";
         return false;
     }
 
-    controllerConfigured = true;
+    controllerInitialized = true;
+
+    return true;
+
+}
+
+bool HandController::set(const yarp::os::Property &options){
+    using std::cout;
+
+    // initialize data
+    taskData = new TaskData();
+    if (!taskData->init(options)){
+        cout << dbgTag << "failed to initialize data\n";
+        return false;
+    }
+
+    settingsLoaded = true;
 
     return true;
 }
 
-bool HandController::open(std::string context, std::string configFile){
+bool HandController::set(std::string context, std::string configFile){
     using yarp::os::ResourceFinder;
     using yarp::os::Bottle;
 
@@ -95,28 +104,28 @@ bool HandController::open(std::string context, std::string configFile){
     yarp::os::Property options;
     options.fromString(mainConfigFileRF.toString() + iCubHandSpecificData.toString());
 
-    return open(options);
+    return set(options);
 }
 
 
 
 bool HandController::set(const yarp::os::ConstString &key,const yarp::os::Value &value){
 
-    if (!controllerConfigured) return false;
+    if (!settingsLoaded) return false;
 
     return taskData->set(key,value);
 }
 
 bool HandController::get(const yarp::os::ConstString &key,yarp::os::Value &value){
 
-    if (!controllerConfigured) return false;
+    if (!settingsLoaded) return false;
 
     return taskData->get(key, value);
  }
 
 bool HandController::closeHand(bool wait){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     if (taskRunning == true){
 
@@ -138,14 +147,14 @@ bool HandController::closeHand(bool wait){
 
 bool HandController::isHandClose(){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     return taskData->graspIsStable;
 }
 
 bool HandController::openHand(bool fullyOpen, bool wait){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     if (taskRunning == true){
 
@@ -162,14 +171,14 @@ bool HandController::openHand(bool fullyOpen, bool wait){
 
 bool HandController::isHandOpen(){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     return controllerUtil->isMotionDone();
 }
 
 bool HandController::setMinForce(double minForce){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     taskData->set(PAR_CTRL_MIN_FORCE_ENABLED, yarp::os::Value("true"));
     taskData->set(PAR_CTRL_MIN_FORCE,minForce);
@@ -179,7 +188,7 @@ bool HandController::setMinForce(double minForce){
 
 bool HandController::disableMinForce(){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     taskData->set(PAR_CTRL_MIN_FORCE_ENABLED, yarp::os::Value("false"));
 
@@ -188,7 +197,7 @@ bool HandController::disableMinForce(){
 
 bool HandController::setGripStrength(double gripStrength){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     taskData->set(PAR_CTRL_GRIP_STRENGTH, gripStrength);
 
@@ -197,7 +206,7 @@ bool HandController::setGripStrength(double gripStrength){
 
 bool HandController::close(){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     std::cout << dbgTag << "Closing... \n";
 
@@ -229,7 +238,7 @@ bool HandController::close(){
 
 bool HandController::startTask(){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     if (taskRunning){
 
@@ -260,48 +269,48 @@ bool HandController::waitForGraspStabilization(double timeout, double delay){
 
 bool HandController::addStepTask(const std::vector<double> &targets){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     return taskThread->addStepTask(targets);
 }
 
 bool HandController::addApproachTask(){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     return taskThread->addApproachTask();
 }
 
 bool HandController::addControlTask(){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     return taskThread->addControlTask();
 }
 bool HandController::addControlTask(const std::vector<double> &targets){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     return taskThread->addControlTask(targets);
 }
 
 bool HandController::clearTaskList(){
 
-    if (!controllerConfigured) return false;
+    if (!controllerInitialized) return false;
 
     return taskThread->clearTaskList();
 }
 
 std::string HandController::getDataDescription(){
 
-    if (!controllerConfigured) return "";
+    if (!controllerInitialized) return "";
 
     return taskData->getDataDescription();
 }
 
 std::string HandController::getTaskListDescription(){
 
-    if (!controllerConfigured) return "";
+    if (!controllerInitialized) return "";
 
     return taskThread->getTaskListDescription();
 }

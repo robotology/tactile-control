@@ -33,6 +33,7 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
     string portPrefix = rf.check("portPrefix", Value("tactileControlWrapper")).asString();
     string libConfigFileName = rf.check("libConfigFileName", Value("confTactileControlLib")).asString();
     string libConfigFileContext = rf.check("libConfigFileContext", Value("tactileControlWrapper")).asString();
+    string hand = rf.check("hand", Value("left")).asString();
     moduleThreadPeriod = rf.check("moduleThreadPeriod", 1000).asInt();
 
     // open ports
@@ -43,26 +44,12 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
     rpcCmdUtil.init(&rpcCmdData);
 
     // initialize the hand controller
-    if (!handController.open(libConfigFileContext,libConfigFileName)){
-        cout << dbgTag << "could not open the hand controller. \n";
+    handController.set(libConfigFileContext,libConfigFileName);
+    handController.set("hand", hand);
+    if (!handController.open()){
+        cout << dbgTag << "could not initialize the hand controller. \n";
         return false;
     }
-
-
-    //// load tactile control lib resource finder data
-    //yarp::os::ResourceFinder tactileControlLibRF;
-    //tactileControlLibRF.setDefaultContext(libConfigFileContext.c_str());
-    //tactileControlLibRF.setDefaultConfigFile(libConfigFileName.c_str());
-    //char **fakeArgV;
-    //tactileControlLibRF.configure(0, fakeArgV, false);
-
-    //// initialize the hand controller
-    //yarp::os::Property options;
-    //options.fromString(tactileControlLibRF.toString());
-    //if (!handController.open(options)){
-    //    cout << dbgTag << "could not open the hand controller. \n";
-    //    return false;
-    //}
 
     cout << dbgTag << "Started correctly. \n";
 
@@ -149,12 +136,10 @@ bool HandControllerWrapper::respond(const yarp::os::Bottle& command, yarp::os::B
 
     if (success){
         reply.addString("ack");
-//		reply.addString(screenMsg.str());
         cout << screenMsg.str() << endl;
     }
     else {
         reply.addString("nack");
-//		reply.addString(errMsg.str());
         cout << errMsg.str() << endl;
     }
 
