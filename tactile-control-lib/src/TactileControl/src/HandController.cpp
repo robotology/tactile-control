@@ -17,7 +17,6 @@ HandController::HandController(){
 }
 
 bool HandController::open(){
-    using std::cout;
 
     // initialize data if not already initialized
     if (!settingsLoaded){
@@ -30,21 +29,21 @@ bool HandController::open(){
     // initialize motor interfaces
     controllerUtil = new ControllerUtil();
     if (!controllerUtil->init(taskData)){
-        cout << dbgTag << "failed to initialize motor interfaces\n";
+        yError() << dbgTag << "failed to initialize motor interfaces";
         return false;
     }
 
     // initialize yarp ports
     portUtil = new PortUtil();
     if (!portUtil->init(taskData)){
-        cout << dbgTag << "failed to initialize yarp ports\n";
+        yError() << dbgTag << "failed to initialize yarp ports";
         return false;
     }
 
     // start task thread
     taskThread = new TaskThread(taskData->getInt(PAR_COMMON_TASK_THREAD_PERIOD), taskData, controllerUtil, portUtil);
     if (!taskThread->start()) {
-        cout << dbgTag << "could not start the task thread\n";
+        yError() << dbgTag << "could not start the task thread";
         return false;
     }
     taskThread->suspend();
@@ -52,7 +51,7 @@ bool HandController::open(){
     // start data collection thread
     dataCollectionThread = new DataCollectionThread(taskData->getInt(PAR_COMMON_DATA_COLLECTION_THREAD_PERIOD), taskData, controllerUtil, portUtil);
     if (!dataCollectionThread->start()) {
-        cout << dbgTag << "could not start data collection thread\n";
+        yError() << dbgTag << "could not start data collection thread";
         return false;
     }
 
@@ -63,12 +62,11 @@ bool HandController::open(){
 }
 
 bool HandController::set(const yarp::os::Property &options){
-    using std::cout;
 
     // initialize data
     taskData = new TaskData();
     if (!taskData->init(options)){
-        cout << dbgTag << "failed to initialize data\n";
+        yError() << dbgTag << "failed to initialize data";
         return false;
     }
 
@@ -208,8 +206,6 @@ bool HandController::close(){
 
     if (!controllerInitialized) return false;
 
-    std::cout << dbgTag << "Closing... \n";
-
     if (taskThread->isRunning()){
         taskThread->suspend();
     }
@@ -231,7 +227,7 @@ bool HandController::close(){
     delete(controllerUtil);
     delete(portUtil);
 
-    std::cout << dbgTag << "done \n";
+    yInfo() << dbgTag << "hand controller succesfully closed";
 
     return true;
 }

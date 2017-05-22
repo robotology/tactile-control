@@ -16,7 +16,6 @@ ControllerUtil::ControllerUtil(){
 
 bool ControllerUtil::init(tactileControl::TaskData *taskData){
     using std::string;
-    using std::cout;
 
 
     storedHandJointsControlMode.resize(NUM_HAND_JOINTS,VOCAB_CM_POSITION);
@@ -48,48 +47,48 @@ bool ControllerUtil::init(tactileControl::TaskData *taskData){
     
     // Open driver
     if (!clientArm.open(options)) {
-        cout << dbgTag << "could not open arm driver\n";
+        yError() << dbgTag << "could not open arm driver";
         return false;
     }
     // Open interfaces
     clientArm.view(iEncs);
     if (!iEncs) {
-        cout << dbgTag << "could not open encoders interface\n";
+        yError() << dbgTag << "could not open encoders interface";
         return false;
     }
     clientArm.view(iPwm);
     if (!iPwm) {
-        cout << dbgTag << "could not open pwm interface\n";
+        yError() << dbgTag << "could not open pwm interface";
         return false;
     }
     clientArm.view(iCtrl);
     if (!iCtrl) {
-        cout << dbgTag << "could not open control mode interface\n";
+        yError() << dbgTag << "could not open control mode interface";
         return false;
     }
     clientArm.view(iPos);
     if (!iPos) {
-        cout << dbgTag << "could not open position interface\n";
+        yError() << dbgTag << "could not open position interface";
         return false;
     }
     clientArm.view(iPosCtrl);
     if (!iPosCtrl) {
-        cout << dbgTag << "could not open position control interface\n";
+        yError() << dbgTag << "could not open position control interface";
         return false;
     }
     clientArm.view(iVel);
     if (!iVel) {
-        cout << dbgTag << "could not open velocity interface\n";
+        yError() << dbgTag << "could not open velocity interface";
         return false;
     }
     clientArm.view(iPosDir);
     if (!iPosDir) {
-        cout << dbgTag << "could not open position direct interface\n";
+        yError() << dbgTag << "could not open position direct interface";
         return false;
     }
     clientArm.view(iPid);
     if (!iPid) {
-        cout << dbgTag << "could not open pid interface\n";
+        yError() << dbgTag << "could not open pid interface";
         return false;
     }
 
@@ -115,7 +114,7 @@ bool ControllerUtil::sendPwm(int joint,double pwm){
 
     double dutyCycle = (pwm/1333)*100;
     if (!iPwm->setRefDutyCycle(joint,dutyCycle)){
-        std::cout << dbgTag << "could not send pwm\n";
+        yError() << dbgTag << "could not send pwm";
         return false;
     }
     return true;
@@ -124,7 +123,7 @@ bool ControllerUtil::sendPwm(int joint,double pwm){
 bool ControllerUtil::sendVelocity(int joint,double velocity){
     
     if (!iVel->velocityMove(joint,velocity)){
-        std::cout << dbgTag << "could not send velocity\n";
+        yError() << dbgTag << "could not send velocity";
         return false;
     }
 
@@ -188,7 +187,7 @@ bool ControllerUtil::saveCurrentControlMode(){
 
     for(int i = 0; i < NUM_HAND_JOINTS; i++){
         if (!iCtrl->getControlMode(FIRST_HAND_JOINT + i,&storedHandJointsControlMode[i])){
-            std::cout << dbgTag << "could not get current control mode\n";
+            yError() << dbgTag << "could not get current control mode";
             return false;
         }
     }
@@ -199,7 +198,7 @@ bool ControllerUtil::restorePreviousControlMode(){
 
     for(int i = 0; i < NUM_HAND_JOINTS; i++){
         if (!iCtrl->setControlMode(FIRST_HAND_JOINT + i,storedHandJointsControlMode[i])){
-            std::cout << dbgTag << "could not set control mode\n";
+            yError() << dbgTag << "could not set control mode";
             return false;
         }
     }
@@ -210,7 +209,7 @@ bool ControllerUtil::restorePreviousControlMode(){
 bool ControllerUtil::setControlMode(int joint,int controlMode){
 
     if (!iCtrl->setControlMode(joint,controlMode)){
-        std::cout << dbgTag << "could not set control mode\n";
+        yError() << dbgTag << "could not set control mode";
         return false;
     } else {
         armJointControlModes[joint] = controlMode;
@@ -222,7 +221,7 @@ bool ControllerUtil::setControlMode(const std::vector<int> &jointsList,int contr
 
     for(int i = 0; i < jointsList.size(); i++){
         if (!iCtrl->setControlMode(jointsList[i],controlMode)){
-            std::cout << dbgTag << "could not set control mode\n";
+            yError() << dbgTag << "could not set control mode";
             return false;
         } else {
             armJointControlModes[jointsList[i]] = controlMode;
@@ -261,7 +260,7 @@ bool ControllerUtil::getEncoderAngle(int joint,double &encoderData){
     ok = iEncs->getEncoder(joint,&encoderData);
 
     if (!ok){
-        std::cout << dbgTag << "could not get encoder value\n";
+        yError() << dbgTag << "could not get encoder value";
     }
     return ok;
 }
@@ -291,9 +290,9 @@ bool ControllerUtil::openHand(bool fullyOpen,bool wait) {
 
     if (wait == true){
         // Wait for the hand to be open
-        std::cout << dbgTag << "Opening hand... \t";
+        yDebug() << dbgTag << "opening hand...";
         waitMotionDone(10, 1);
-        std::cout << "done \n";
+        yDebug() << dbgTag << "hand is now open";
     }
 
 
@@ -341,7 +340,7 @@ bool ControllerUtil::saveHandJointsMaxPwmLimits(){
 
         } else {
 
-            std::cout << dbgTag << "could not get pid from joint " << FIRST_HAND_JOINT + i << "\n";
+            yError() << dbgTag << "could not get pid from joint " << FIRST_HAND_JOINT + i;
 
             return false;
         }
@@ -364,7 +363,7 @@ bool ControllerUtil::restoreHandJointsMaxPwmLimits(){
             iPid->setPid(FIRST_HAND_JOINT + i,pid);
         } else {
 
-            std::cout << dbgTag << "could not get pid from joint " << FIRST_HAND_JOINT + i << "\n";
+            yError() << dbgTag << "could not get pid from joint " << FIRST_HAND_JOINT + i;
 
             return false;
         }
@@ -389,7 +388,7 @@ bool ControllerUtil::resetPIDIntegralGain(int joint){
 
     } else {
 
-        std::cout << dbgTag << "could not get pid from joint " << joint << "\n";
+        yError() << dbgTag << "could not get pid from joint " << joint;
 
         return false;
     }
@@ -411,7 +410,7 @@ bool ControllerUtil::restorePIDIntegralGain(int joint){
 
     } else {
 
-        std::cout << dbgTag << "could not get pid from joint " << joint << "\n";
+        yError() << dbgTag << "could not get pid from joint " << joint;
 
         return false;
     }
@@ -437,7 +436,7 @@ bool ControllerUtil::release(){
 
     if (!clientArm.close()){
 
-        std::cout << dbgTag << "could not close arm driver\n";
+        yError() << dbgTag << "could not close arm driver";
 
         return false;
     }

@@ -27,7 +27,6 @@ ApproachTask::ApproachTask(tactileControl::TaskData *taskData,tactileControl::Co
 }
 
 void ApproachTask::init(){
-    using std::cout;
 
     // set velocity control mode
     controllerUtil->setControlMode(controlledJoints,VOCAB_CM_VELOCITY);
@@ -41,7 +40,7 @@ void ApproachTask::init(){
     }
 
     if (loggingEnabled){
-        cout << "\n\n" << dbgTag << "TASK STARTED " << "\n\n";
+        yInfo() << dbgTag << "TASK STARTED";
     }
 
 }

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <ctime>
 #include <string>
+#include <sstream>
 
 
 using tactileControl::Task;
@@ -99,22 +100,23 @@ void Task::sendControlSignal(){
 }
 
 void Task::printScreenLog(){
-    using std::cout;
-    
+
     if (loggingEnabled && callsNumber%loggingBreak == 0){
 
-        cout << dbgTag << "Fng: ";
+        std::stringstream standardLogStream("");
+
+        standardLogStream << dbgTag << "Fng: ";
     
         for(int i = 0; i < controlledFingers.size(); i++){
-            cout << taskData->overallFingerForce[controlledFingers[i]] << "(" << controlledFingers[i] << ") ";
+            standardLogStream << taskData->overallFingerForce[controlledFingers[i]] << "(" << controlledFingers[i] << ") ";
         }
-        cout << "\t   In: ";
+        standardLogStream << "\t   In: ";
 
         for(int i = 0; i < controlledJoints.size(); i++){
-            cout << inputCommandValue[i] << "(" << controlledJoints[i] << ") ";
+            standardLogStream << inputCommandValue[i] << "(" << controlledJoints[i] << ") ";
         }
     
-        cout << optionalLogStream.str() << "\n";
+        yInfo() << standardLogStream.str() << optionalLogStream.str();
     }
 
     optionalLogStream.str(std::string());

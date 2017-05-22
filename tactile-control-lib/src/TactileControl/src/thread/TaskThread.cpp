@@ -18,16 +18,15 @@ TaskThread::TaskThread(int period, tactileControl::TaskData *taskData,tactileCon
 
 
 bool TaskThread::threadInit() {
-    using std::cout;
 
-    cout << dbgTag << "Initialising task thread. \n";
+    yInfo() << "initialising task thread...";
 
     currentTaskIndex = 0;
 
     // this prevents the run() method to be executed between the taskThread->start() and the taskThread->suspend() calls
     runEnabled = false;
 
-    cout << dbgTag << "Task thread initialised correctly. \n";
+    yInfo() << "task thread initialised correctly";
 
     return true;
 }
@@ -65,11 +64,11 @@ bool TaskThread::initializeGrasping(){
 bool TaskThread::afterRun(bool fullyOpen,bool wait){
 
     if (!controllerUtil->restorePreviousControlMode()){
-        std::cout << dbgTag << "could not restore previous control mode" << std::endl;
+        yError() << dbgTag << "could not restore previous control mode";
         return false;
     }
     if (!controllerUtil->openHand(fullyOpen,wait)){
-        std::cout << dbgTag << "could not open the hand" << std::endl;
+        yError() << dbgTag << "could not open the hand";
         return false;
     }
 

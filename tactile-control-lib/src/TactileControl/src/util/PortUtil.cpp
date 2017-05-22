@@ -14,7 +14,6 @@ PortUtil::PortUtil(){
 }
 
 bool PortUtil::init(tactileControl::TaskData *taskData){
-    using std::cout;
     using yarp::os::Network;
 
     string portPrefix = taskData->getString(PAR_COMMON_PORT_PREFIX);
@@ -47,49 +46,49 @@ bool PortUtil::init(tactileControl::TaskData *taskData){
 
     // opening ports
     if (!portSkinRawIn.open(moduleSkinRawPortName)){
-        cout << dbgTag << "could not open " << moduleSkinRawPortName << " port \n";
+        yError() << dbgTag << "could not open " << moduleSkinRawPortName << " port";
         return false;
     }
     if (!portSkinCompIn.open(moduleSkinCompPortName)){
-        cout << dbgTag << "could not open " << moduleSkinCompPortName << " port \n";
+        yError() << dbgTag << "could not open " << moduleSkinCompPortName << " port";
         return false;
     }
     if (!portHandEncodersRawIn.open(moduleHandEncodersRawPortName)){
-        cout << dbgTag << "could not open " << moduleHandEncodersRawPortName << " port \n";
+        yError() << dbgTag << "could not open " << moduleHandEncodersRawPortName << " port";
         return false;
     }
     if (!portInfoDataOut.open(infoDataPortName)){
-        cout << dbgTag << "could not open " << infoDataPortName << " port \n";
+        yError() << dbgTag << "could not open " << infoDataPortName << " port";
         return false;
     }
     if (!portControlDataOut.open(controlDataPortName)){
-        cout << dbgTag << "could not open " << controlDataPortName << " port \n";
+        yError() << dbgTag << "could not open " << controlDataPortName << " port";
         return false;
     }
     if (!portGMMDataOut.open(gmmDataPortName)){
-        cout << dbgTag << "could not open " << gmmDataPortName << " port \n";
+        yError() << dbgTag << "could not open " << gmmDataPortName << " port";
         return false;
     }
     if (!portGMMRegressionDataOut.open(gmmRegressionDataPortName)){
-        cout << dbgTag << "could not open " << gmmRegressionDataPortName << " port \n";
+        yError() << dbgTag << "could not open " << gmmRegressionDataPortName << " port";
         return false;
     }
     if (!portGripStrengthDataOut.open(gripStrengthDataPortName)){
-        cout << dbgTag << "could not open " << gripStrengthDataPortName << " port \n";
+        yError() << dbgTag << "could not open " << gripStrengthDataPortName << " port";
         return false;
     }
 
     // connecting ports
     if (!Network::connect(icubSkinRawPortName,moduleSkinRawPortName)){
-        cout << dbgTag << "could not connect port " << icubSkinRawPortName << " to " <<  moduleSkinRawPortName << "\n";
+        yError() << dbgTag << "could not connect port " << icubSkinRawPortName << " to " << moduleSkinRawPortName;
         return false;
     }
     if (!Network::connect(icubSkinCompPortName,moduleSkinCompPortName)){
-        cout << dbgTag << "could not connect port " << icubSkinCompPortName << " to " <<  moduleSkinCompPortName << "\n";
+        yError() << dbgTag << "could not connect port " << icubSkinCompPortName << " to " << moduleSkinCompPortName;
         return false;
     }
     if (!Network::connect(icubHandEncodersRawPortName,moduleHandEncodersRawPortName)){
-        cout << dbgTag << "could not connect port " << icubHandEncodersRawPortName << " to " <<  moduleHandEncodersRawPortName << "\n";
+        yError() << dbgTag << "could not connect port " << icubHandEncodersRawPortName << " to " << moduleHandEncodersRawPortName;
         return false;
     }
 

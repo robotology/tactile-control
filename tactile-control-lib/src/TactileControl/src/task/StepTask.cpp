@@ -17,18 +17,18 @@ StepTask::StepTask(tactileControl::TaskData *taskData,tactileControl::Controller
 }
 
 void StepTask::init(){
-    using std::cout;
 
     controllerUtil->setControlMode(controlledJoints,VOCAB_CM_PWM);
 
     if (loggingEnabled){
 
-        cout << "\n\n";
-        cout << dbgTag << "TASK STARTED - Target: ";
+        std::stringstream logStream("");
+
+        logStream << dbgTag << "TASK STARTED - Target: ";
         for(int i = 0; i < constantPwm.size(); i++){
-            cout << constantPwm[i] << " ";
+            logStream << constantPwm[i] << " ";
         }
-        cout << "\n\n";
+        yInfo() << logStream;
     }
 
 }

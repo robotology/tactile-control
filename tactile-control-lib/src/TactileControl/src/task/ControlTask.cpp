@@ -44,7 +44,6 @@ void ControlTask::constructorsCommon(const std::vector<double> &targets){
 
 void ControlTask::init(){
     using iCub::ctrl::minJerkTrajGen;
-    using std::cout;
 
     // initialize variables
     supervisorEnabled = taskData->getBool(PAR_CTRL_SUPERVISOR_ENABLED);
@@ -89,11 +88,13 @@ void ControlTask::init(){
     // set the controlled joints in open loop control mode
     controllerUtil->setControlMode(controlledJoints,VOCAB_CM_PWM);
 
-    cout << "\n\n" << dbgTag << "TASK STARTED - Target: ";
+    std::stringstream logStream("");
+
+    logStream << "\n\n" << dbgTag << "TASK STARTED - Target: ";
     for(int i = 0; i < forceTargetValue.size(); i++){
-        cout << forceTargetValue[i] << " ";
+        logStream << forceTargetValue[i] << " ";
     }
-    cout << "\n\n";
+    yInfo() << logStream;
 }
 
 void ControlTask::initLowLevelPID(){

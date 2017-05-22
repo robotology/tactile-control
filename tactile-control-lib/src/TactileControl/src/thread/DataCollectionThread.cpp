@@ -31,8 +31,7 @@ void DataCollectionThread::run(){
 
 
 bool DataCollectionThread::updateRobotData(){
-    using std::cout;
-    
+
     std::vector<double> fingersSensitivityScale(5);
     taskData->getList(PAR_COMMON_FINGER_SENSITIVITY,fingersSensitivityScale);
 
