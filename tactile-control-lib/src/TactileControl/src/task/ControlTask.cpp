@@ -94,7 +94,7 @@ void ControlTask::init(){
     for(int i = 0; i < forceTargetValue.size(); i++){
         logStream << forceTargetValue[i] << " ";
     }
-    yInfo() << logStream;
+    yInfo() << logStream.str();
 }
 
 void ControlTask::initLowLevelPID(){
