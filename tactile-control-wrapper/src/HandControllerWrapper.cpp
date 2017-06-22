@@ -133,7 +133,6 @@ bool HandControllerWrapper::respond(const yarp::os::Bottle& command, yarp::os::B
         }
     }
 
-
     if (success){
         reply.addString("ack");
         cout << screenMsg.str() << endl;
@@ -153,7 +152,7 @@ bool HandControllerWrapper::close() {
 
     // close rpc port
     portPlantIdentificationRPC.close();
-    
+
     return true;
 }
 

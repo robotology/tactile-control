@@ -104,7 +104,6 @@ void ApproachTask::moveFinger(int finger){
     inputCommandValue[finger] = jointVelocities[finger];
 }
 
-
 void ApproachTask::sendControlSignal(){
 
     for(int i = 0; i < inputCommandValue.size(); i++){
@@ -140,3 +139,4 @@ std::string ApproachTask::getTaskDescription(){
 
     return "Approach task";
 }
+
