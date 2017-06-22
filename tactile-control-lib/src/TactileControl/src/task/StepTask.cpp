@@ -4,6 +4,8 @@
 
 #include <sstream>
 
+#include <yarp/os/LogStream.h>
+
 using tactileControl::StepTask;
 
 
@@ -28,7 +30,7 @@ void StepTask::init(){
         for(int i = 0; i < constantPwm.size(); i++){
             logStream << constantPwm[i] << " ";
         }
-        yInfo() << logStream;
+        yInfo() << logStream.str();
     }
 
 }
