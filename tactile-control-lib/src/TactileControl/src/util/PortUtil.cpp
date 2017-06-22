@@ -3,6 +3,7 @@
 #include "TactileControl/data/Parameters.h"
 
 #include <yarp/os/Network.h>
+#include <yarp/os/LogStream.h>
 
 using tactileControl::PortUtil;
 using std::string;

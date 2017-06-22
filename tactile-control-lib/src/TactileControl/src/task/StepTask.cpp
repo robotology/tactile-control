@@ -4,6 +4,8 @@
 
 #include <sstream>
 
+#include <yarp/os/LogStream.h>
+
 using tactileControl::StepTask;
 
 
