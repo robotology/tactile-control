@@ -2,14 +2,14 @@
 taskThreadPeriod 20
 dataCollectionThreadperiod 15
 portPrefix handController
-hand left
+hand right
 icub iCubGenova01
 controlledJoints (9 11 13)
 pwmSign 1
 disablePwm false
 tactileMedianWindowSize 50
 refVelocity 100.0
-usingTwoHands true
+usingTwoHands false
 experimentInfo ""
 experimentOptionalInfo ""
 useTactileWeightedSum true
@@ -27,7 +27,7 @@ ramp.intercept -90.0
 
 ### Parameters related to the approach task ###
 approach.duration 5
-approach.velocities (50 50 50)
+approach.velocities (20 20 20)
 approach.pwmLimitEnabled true
 
 ### Parameters related to the contol task ###
