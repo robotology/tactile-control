@@ -30,6 +30,9 @@ void ApproachTask::init(){
 
     // set velocity control mode
     controllerUtil->setControlMode(controlledJoints,VOCAB_CM_VELOCITY);
+    if (taskData->getBool(PAR_COMMON_USE_RING_LITTLE_FINGERS)){
+        controllerUtil->setControlMode(RING_LITTLE_JOINT, VOCAB_CM_VELOCITY);
+    }
 
     // store current joints pwm limits and set the new ones
     if (taskData->getBool(PAR_APPR_PWM_LIMIT_ENABLED)){
@@ -37,7 +40,11 @@ void ApproachTask::init(){
         std::vector<double> jointPwmLimits;
         taskData->getList(PAR_APPR_MAX_PWM,jointPwmLimits);
         controllerUtil->setJointsMaxPwmLimit(controlledJoints,jointPwmLimits);
+        if (taskData->getBool(PAR_COMMON_USE_RING_LITTLE_FINGERS)){
+            controllerUtil->setJointMaxPwmLimit(RING_LITTLE_JOINT, taskData->getDouble(PAR_APPR_RING_LITTLE_MAX_PWM));
+        }
     }
+
 
     if (loggingEnabled){
         yInfo() << dbgTag << "TASK STARTED";
@@ -109,6 +116,11 @@ void ApproachTask::sendControlSignal(){
     for(int i = 0; i < inputCommandValue.size(); i++){
         if (!fingerIsInContact[i]) controllerUtil->sendVelocity(controlledJoints[i],inputCommandValue[i]);
     }
+
+    // command the ring/little fingers if enabled
+    if (taskData->getBool(PAR_COMMON_USE_RING_LITTLE_FINGERS)){
+        controllerUtil->sendVelocity(RING_LITTLE_JOINT, taskData->getDouble(PAR_APPR_RING_LITTLE_VELOCITY));
+    }
 }
 
 
@@ -116,6 +128,10 @@ void ApproachTask::release(){
 
     if (taskData->getBool(PAR_APPR_PWM_LIMIT_ENABLED)){
         controllerUtil->restoreHandJointsMaxPwmLimits();
+    }
+
+    if (taskData->getBool(PAR_COMMON_USE_RING_LITTLE_FINGERS)){
+        controllerUtil->setControlMode(RING_LITTLE_JOINT, VOCAB_CM_POSITION);
     }
 }
 

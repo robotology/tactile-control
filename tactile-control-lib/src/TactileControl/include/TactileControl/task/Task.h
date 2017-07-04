@@ -18,7 +18,6 @@ namespace tactileControl {
 
         bool isFirstCall;
         bool isClean;
-        int pwmSign;
 
     protected:
 
@@ -38,6 +37,7 @@ namespace tactileControl {
         int callsNumber;
         int maxCallsNumber;
         int taskThreadPeriod;
+        int pwmSign;
 
         /* ******* Debug attributes.                ******* */
         std::string dbgTag;

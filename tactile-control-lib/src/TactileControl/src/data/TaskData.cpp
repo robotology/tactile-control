@@ -42,6 +42,7 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_COMMON_USE_TACTILE_WEIGHTED_SUM,trueValue);
     setDefault(PAR_COMMON_ENABLE_SCREEN_LOGGING,trueValue);
     setDefault(PAR_COMMON_SCREEN_LOGGING_RATE,5);
+    setDefault(PAR_COMMON_USE_RING_LITTLE_FINGERS, falseValue);
 
     setDefault(PAR_STEP_DURATION,10);
 
@@ -51,9 +52,11 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_RAMP_INTERCEPT,-90.0);
 
     setDefault(PAR_APPR_DURATION,5);
-    setDefault(PAR_APPR_VELOCITY,*Value::makeList("20 20 20"));
-    setDefault(PAR_APPR_MAX_PWM,*Value::makeList("450 350 350"));
-    setDefault(PAR_APPR_PWM_LIMIT_ENABLED,trueValue);
+    setDefault(PAR_APPR_VELOCITY, *Value::makeList("20 20 20"));
+    setDefault(PAR_APPR_RING_LITTLE_VELOCITY, 20);
+    setDefault(PAR_APPR_MAX_PWM, *Value::makeList("450 350 350"));
+    setDefault(PAR_APPR_RING_LITTLE_MAX_PWM,400);
+    setDefault(PAR_APPR_PWM_LIMIT_ENABLED, trueValue);
     setDefault(PAR_APPR_WINDOW_SIZE,25);
     setDefault(PAR_APPR_THRESHOLD,1.5);
     setDefault(PAR_APPR_TIMEOUT,0.7);
@@ -94,7 +97,8 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_ENABLED,trueValue);
     setDefault(PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_REF_TIME,4.0);
     setDefault(PAR_CTRL_MIN_FORCE_ENABLED,falseValue);
-    setDefault(PAR_CTRL_MIN_FORCE,0.0);
+    setDefault(PAR_CTRL_MIN_FORCE, 0.0);
+    setDefault(PAR_CTRL_RING_LITTLE_PWM, 600);
 
     
     /*** INITIALIZE DATA ***/

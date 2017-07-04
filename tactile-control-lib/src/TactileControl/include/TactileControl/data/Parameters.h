@@ -20,6 +20,7 @@
 #define PAR_COMMON_USE_TACTILE_WEIGHTED_SUM "useTactileWeightedSum"
 #define PAR_COMMON_ENABLE_SCREEN_LOGGING "enableScreenLogging"
 #define PAR_COMMON_SCREEN_LOGGING_RATE "screenLoggingRate"
+#define PAR_COMMON_USE_RING_LITTLE_FINGERS "useRingLittleFingers"
 
 /*** Parameters related to the step task ***/
 #define PAR_STEP_DURATION "step.duration"
@@ -33,7 +34,9 @@
 /*** Parameters related to the approach task ***/
 #define PAR_APPR_DURATION "approach.duration"
 #define PAR_APPR_VELOCITY "approach.velocities"
+#define PAR_APPR_RING_LITTLE_VELOCITY "approach.ringLittleVelocities"
 #define PAR_APPR_MAX_PWM "approach.maxPwm"
+#define PAR_APPR_RING_LITTLE_MAX_PWM "approach.ringLittleMaxPwm"
 #define PAR_APPR_PWM_LIMIT_ENABLED "approach.pwmLimitEnabled"
 #define PAR_APPR_WINDOW_SIZE "approach.windowSize"
 #define PAR_APPR_THRESHOLD "approach.threshold"
@@ -78,6 +81,7 @@
 #define PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_REF_TIME "control.high.gmmJointsMinJerkTrackingRefTime" // 66
 #define PAR_CTRL_MIN_FORCE_ENABLED "control.high.minForceEnabled" // 77
 #define PAR_CTRL_MIN_FORCE "control.high.minForce" // 78 - 80
+#define PAR_CTRL_RING_LITTLE_PWM "control.high.ringLittlePwm"
 
 
 /*** Parameters not configurable online ***/

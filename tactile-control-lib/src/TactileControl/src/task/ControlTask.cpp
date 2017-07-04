@@ -87,7 +87,9 @@ void ControlTask::init(){
 
     // set the controlled joints in open loop control mode
     controllerUtil->setControlMode(controlledJoints,VOCAB_CM_PWM);
-
+    if (taskData->getBool(PAR_COMMON_USE_RING_LITTLE_FINGERS)){
+        controllerUtil->setControlMode(RING_LITTLE_JOINT, VOCAB_CM_PWM);
+    }
     std::stringstream logStream("");
 
     logStream << "\n\n" << dbgTag << "TASK STARTED - Target: ";
@@ -314,6 +316,11 @@ void ControlTask::calculateControlInput(){
         }
     }
 
+    // command the ring/little fingers if enabled
+    if (taskData->getBool(PAR_COMMON_USE_RING_LITTLE_FINGERS)){
+        controllerUtil->sendPwm(RING_LITTLE_JOINT, pwmSign*taskData->getDouble(PAR_CTRL_RING_LITTLE_PWM));
+    }
+
 }
 
 
@@ -510,6 +517,10 @@ void ControlTask::release(){
 
         if (supervisorControlMode == GMM_MODE && gmmJointsRegressionEnabled){
             setGMMJointsControlMode(VOCAB_CM_POSITION);
+        }
+
+        if (taskData->getBool(PAR_COMMON_USE_RING_LITTLE_FINGERS)){
+            controllerUtil->setControlMode(RING_LITTLE_JOINT, VOCAB_CM_POSITION);
         }
     }
 }
