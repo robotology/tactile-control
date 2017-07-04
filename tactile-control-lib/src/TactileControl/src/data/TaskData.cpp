@@ -362,6 +362,7 @@ std::string TaskData::getDataDescription(){
     description << getParameterDescription(PAR_COMMON_USE_TACTILE_WEIGHTED_SUM) << endl;
     description << getParameterDescription(PAR_COMMON_ENABLE_SCREEN_LOGGING) << endl;
     description << getParameterDescription(PAR_COMMON_SCREEN_LOGGING_RATE) << endl;
+    description << getParameterDescription(PAR_COMMON_USE_RING_LITTLE_FINGERS) << endl;
     description << endl;
 
     description << "<<< Step task Data >>>" << endl;
@@ -381,7 +382,9 @@ std::string TaskData::getDataDescription(){
     description << endl;
     description << getParameterDescription(PAR_APPR_DURATION) << endl;
     description << getParameterDescription(PAR_APPR_VELOCITY) << endl;
+    description << getParameterDescription(PAR_APPR_RING_LITTLE_VELOCITY) << endl;
     description << getParameterDescription(PAR_APPR_MAX_PWM) << endl;
+    description << getParameterDescription(PAR_APPR_RING_LITTLE_MAX_PWM) << endl;
     description << getParameterDescription(PAR_APPR_PWM_LIMIT_ENABLED) << endl;
     description << getParameterDescription(PAR_APPR_WINDOW_SIZE) << endl;
     description << getParameterDescription(PAR_APPR_THRESHOLD) << endl;
@@ -427,6 +430,7 @@ std::string TaskData::getDataDescription(){
     description << getParameterDescription(PAR_CTRL_GMM_JOINTS_MIN_JERK_TRACK_REF_TIME) << endl;
     description << getParameterDescription(PAR_CTRL_MIN_FORCE_ENABLED) << endl;
     description << getParameterDescription(PAR_CTRL_MIN_FORCE) << endl;
+    description << getParameterDescription(PAR_CTRL_RING_LITTLE_PWM) << endl;
     description << endl;
 
     return description.str();
