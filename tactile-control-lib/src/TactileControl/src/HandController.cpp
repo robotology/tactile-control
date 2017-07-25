@@ -100,7 +100,7 @@ bool HandController::set(std::string context, std::string configFile){
 
     // put all settings into Property object
     yarp::os::Property options;
-    options.fromString(mainConfigFileRF.toString() + iCubHandSpecificData.toString());
+    options.fromString(mainConfigFileRF.toString() + " " + iCubHandSpecificData.toString());
 
     return set(options);
 }
