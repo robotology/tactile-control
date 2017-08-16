@@ -331,7 +331,7 @@ void ControlTask::addOption(Bottle &bottle,const char *paramName,const Value par
 
     valueBottle.add(paramValue);
 
-    paramBottle.add(paramName);
+    paramBottle.addString(paramName);
     paramBottle.addList() = valueBottle;
 
     bottle.addList() = paramBottle;
@@ -344,7 +344,7 @@ void ControlTask::addOption(Bottle &bottle,const char *paramName,const Value par
     valueBottle.add(paramValue1);
     valueBottle.add(paramValue2);
 
-    paramBottle.add(paramName);
+    paramBottle.addString(paramName);
     paramBottle.addList() = valueBottle;
 
     bottle.addList() = paramBottle;
