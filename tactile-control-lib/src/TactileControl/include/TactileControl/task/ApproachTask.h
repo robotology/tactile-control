@@ -6,6 +6,8 @@
 #include "TactileControl/util/ControllerUtil.h"
 #include "TactileControl/util/PortUtil.h"
 
+#include "iCub/ctrl/adaptWinPolyEstimator.h"
+
 #include <vector>
 
 namespace tactileControl {
@@ -22,6 +24,8 @@ namespace tactileControl {
         int windowSize;
         double finalCheckThreshold;
         int positionIndex;
+
+        iCub::ctrl::AWQuadEstimator *awPolyEst;
 
     public:
 

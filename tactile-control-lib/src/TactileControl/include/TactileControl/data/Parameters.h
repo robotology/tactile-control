@@ -40,6 +40,7 @@
 #define PAR_APPR_PWM_LIMIT_ENABLED "approach.pwmLimitEnabled"
 #define PAR_APPR_WINDOW_SIZE "approach.windowSize"
 #define PAR_APPR_THRESHOLD "approach.threshold"
+#define PAR_APPR_ERROR_THRESHOLD "approach.errorThreshold"
 #define PAR_APPR_TIMEOUT "approach.timeout"
 
 /*** Parameters related to the contol task ***/

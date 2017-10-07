@@ -58,8 +58,9 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_APPR_RING_LITTLE_MAX_PWM,400);
     setDefault(PAR_APPR_PWM_LIMIT_ENABLED, trueValue);
     setDefault(PAR_APPR_WINDOW_SIZE,25);
-    setDefault(PAR_APPR_THRESHOLD,1.5);
-    setDefault(PAR_APPR_TIMEOUT,0.7);
+    setDefault(PAR_APPR_THRESHOLD, 1.5);
+    setDefault(PAR_APPR_ERROR_THRESHOLD, 5);
+    setDefault(PAR_APPR_TIMEOUT, 0.7);
 
     setDefault(PAR_CTRL_DURATION,10);
     setDefault(PAR_CTRL_DEFAULT_FORCE_TARGET,20.0);
@@ -388,6 +389,7 @@ std::string TaskData::getDataDescription(){
     description << getParameterDescription(PAR_APPR_PWM_LIMIT_ENABLED) << endl;
     description << getParameterDescription(PAR_APPR_WINDOW_SIZE) << endl;
     description << getParameterDescription(PAR_APPR_THRESHOLD) << endl;
+    description << getParameterDescription(PAR_APPR_ERROR_THRESHOLD) << endl;
     description << getParameterDescription(PAR_APPR_TIMEOUT) << endl;
     description << endl;
 
