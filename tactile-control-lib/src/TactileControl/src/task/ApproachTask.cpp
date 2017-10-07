@@ -3,6 +3,9 @@
 #include "TactileControl/data/Parameters.h"
 
 #include "yarp/os/Time.h"
+#include "yarp/os/Stamp.h"
+#include "yarp/os/Bottle.h"
+#include "yarp/os/BufferedPort.h"
 
 #include <vector>
 
@@ -15,6 +18,8 @@ ApproachTask::ApproachTask(tactileControl::TaskData *taskData,tactileControl::Co
     finalCheckThreshold = taskData->getDouble(PAR_APPR_THRESHOLD);
     double secondsForMovementTimeout = taskData->getDouble(PAR_APPR_TIMEOUT);
     taskData->getList(PAR_APPR_VELOCITY,jointVelocities);
+    double errorThreshold = taskData->getDouble(PAR_APPR_THRESHOLD);
+    awPolyEst = new iCub::ctrl::AWLinEstimator(windowSize,errorThreshold);
 
     callsNumberForMovementTimeout = getNumThreadCalls(secondsForMovementTimeout);;
 
@@ -22,13 +27,6 @@ ApproachTask::ApproachTask(tactileControl::TaskData *taskData,tactileControl::Co
     fingerPositions.resize(controlledJoints.size());
     fingerIsInContact.resize(controlledJoints.size(),false);
     fingerSetInPosition.resize(controlledJoints.size(),false);
-
-
-    /* new changes */
-    double errorThreshold = taskData->getDouble(PAR_APPR_THRESHOLD);
-    awPolyEst = new iCub::ctrl::AWQuadEstimator(windowSize,errorThreshold);
-
-
 
     taskName = APPROACH;
 
@@ -64,36 +62,15 @@ void ApproachTask::init(){
 void ApproachTask::calculateControlInput(){
     using yarp::sig::Vector;
 
-    /* new changes */
+    // store proximal joints
     Vector pos(controlledJoints.size());
     for (int i = 0; i < controlledJoints.size(); i++){
         pos[i] = taskData->armEncoderAngles[controlledJoints[i]];
     }
+    
+    // estimate velocity
     iCub::ctrl::AWPolyElement awPolyEl(pos,yarp::os::Time::now());
     Vector estimatedSpeed = awPolyEst->estimate(awPolyEl);
-
-
-
-    //// initialize the current angle in all the windows
-    //double encoderAngle;
-    //for(int i = 0; i < controlledJoints.size(); i++){
-    //    encoderAngle = taskData->armEncoderAngles[controlledJoints[i]];
-    //    fingerPositions[i].resize(windowSize,encoderAngle);
-    //}
-
-    //// log state
-    //optionalLogStream << " [state ";
-    //for (int i = 0; i < controlledJoints.size(); i++){
-    //    optionalLogStream << (fingerIsInContact[i] == true ? 1 : 0) << " ";
-    //}
-    //optionalLogStream << "]";
-    //optionalLogStream << " [pDiff ";
-    //for (int i = 0; i < controlledJoints.size(); i++){
-    //    optionalLogStream << taskData->armEncoderAngles[controlledJoints[i]] << "/" << fingerPositions[i][(positionIndex + 1) % windowSize] << " ";
-    //}
-    //optionalLogStream << "]";
-    //optionalLogStream << "[t/o " << (callsNumber > callsNumberForMovementTimeout ? 1 : 0) << "]";
-
 
     // log state
     optionalLogStream << " [state ";
@@ -108,21 +85,6 @@ void ApproachTask::calculateControlInput(){
     optionalLogStream << "]";
     optionalLogStream << "[t/o " << (callsNumber > callsNumberForMovementTimeout ? 1 : 0) << "]";
 
-
-    //// check if fingers are in contact
-    //double tempAngleDifference;
-    //int nextPositionIndex = (positionIndex + 1) % windowSize;
-    //for (int i = 0; i < controlledJoints.size(); i++){
-
-    //    fingerPositions[i][positionIndex] = taskData->armEncoderAngles[controlledJoints[i]];
-    //    tempAngleDifference = fingerPositions[i][positionIndex] - fingerPositions[i][nextPositionIndex];
-
-    //    if (fingerIsInContact[i] == false && callsNumber > callsNumberForMovementTimeout && tempAngleDifference < finalCheckThreshold){
-    //        fingerIsInContact[i] = true;
-    //    }
-
-    //}
-    //positionIndex = nextPositionIndex;
 
     // check if fingers are in contact
     for (int i = 0; i < controlledJoints.size(); i++){

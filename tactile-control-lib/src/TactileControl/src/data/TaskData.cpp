@@ -58,7 +58,7 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_APPR_RING_LITTLE_MAX_PWM,400);
     setDefault(PAR_APPR_PWM_LIMIT_ENABLED, trueValue);
     setDefault(PAR_APPR_WINDOW_SIZE,25);
-    setDefault(PAR_APPR_THRESHOLD, 1.5);
+    setDefault(PAR_APPR_THRESHOLD, 5.0);
     setDefault(PAR_APPR_ERROR_THRESHOLD, 5);
     setDefault(PAR_APPR_TIMEOUT, 0.7);
 
