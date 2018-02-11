@@ -101,7 +101,26 @@ bool TaskData::init(const yarp::os::Property &options) {
     setDefault(PAR_CTRL_MIN_FORCE, 0.0);
     setDefault(PAR_CTRL_RING_LITTLE_PWM, 600);
 
-    
+    // Parameters related to machine learning
+    setDefault(PAR_ML_OBJECT_RECOGNITION_TASK_ENABLED, falseValue);
+    setDefault(PAR_ML_DATA_COLLECTION_ENABLED, falseValue);
+    setDefault(PAR_ML_OBJECT_CLASSIFICATION_ENABLED, falseValue);
+    setDefault(PAR_ML_CLASSIFIER_TYPE, TACTILE_CLASSIFIER);
+
+    setDefault(PAR_ML_TRAINING_DATA_PATH, Value("/home/icub/myProject/"));
+
+    setDefault(PAR_ML_GRASP_STABILIZATION_TIME, 4.0);
+    setDefault(PAR_ML_OBJECT_SQUEEZING_TIME, 3.0);
+    setDefault(PAR_ML_TACTILE_DATA_COLLECTION_TIME, 1.0);
+    setDefault(PAR_ML_BENDING_PROXIMAL_JOINTS_TIME, 3.0);
+    setDefault(PAR_ML_BENDING_DISTAL_JOINTS_TIME, 4.0);
+
+    setDefault(PAR_ML_OBJECT_ID, 1);
+    setDefault(PAR_ML_GRIP_STRENGTH_FOR_SQUEEZING, 100.0);
+    setDefault(PAR_ML_HAND_ENCLOSURE_INDEX_PROX_JOINT_PWM, 250.0);
+    setDefault(PAR_ML_HAND_ENCLOSURE_RING_LITTLE_JOINT_PWM, -300.0);
+    setDefault(PAR_ML_HAND_ENCLOSURE_INDEX_DIST_JOINT_PWM, -250.0);
+
     /*** INITIALIZE DATA ***/
 
     fingerTaxelsData.resize(NUM_FINGERS);

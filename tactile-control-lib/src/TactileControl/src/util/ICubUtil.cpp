@@ -209,3 +209,29 @@ void ICubUtil::getUnitVector(int index,std::vector<double>& unitVector){
     }
 
 }
+
+void ICubUtil::normalizeVector(const std::vector<double> &inputVector, std::vector<double> &outputVector){
+
+    double avarage = 0;
+
+    for (int i = 0; i < inputVector.size(); i++){
+        avarage += inputVector[i];
+    }
+    avarage /= inputVector.size();
+
+    std::vector<double> zeroAvarage(inputVector.size());
+    for (int i = 0; i < zeroAvarage.size(); i++){
+        zeroAvarage[i] = inputVector[i] - avarage;
+    }
+
+    double stdDev = 0;
+    for (int i = 0; i < zeroAvarage.size(); i++){
+        stdDev += zeroAvarage[i] * zeroAvarage[i];
+    }
+    stdDev = sqrt(stdDev / zeroAvarage.size());
+
+    outputVector.resize(zeroAvarage.size());
+    for (int i = 0; i < outputVector.size(); i++){
+        outputVector[i] = zeroAvarage[i] / stdDev;
+    }
+}

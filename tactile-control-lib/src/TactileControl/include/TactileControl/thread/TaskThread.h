@@ -4,6 +4,7 @@
 #include "TactileControl/data/TaskData.h"
 #include "TactileControl/util/ControllerUtil.h"
 #include "TactileControl/util/PortUtil.h"
+#include "TactileControl/util/MLUtil.h"
 #include "TactileControl/task/Task.h"
 
 #include <yarp/os/RateThread.h>
@@ -21,6 +22,7 @@ namespace tactileControl {
         tactileControl::TaskData *taskData;
         tactileControl::ControllerUtil *controllerUtil;
         tactileControl::PortUtil *portUtil;
+        tactileControl::MLUtil *mlUtil;
 
         /* ****** Tasks management                              ****** */
         std::vector<Task*> taskList;
@@ -32,7 +34,7 @@ namespace tactileControl {
 
     public:
 
-        TaskThread(int period, tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil);
+        TaskThread(int period, tactileControl::TaskData *taskData, tactileControl::ControllerUtil *controllerUtil, tactileControl::PortUtil *portUtil,tactileControl::MLUtil *mlUtil);
 
         virtual bool threadInit();
 

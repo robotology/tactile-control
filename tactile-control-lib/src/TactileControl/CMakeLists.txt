@@ -6,25 +6,29 @@ set(LIBRARY_TARGET_NAME TactileControl)
 
 find_package(YARP REQUIRED)
 find_package(ICUB REQUIRED)
+find_package(Gurls)
 
 list(APPEND CMAKE_MODULE_PATH ${YARP_MODULE_PATH})
 list(APPEND CMAKE_MODULE_PATH ${ICUB_MODULE_PATH})
 
 add_definitions(${YARP_DEFINES})
 
-#include_directories(${YARP_INCLUDE_DIRS} ${ICUB_INCLUDE_DIRS})
+#include_directories(${YARP_INCLUDE_DIRS} ${ICUB_INCLUDE_DIRS} ${Gurls_INCLUDE_DIRS})
 
 # List of CPP (source) library files
 set(${LIBRARY_TARGET_NAME}_SRC
         src/HandController.cpp
+		src/ObjectRecognitionManager.cpp
 		
 		src/data/TaskData.cpp
 		src/data/GMMData.cpp
+		src/data/MLData.cpp
 
 		src/util/ControllerUtil.cpp
 		src/util/PortUtil.cpp
 		src/util/ICubUtil.cpp
 		src/util/CommonUtil.cpp
+		src/util/MLUtil.cpp
 		
 		src/thread/DataCollectionThread.cpp
 		src/thread/TaskThread.cpp
@@ -39,16 +43,19 @@ set(${LIBRARY_TARGET_NAME}_SRC
 # List of HPP (header) library files
 set(${LIBRARY_TARGET_NAME}_HDR
         include/TactileControl/HandController.h
+		include/TactileControl/ObjectRecognitionManager.h
 		
 		include/TactileControl/data/TaskData.h
 		include/TactileControl/data/GMMData.h
 		include/TactileControl/data/Parameters.h
 		include/TactileControl/data/Enums.h
+		include/TactileControl/data/MLData.h
 		
 		include/TactileControl/util/ControllerUtil.h
 		include/TactileControl/util/PortUtil.h
 		include/TactileControl/util/ICubUtil.h
 		include/TactileControl/util/CommonUtil.h
+		include/TactileControl/util/MLUtil.h
 		
 		include/TactileControl/task/Task.h
 		include/TactileControl/task/StepTask.h
@@ -70,7 +77,7 @@ add_library(${LIBRARY_TARGET_NAME} ${${LIBRARY_TARGET_NAME}_SRC} ${${LIBRARY_TAR
 set_target_properties(${LIBRARY_TARGET_NAME} PROPERTIES VERSION       ${${PROJECT_NAME}_VERSION})
 
 														
-target_link_libraries(${LIBRARY_TARGET_NAME} ${YARP_LIBRARIES} ${ICUB_LIBRARIES})
+target_link_libraries(${LIBRARY_TARGET_NAME} ${YARP_LIBRARIES} ${ICUB_LIBRARIES} ${Gurls_LIBRARIES})
 # ctrlLib skinDynLib iKin ${Gurls_LIBRARIES})
 														
 														
@@ -78,7 +85,8 @@ target_link_libraries(${LIBRARY_TARGET_NAME} ${YARP_LIBRARIES} ${ICUB_LIBRARIES}
 target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
                                                          "$<INSTALL_INTERFACE:${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}>"
 							 ${YARP_INCLUDE_DIRS}
-							 ${ICUB_INCLUDE_DIRS})
+							 ${ICUB_INCLUDE_DIRS}
+							 ${Gurls_INCLUDE_DIRS})
 
 # Specify installation targets, typology and destination folders.
 install(TARGETS ${LIBRARY_TARGET_NAME}

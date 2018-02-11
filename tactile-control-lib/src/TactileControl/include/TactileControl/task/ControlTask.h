@@ -6,6 +6,7 @@
 #include "TactileControl/data/Enums.h"
 #include "TactileControl/util/ControllerUtil.h"
 #include "TactileControl/util/PortUtil.h"
+#include "TactileControl/util/MLUtil.h"
 
 #include <iCub/ctrl/pids.h>
 #include <iCub/ctrl/minJerkCtrl.h>
@@ -25,6 +26,8 @@ namespace tactileControl {
         std::vector<double> forceTargetValue;
         int numFingers;
 
+        tactileControl::MLUtil *mlUtil;
+
         // variables used for supervisor mode
         iCub::ctrl::parallelPID *highPid;
         bool supervisorEnabled;
@@ -42,10 +45,27 @@ namespace tactileControl {
         bool gmmCtrlModeIsSet;
         double initialObjectPosition;
 
+        // variables used for object recognition task
+        bool objectRecognitionTaskEnabled;
+        double startSqueezingTime;
+        double startTactileDataCollectionTime;
+        double startBendingProximalJointsTime;
+        double startBendingDistalJointsTime;
+        double taskCompleteTime;
+
+        double gripStrengthIncreased;
+        double featuresProcessingComplete;
+        bool proximalJointsSetInOLMode;
+        bool distalJointsSetInOLMode;
+        std::vector<double> averageTactileData;
+        std::vector<double> averageTactileDataNormalized;
+        std::vector<double> objRecFeatures;
+        std::vector<double> multimodalFeatures;
+
     public:
 
-        ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil);
-        ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil,const std::vector<double> &targets);
+        ControlTask(tactileControl::TaskData *taskData, tactileControl::ControllerUtil * controllerUtil, tactileControl::PortUtil * portUtil,tactileControl::MLUtil * mlUtil);
+        ControlTask(tactileControl::TaskData *taskData, tactileControl::ControllerUtil * controllerUtil, tactileControl::PortUtil * portUtil, tactileControl::MLUtil * mlUtil, const std::vector<double> &targets);
 
         virtual void init();
 
@@ -57,7 +77,7 @@ namespace tactileControl {
 
     private:
 
-        void constructorsCommon(const std::vector<double> &targets);
+        void constructorsCommon(const std::vector<double> &targets,tactileControl::MLUtil *mlUtil);
 
         void initLowLevelPID();
 
@@ -79,6 +99,9 @@ namespace tactileControl {
 
         void computeForceTargetValues(double gripStrength,double svControlSignal,bool minForceEnabled,double minForce,std::vector<double> &forceTargetValue);
 
+        bool manageObjectRecognitionTask();
+
+        tactileControl::ObjectRecognitionTaskState getObjectRecognitionTaskState();
     };
 
 } //namespace tactileControl

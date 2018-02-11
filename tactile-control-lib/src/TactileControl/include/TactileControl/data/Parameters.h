@@ -84,6 +84,27 @@
 #define PAR_CTRL_MIN_FORCE "control.high.minForce" // 78 - 80
 #define PAR_CTRL_RING_LITTLE_PWM "control.high.ringLittlePwm"
 
+/*** Parameters related to machine learning ***/
+#define PAR_ML_OBJECT_RECOGNITION_TASK_ENABLED "ml.objRecTaskEnabled"
+#define PAR_ML_DATA_COLLECTION_ENABLED "ml.dataCollectionEnabled"
+#define PAR_ML_OBJECT_CLASSIFICATION_ENABLED "ml.objectClassificationEnabled"
+#define PAR_ML_CLASSIFIER_TYPE "ml.classifierType"
+
+#define PAR_ML_TRAINING_DATA_PATH "ml.trainingDataPath"
+
+#define PAR_ML_GRASP_STABILIZATION_TIME "ml.graspStabilizationTime"
+#define PAR_ML_OBJECT_SQUEEZING_TIME "ml.objectSqueezingTime"
+#define PAR_ML_TACTILE_DATA_COLLECTION_TIME "ml.tactileDataCollectionTime"
+#define PAR_ML_BENDING_PROXIMAL_JOINTS_TIME "ml.bendingProximalJointsTime"
+#define PAR_ML_BENDING_DISTAL_JOINTS_TIME "ml.bendingDistalJointsTime"
+
+#define PAR_ML_OBJECT_ID "ml.objectID"
+#define PAR_ML_GRIP_STRENGTH_FOR_SQUEEZING "ml.gripStrengthForSqueezing"
+#define PAR_ML_HAND_ENCLOSURE_INDEX_PROX_JOINT_PWM "ml.handEnclosureIndexProxJointPwm"
+#define PAR_ML_HAND_ENCLOSURE_RING_LITTLE_JOINT_PWM "ml.handEnclosureRingLittleJointPwm"
+#define PAR_ML_HAND_ENCLOSURE_INDEX_DIST_JOINT_PWM "ml.handEnclosureIndexDistJointPwm"
+
+
 
 /*** Parameters not configurable online ***/
 
@@ -111,5 +132,7 @@
 #define THUMB_FINGERTIP 4
 
 #define TIME_TO_STABILIZE_GRASP 4 // seconds
+
+#define NUM_OBJ_REC_FEATURES 39
 
 #endif // TACTILECONTROL_PARAMETERS_H

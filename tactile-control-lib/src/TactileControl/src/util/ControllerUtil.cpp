@@ -3,9 +3,11 @@
 #include "TactileControl/data/Parameters.h"
 #include "TactileControl/util/ICubUtil.h"
 
-#include <vector>
 #include <yarp/os/Time.h>
 #include <yarp/sig/Vector.h>
+#include <yarp/os/LogStream.h>
+
+#include <vector>
 
 using tactileControl::ControllerUtil;
 

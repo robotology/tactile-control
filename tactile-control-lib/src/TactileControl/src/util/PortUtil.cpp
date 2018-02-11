@@ -4,6 +4,7 @@
 
 #include <yarp/os/Network.h>
 #include <yarp/os/LogStream.h>
+#include <yarp/os/Time.h>
 
 using tactileControl::PortUtil;
 using std::string;
@@ -37,13 +38,15 @@ bool PortUtil::init(tactileControl::TaskData *taskData){
     string moduleSkinRawPortName = portFullPrefix + "/tactile_raw:i";
     string moduleSkinCompPortName = portFullPrefix + "/tactile_comp:i";
     string moduleHandEncodersRawPortName = portFullPrefix + "/encoders_raw:i";
-
-    // output ports
+    string visualScoresPortName = portFullPrefix + "/visual_scores:i";
+    
+        // output ports
     string infoDataPortName = portFullPrefix + "/info:o";
     string controlDataPortName = portFullPrefix + "/control:o";
     string gmmDataPortName = portFullPrefix + "/gmm:o";
     string gmmRegressionDataPortName = portFullPrefix + "/gmmRegression:o";
     string gripStrengthDataPortName = portFullPrefix + "/grip_strength:o";
+    string speakerPortName = portFullPrefix + "/speaker:o";
 
     // opening ports
     if (!portSkinRawIn.open(moduleSkinRawPortName)){
@@ -56,6 +59,10 @@ bool PortUtil::init(tactileControl::TaskData *taskData){
     }
     if (!portHandEncodersRawIn.open(moduleHandEncodersRawPortName)){
         yError() << dbgTag << "could not open " << moduleHandEncodersRawPortName << " port";
+        return false;
+    }
+    if (!portVisualScoresIn.open(visualScoresPortName)){
+        yError() << dbgTag << "could not open " << visualScoresPortName << " port";
         return false;
     }
     if (!portInfoDataOut.open(infoDataPortName)){
@@ -76,6 +83,10 @@ bool PortUtil::init(tactileControl::TaskData *taskData){
     }
     if (!portGripStrengthDataOut.open(gripStrengthDataPortName)){
         yError() << dbgTag << "could not open " << gripStrengthDataPortName << " port";
+        return false;
+    }
+    if (!portSpeakerOut.open(speakerPortName)){
+        yError() << dbgTag << "could not open " << speakerPortName << " port";
         return false;
     }
 
@@ -309,6 +320,20 @@ bool PortUtil::sendGMMRegressionData(double handAperture,double indMidPosDiff,do
 
 }
 
+bool PortUtil::sendStringToSpeaker(string objectLabel){
+
+    using yarp::os::Bottle;
+
+    Bottle& speakerBottle = portSpeakerOut.prepare();
+    speakerBottle.clear();
+
+    speakerBottle.addString(objectLabel);
+
+    portSpeakerOut.write();
+
+    return true;
+}
+
 
 bool PortUtil::readFingerSkinRawData(std::vector<std::vector<double> > &fingerTaxelsRawData){
 
@@ -361,6 +386,39 @@ bool PortUtil::readFingerEncodersRawData(std::vector<double> &fingerEncodersRawD
     return true;
 }
 
+bool PortUtil::readVisualClassifierAvgScores(std::vector<double> &visualScores){
+
+    using yarp::sig::Vector;
+
+    yarp::os::Bottle *portData = portVisualScoresIn.read(false);
+
+    double stepTime = 0.1;
+    double maxTime = 3.0;
+    double currentTime = 0.0;
+
+    while (!portData && currentTime < maxTime){
+
+        yarp::os::Time::delay(stepTime);
+        currentTime += stepTime;
+        portData = portVisualScoresIn.read(false);
+    }
+
+    if (!portData){
+        return false;
+    }
+
+    int numClasses = portData->get(0).asInt();
+    visualScores.resize(numClasses);
+
+    for (int i = 0; i < numClasses; i++){
+        visualScores[i] = portData->get(i + 1).asDouble();
+    }
+
+    return true;
+
+
+}
+
 
 bool PortUtil::release(){
 
@@ -372,6 +430,7 @@ bool PortUtil::release(){
     portGMMDataOut.interrupt();
     portGMMRegressionDataOut.interrupt();
     portGripStrengthDataOut.interrupt();
+    portSpeakerOut.interrupt();
 
     portSkinRawIn.close();
     portSkinCompIn.close();
@@ -381,6 +440,7 @@ bool PortUtil::release(){
     portGMMDataOut.close();
     portGMMRegressionDataOut.close();
     portGripStrengthDataOut.close();
+    portSpeakerOut.close();
 
     return true;
 }

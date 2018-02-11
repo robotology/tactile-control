@@ -7,7 +7,6 @@
 #include <yarp/sig/Vector.h>
 
 #include <string>
-
 #include <vector>
 
 namespace tactileControl {
@@ -20,12 +19,14 @@ namespace tactileControl {
         yarp::os::BufferedPort<yarp::sig::Vector> portSkinRawIn;
         yarp::os::BufferedPort<yarp::sig::Vector> portSkinCompIn;
         yarp::os::BufferedPort<yarp::sig::Vector> portHandEncodersRawIn;
+        yarp::os::BufferedPort<yarp::os::Bottle> portVisualScoresIn;
 
         yarp::os::BufferedPort<yarp::os::Bottle> portInfoDataOut;
         yarp::os::BufferedPort<yarp::os::Bottle> portControlDataOut;
         yarp::os::BufferedPort<yarp::os::Bottle> portGMMDataOut;
         yarp::os::BufferedPort<yarp::os::Bottle> portGMMRegressionDataOut;
         yarp::os::BufferedPort<yarp::os::Bottle> portGripStrengthDataOut;
+        yarp::os::BufferedPort<yarp::os::Bottle> portSpeakerOut;
 
         /* ******* Debug attributes.                ******* */
         std::string dbgTag;
@@ -46,11 +47,15 @@ namespace tactileControl {
 
         bool sendGripStrengthData(std::string experimentInfo,std::string experimentOptionalInfo,double targetGripStrength,double actualGripStrength,tactileControl::TaskData *taskData);
 
+        bool sendStringToSpeaker(std::string objectLabel);
+
         bool readFingerSkinRawData(std::vector<std::vector<double> > &fingerTaxelsRawData);
 
         bool readFingerSkinCompData(std::vector<std::vector<double> > &fingerTaxelsData,const std::vector<double> &fingersSensitivityScale);
 
         bool readFingerEncodersRawData(std::vector<double> &fingerEncodersRawData);
+
+        bool readVisualClassifierAvgScores(std::vector<double> &visualScores);
 
         bool release();
 

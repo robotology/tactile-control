@@ -2,6 +2,8 @@
 
 #include "TactileControl/data/Parameters.h"
 
+#include <yarp/os/LogStream.h>
+
 #include <algorithm>
 #include <ctime>
 #include <string>

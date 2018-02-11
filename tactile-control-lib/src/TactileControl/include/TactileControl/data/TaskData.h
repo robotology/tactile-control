@@ -34,6 +34,10 @@ namespace tactileControl {
         tactileControl::GMMData* gmmDataStandard;
         bool graspIsStable;
 
+        // tactile scores (classifier output)
+        std::vector<double> tactileScores;
+        std::vector<double> visualScores;
+
     private:
 
         /* ****** Debug attributes                              ****** */

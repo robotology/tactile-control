@@ -4,15 +4,18 @@
 #include "TactileControl/task/ApproachTask.h"
 #include "TactileControl/task/ControlTask.h"
 
+#include <yarp/os/LogStream.h>
+
 using tactileControl::TaskThread;
 
 
-TaskThread::TaskThread(int period, tactileControl::TaskData *taskData,tactileControl::ControllerUtil *controllerUtil,tactileControl::PortUtil *portUtil) : RateThread(period) {
+TaskThread::TaskThread(int period, tactileControl::TaskData *taskData, tactileControl::ControllerUtil *controllerUtil, tactileControl::PortUtil *portUtil, tactileControl::MLUtil *mlUtil) : RateThread(period) {
 
     this->taskData = taskData;
     this->controllerUtil = controllerUtil;
     this->portUtil = portUtil;
-        
+    this->mlUtil = mlUtil;
+
     dbgTag = "TaskThread: ";
 }
 
@@ -108,14 +111,14 @@ bool TaskThread::addApproachTask(){
 
 bool TaskThread::addControlTask(){
 
-    taskList.push_back(new ControlTask(taskData,controllerUtil,portUtil));
+    taskList.push_back(new ControlTask(taskData,controllerUtil,portUtil,mlUtil));
 
     return true;
 }
 
 bool TaskThread::addControlTask(const std::vector<double> &targets){
 
-    taskList.push_back(new ControlTask(taskData,controllerUtil,portUtil,targets));
+    taskList.push_back(new ControlTask(taskData,controllerUtil,portUtil,mlUtil,targets));
 
     return true;
 }

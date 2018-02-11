@@ -33,6 +33,8 @@ namespace tactileControl {
 
         static double getForce(const std::vector<double>& fingerTaxelsData,tactileControl::ForceCalculationMode forceCalculationMode);
 
+        static void normalizeVector(const std::vector<double> &inputVector, std::vector<double> &outputVector);
+
     private:
 
         static double getForceBySimpleSum(const std::vector<double>& fingerTaxelsData);

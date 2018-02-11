@@ -5,6 +5,7 @@
 #include <yarp/os/Time.h>
 #include <yarp/os/ResourceFinder.h>
 #include <yarp/os/Bottle.h>
+#include <yarp/os/LogStream.h>
 
 using tactileControl::HandController;
 
@@ -40,8 +41,15 @@ bool HandController::open(){
         return false;
     }
 
+    // initialize machine learning utility
+    mlUtil = new MLUtil();
+    if (!mlUtil->init(taskData,portUtil)){
+        yError() << dbgTag << "failed to initialize machine learning utility";
+        return false;
+    }
+
     // start task thread
-    taskThread = new TaskThread(taskData->getInt(PAR_COMMON_TASK_THREAD_PERIOD), taskData, controllerUtil, portUtil);
+    taskThread = new TaskThread(taskData->getInt(PAR_COMMON_TASK_THREAD_PERIOD), taskData, controllerUtil, portUtil, mlUtil);
     if (!taskThread->start()) {
         yError() << dbgTag << "could not start the task thread";
         return false;
@@ -193,6 +201,7 @@ bool HandController::disableMinForce(){
     return true;
 }
 
+
 bool HandController::setGripStrength(double gripStrength){
 
     if (!controllerInitialized) return false;
@@ -226,6 +235,7 @@ bool HandController::close(){
     delete(taskData);
     delete(controllerUtil);
     delete(portUtil);
+    delete(mlUtil);
 
     yInfo() << dbgTag << "hand controller succesfully closed";
 

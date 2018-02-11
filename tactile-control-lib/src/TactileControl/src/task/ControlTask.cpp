@@ -8,6 +8,7 @@
 #include <yarp/sig/Matrix.h>
 #include <yarp/os/Bottle.h>
 #include <yarp/os/Value.h>
+#include <yarp/os/LogStream.h>
 
 #include <vector>
 #include <cmath>
@@ -20,19 +21,21 @@ using yarp::sig::Vector;
 using yarp::sig::Matrix;
 
 
-ControlTask::ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil):Task(taskData,controllerUtil,portUtil,taskData->getDouble(PAR_CTRL_DURATION)) {
+ControlTask::ControlTask(tactileControl::TaskData *taskData, tactileControl::ControllerUtil * controllerUtil, tactileControl::PortUtil * portUtil, tactileControl::MLUtil * mlUtil) :Task(taskData, controllerUtil, portUtil, taskData->getDouble(PAR_CTRL_DURATION)) {
 
     std::vector<double> targets(1,taskData->getDouble(PAR_CTRL_DEFAULT_FORCE_TARGET));
 
-    constructorsCommon(targets);
+    constructorsCommon(targets,mlUtil);
 }
 
-ControlTask::ControlTask(tactileControl::TaskData *taskData,tactileControl::ControllerUtil * controllerUtil,tactileControl::PortUtil * portUtil,const std::vector<double> &targets):Task(taskData,controllerUtil,portUtil,taskData->getDouble(PAR_CTRL_DURATION)) {
+ControlTask::ControlTask(tactileControl::TaskData *taskData, tactileControl::ControllerUtil * controllerUtil, tactileControl::PortUtil * portUtil, tactileControl::MLUtil * mlUtil, const std::vector<double> &targets) :Task(taskData, controllerUtil, portUtil, taskData->getDouble(PAR_CTRL_DURATION)) {
 
-    constructorsCommon(targets);
+    constructorsCommon(targets,mlUtil);
 }
 
-void ControlTask::constructorsCommon(const std::vector<double> &targets){
+void ControlTask::constructorsCommon(const std::vector<double> &targets,tactileControl::MLUtil *mlUtil){
+
+    this->mlUtil = mlUtil;
 
     expandTargets(targets,forceTargetValue);
 
@@ -90,6 +93,25 @@ void ControlTask::init(){
     if (taskData->getBool(PAR_COMMON_USE_RING_LITTLE_FINGERS)){
         controllerUtil->setControlMode(RING_LITTLE_JOINT, VOCAB_CM_PWM);
     }
+
+    // initialize machine learning data
+    objectRecognitionTaskEnabled = taskData->getBool(PAR_ML_OBJECT_RECOGNITION_TASK_ENABLED);
+    if (objectRecognitionTaskEnabled){
+        startSqueezingTime = taskData->getDouble(PAR_ML_GRASP_STABILIZATION_TIME);
+        startTactileDataCollectionTime = startSqueezingTime + taskData->getDouble(PAR_ML_OBJECT_SQUEEZING_TIME);
+        startBendingProximalJointsTime = startTactileDataCollectionTime + taskData->getDouble(PAR_ML_TACTILE_DATA_COLLECTION_TIME);
+        startBendingDistalJointsTime = startBendingProximalJointsTime + taskData->getDouble(PAR_ML_BENDING_PROXIMAL_JOINTS_TIME);
+        taskCompleteTime = startBendingDistalJointsTime + taskData->getDouble(PAR_ML_BENDING_DISTAL_JOINTS_TIME);
+
+        gripStrengthIncreased = false;
+        featuresProcessingComplete = false;
+        proximalJointsSetInOLMode = false;
+        distalJointsSetInOLMode = false;
+        averageTactileData.resize(2 * NUM_TAXELS, 0); // using 2 fingers
+        averageTactileDataNormalized.resize(averageTactileData.size(), 0);
+        objRecFeatures.resize(NUM_OBJ_REC_FEATURES);
+    }
+
     std::stringstream logStream("");
 
     logStream << "\n\n" << dbgTag << "TASK STARTED - Target: ";
@@ -549,3 +571,149 @@ void ControlTask::computeForceTargetValues(double gripStrength,double svControlS
         }
     }
 }
+
+bool ControlTask::manageObjectRecognitionTask(){
+
+    tactileControl::ObjectRecognitionTaskState objRecState = getObjectRecognitionTaskState();
+
+    switch (objRecState){
+
+    case GRASP_STABILIZATION:
+        // do nothing, just wait for stabilization
+        break;
+
+    case OBJECT_SQUEEZING:
+        if (!gripStrengthIncreased){
+            // increase the grip strenght
+            taskData->set(PAR_CTRL_GRIP_STRENGTH, taskData->getDouble(PAR_ML_GRIP_STRENGTH_FOR_SQUEEZING));
+            gripStrengthIncreased = true;
+        }
+        break;
+
+    case TACTILE_DATA_COLLECTION:
+        // sum up old and current tactile data (to be averaged later)
+        for (int i = 0; i < NUM_TAXELS; i++){
+            averageTactileData[i] += taskData->fingerTaxelsRawData[THUMB_FINGERTIP][i];
+        }
+        for (int i = 0; i < NUM_TAXELS; i++){
+            averageTactileData[NUM_TAXELS + i] += taskData->fingerTaxelsRawData[MIDDLE_FINGERTIP][i];
+        }
+        break;
+
+    case BEDING_PROXIMAL_JOINTS:
+        if (!proximalJointsSetInOLMode){
+            // set proximal joints in open loop mode
+            controllerUtil->setControlMode(INDEX_PROXIMAL_JOINT, VOCAB_CM_PWM);
+            controllerUtil->setControlMode(RING_LITTLE_JOINT, VOCAB_CM_PWM);
+            proximalJointsSetInOLMode = true;
+        }
+
+        // send desired pwm to proximal joints
+        controllerUtil->sendPwm(INDEX_PROXIMAL_JOINT, taskData->getDouble(PAR_ML_HAND_ENCLOSURE_INDEX_PROX_JOINT_PWM));
+        controllerUtil->sendPwm(RING_LITTLE_JOINT, taskData->getDouble(PAR_ML_HAND_ENCLOSURE_RING_LITTLE_JOINT_PWM));
+
+        break;
+
+    case BENDING_DISTAL_JOINTS:
+        if (!distalJointsSetInOLMode){
+            // set proximal joints in open loop mode
+            controllerUtil->setControlMode(INDEX_DISTAL_JOINT, VOCAB_CM_PWM);
+            distalJointsSetInOLMode = true;
+        }
+
+        // send desired pwm to distal joints
+        controllerUtil->sendPwm(INDEX_PROXIMAL_JOINT, taskData->getDouble(PAR_ML_HAND_ENCLOSURE_INDEX_PROX_JOINT_PWM));
+        controllerUtil->sendPwm(RING_LITTLE_JOINT, taskData->getDouble(PAR_ML_HAND_ENCLOSURE_RING_LITTLE_JOINT_PWM));
+        controllerUtil->sendPwm(RING_LITTLE_JOINT, taskData->getDouble(PAR_ML_HAND_ENCLOSURE_RING_LITTLE_JOINT_PWM));
+
+        break;
+
+    case TASK_COMPLETE:
+
+        if (!featuresProcessingComplete){
+
+            // compute tactile average
+            double tactileDataCollectionCalls = getNumThreadCalls(taskData->getDouble(PAR_ML_TACTILE_DATA_COLLECTION_TIME));
+            for (int i = 0; i < averageTactileData.size(); i++){
+                averageTactileData[i] = averageTactileData[i] / tactileDataCollectionCalls;
+            }
+            ICubUtil::normalizeVector(averageTactileData, averageTactileDataNormalized);
+
+            // put the tactile avarage into the features vector
+            for (int i = 0; i < averageTactileDataNormalized.size(); i++){
+                objRecFeatures[i] = averageTactileDataNormalized[i];
+            }
+            // put the encoders data into the features vector (the last component is not considered as it is always equal to 0)
+            for (int i = 0; i < taskData->fingerEncodersRawData.size() - 1; i++){
+                objRecFeatures[averageTactileDataNormalized.size() + i] = taskData->fingerEncodersRawData[i];
+            }
+
+            std::vector<double> featuresForClassification;
+
+            switch (static_cast<tactileControl::ClassifierType>(taskData->getInt(PAR_ML_CLASSIFIER_TYPE))){
+
+            case TACTILE_CLASSIFIER:
+                featuresForClassification.swap(objRecFeatures);
+                break;
+
+            case MULTIMODAL_CLASSIFIER:
+                mlUtil->testClassifierOneShot(objRecFeatures, taskData->tactileScores, false, TACTILE_CLASSIFIER);
+                featuresForClassification.resize(taskData->visualScores.size() + taskData->tactileScores.size());
+                for (int i = 0; i < taskData->visualScores.size(); i++){
+                    featuresForClassification[i] = taskData->visualScores[i];
+                }
+                for (int i = 0; i < taskData->tactileScores.size(); i++){
+                    featuresForClassification[taskData->visualScores.size() + i] = taskData->tactileScores[i];
+                }
+                break;
+            }
+
+            if (taskData->getBool(PAR_ML_DATA_COLLECTION_ENABLED)){
+                mlUtil->addCollectedFeatures(featuresForClassification, taskData->getInt(PAR_ML_OBJECT_ID));
+            }
+            if (taskData->getBool(PAR_ML_OBJECT_CLASSIFICATION_ENABLED)){
+                mlUtil->testClassifierOneShot(featuresForClassification, taskData->tactileScores, true, static_cast<tactileControl::ClassifierType>(taskData->getInt(PAR_ML_CLASSIFIER_TYPE)));
+            }
+
+            featuresProcessingComplete = true;
+        }
+
+        break;
+
+    default:
+
+        break;
+
+    }
+
+    return true;
+}
+
+tactileControl::ObjectRecognitionTaskState ControlTask::getObjectRecognitionTaskState(){
+
+    tactileControl::ObjectRecognitionTaskState objRecState;
+
+    double time = timeElapsed();
+
+    if (time < startSqueezingTime){
+        objRecState = GRASP_STABILIZATION;
+    }
+    else if (time < startBendingProximalJointsTime){
+        objRecState = OBJECT_SQUEEZING;
+    }
+    else if (time < startTactileDataCollectionTime){
+        objRecState = TACTILE_DATA_COLLECTION;
+    }
+    else if (time < startBendingDistalJointsTime){
+        objRecState = BEDING_PROXIMAL_JOINTS;
+    }
+    else if (time < taskCompleteTime){
+        objRecState = BENDING_DISTAL_JOINTS;
+    }
+    else {
+        objRecState = TASK_COMPLETE;
+    }
+
+    return objRecState;
+}
+
