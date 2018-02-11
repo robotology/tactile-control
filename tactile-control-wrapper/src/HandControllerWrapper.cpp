@@ -44,10 +44,16 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
     rpcCmdUtil.init(&rpcCmdData);
 
     // initialize the hand controller
-    handController.set(libConfigFileContext,libConfigFileName);
+    handController.set(libConfigFileContext, libConfigFileName);
     handController.set("hand", Value(hand));
     if (!handController.open()){
         cout << dbgTag << "could not initialize the hand controller. \n";
+        return false;
+    }
+
+    // initialize the object recognition manager
+    if (!objRecManager.open(handController)){
+        cout << dbgTag << "could not initialize the object recognition manager. \n";
         return false;
     }
 
@@ -127,6 +133,9 @@ bool HandControllerWrapper::respond(const yarp::os::Bottle& command, yarp::os::B
         case DISABLE_MIN_FORCE:
             success = disableMinForce();
             break;
+        case OBJECT_RECOGNITION:
+            success = objectRecognition(rpcCmdUtil.objRecCmdArg, rpcCmdUtil.argValue);
+            break;
         case QUIT:
             success = quit();
             break;
@@ -149,6 +158,9 @@ bool HandControllerWrapper::close() {
 
     // close hand controller
     handController.close();
+
+    // close object recognition manager
+    objRecManager.close();
 
     // close rpc port
     portPlantIdentificationRPC.close();
@@ -329,3 +341,71 @@ bool HandControllerWrapper::disableMinForce(){
 
     return true;
 }
+
+bool HandControllerWrapper::objectRecognition(tactileControlWrapper::RPCObjRecCmdArgName paramName, const yarp::os::Value &paramValue){
+
+    bool success = false;
+
+    switch (paramName){
+
+    case LOAD_TRAINING_SET:
+        success = objRecManager.loadTrainingSet(paramValue.asString());
+        break;
+
+    case SAVE_TRAINING_SET:
+        success = objRecManager.saveTrainingSet(paramValue.asString());
+        break;
+
+    case LOAD_OBJECTS:
+        success = objRecManager.loadObjects(paramValue.asString());
+        break;
+
+    case SAVE_OBJECTS:
+        success = objRecManager.saveObjects(paramValue.asString());
+        break;
+
+    case LOAD_MODEL:
+        success = objRecManager.loadModel(paramValue.asString());
+        break;
+
+    case SAVE_MODEL:
+        success = objRecManager.saveModel(paramValue.asString());
+        break;
+
+    case VIEW_DATA:
+        success = objRecManager.viewData();
+        break;
+
+    case DISCARD_LAST_FEATURES:
+        success = objRecManager.discardLastFeatures();
+        break;
+
+    case CLEAR_COLLECTED_FEATURES:
+        success = objRecManager.clearCollectedFeatures();
+        break;
+
+    case PROCESS_COLLECTED_DATA:
+        success = objRecManager.processCollectedData();
+        break;
+
+    case ADD_NEW_OBJECT:
+        success = objRecManager.addNewObject(paramValue.asString());
+        break;
+
+    case GET_READY:
+        success = objRecManager.getReady(paramValue.asString());
+        break;
+
+    case READ_VISUAL_CLASSIFIER_SCORES:
+        success = objRecManager.readVisualClassifierOutputScores();
+        break;
+
+    case RESET:
+        success = objRecManager.reset();
+        break;
+
+    }
+
+    return success;
+}
+

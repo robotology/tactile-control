@@ -28,9 +28,13 @@ namespace tactileControlWrapper {
         std::map<tactileControlWrapper::RPCTaskCmdArgName,std::string> taskCmdArgDescMap;
         std::map<std::string,tactileControlWrapper::RPCTaskCmdArgName> taskCmdArgRevMap;
 
-        std::map<tactileControlWrapper::RPCViewCmdArgName,std::string> viewCmdArgMap;
-        std::map<tactileControlWrapper::RPCViewCmdArgName,std::string> viewCmdArgDescMap;
-        std::map<std::string,tactileControlWrapper::RPCViewCmdArgName> viewCmdArgRevMap;
+        std::map<tactileControlWrapper::RPCViewCmdArgName, std::string> viewCmdArgMap;
+        std::map<tactileControlWrapper::RPCViewCmdArgName, std::string> viewCmdArgDescMap;
+        std::map<std::string, tactileControlWrapper::RPCViewCmdArgName> viewCmdArgRevMap;
+        
+        std::map<tactileControlWrapper::RPCObjRecCmdArgName, std::string> objRecCmdArgMap;
+        std::map<tactileControlWrapper::RPCObjRecCmdArgName, std::string> objRecCmdArgDescMap;
+        std::map<std::string, tactileControlWrapper::RPCObjRecCmdArgName> objRecCmdArgRevMap;
 
         std::map<tactileControlWrapper::TaskName,std::string> taskMap;
         std::map<tactileControlWrapper::TaskName,std::string> taskDescMap;
@@ -48,14 +52,16 @@ namespace tactileControlWrapper {
 
     private:
 
-        void add(std::string mapKey,tactileControlWrapper::RPCMainCmdName mapValue,std::string description);
+        void add(std::string mapKey, tactileControlWrapper::RPCMainCmdName mapValue, std::string description);
 
-        void add(std::string mapKey,tactileControlWrapper::RPCTaskCmdArgName mapValue,std::string description);
+        void add(std::string mapKey, tactileControlWrapper::RPCTaskCmdArgName mapValue, std::string description);
 
-        void add(std::string mapKey,tactileControlWrapper::RPCViewCmdArgName mapValue,std::string description);
+        void add(std::string mapKey, tactileControlWrapper::RPCViewCmdArgName mapValue, std::string description);
 
-        void add(std::string mapKey,tactileControlWrapper::TaskName mapValue,std::string description);
+        void add(std::string mapKey, tactileControlWrapper::RPCObjRecCmdArgName mapValue, std::string description);
 
+        void add(std::string mapKey, tactileControlWrapper::TaskName mapValue, std::string description);
+        
     };
 
 } // namespace tactileControlWrapper

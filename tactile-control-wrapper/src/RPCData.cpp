@@ -26,13 +26,14 @@ RPCData::RPCData(){
     add("open",OPEN,"Opens the hand and stops any running task (usage: open <fullyOpen> <wait>)");
     add("arm",ARM,"Sets the arm in home position");
     add("grasp",GRASP,"Executes the grasp task (usage: grasp <wait>)");
-    add("isHandOpen",IS_HAND_OPEN,"checks if the hand is open");
-    add("isHandClose",IS_HAND_CLOSE,"checks if the hand is close and the grasp is stable");
-    add("setGripStrength",SET_GRIP_STRENGTH,"sets the desired grip strength (usage: 'setGripStrength <value>')");
-    add("setMinForce", SET_MIN_FORCE, "sets the minimum force reference at the fingertips (usage: 'setMinForce <value>')");
-    add("disableMinForce", DISABLE_MIN_FORCE, "disables the minimum force reference mode");
+    add("is_hand_open",IS_HAND_OPEN,"checks if the hand is open");
+    add("is_hand_close",IS_HAND_CLOSE,"checks if the hand is close and the grasp is stable");
+    add("set_grip_strength",SET_GRIP_STRENGTH,"sets the desired grip strength (usage: 'set_grip_strength <value>')");
+    add("set_min_force", SET_MIN_FORCE, "sets the minimum force reference at the fingertips (usage: 'set_min_force <value>')");
+    add("disable_min_force", DISABLE_MIN_FORCE, "disables the minimum force reference mode");
+    add("obj_rec", OBJECT_RECOGNITION, "introduces to several commands related to the object recognition task (usage: 'obj_rec <cmd> [param]')");
     add("quit", QUIT, "Closes the module");
-
+    
     // TASK <?>
     add("add",ADD,"ADD TASK");
     add("clear",CLEAR,"CLEAR TASK LIST");
@@ -46,6 +47,23 @@ RPCData::RPCData(){
     add("set",SETTINGS,"SETTINGS");
     add("tasks",TASKS,"TASKS");
 
+    // OBJ_REC <?>
+    add("load_train_set", LOAD_TRAINING_SET, "LOAD_TRAINING_SET");
+    add("save_train_set", SAVE_TRAINING_SET, "SAVE_TRAINING_SET");
+    add("load_objects", LOAD_OBJECTS, "LOAD_OBJECTS");
+    add("save_objects", SAVE_OBJECTS, "SAVE_OBJECTS");
+    add("load_model", LOAD_MODEL, "LOAD_MODEL");
+    add("save_model", SAVE_MODEL, "SAVE_MODEL");
+    add("view_data", VIEW_DATA, "VIEW_DATA");
+    add("train", TRAIN, "TRAIN");
+    add("discard_last", DISCARD_LAST_FEATURES, "DISCARD_LAST_FEATURES");
+    add("clear", CLEAR_COLLECTED_FEATURES, "CLEAR_COLLECTED_FEATURES");
+    add("process_data", PROCESS_COLLECTED_DATA, "PROCESS_COLLECTED_DATA");
+    add("add_new_object", ADD_NEW_OBJECT, "ADD_NEW_OBJECT");
+    add("get_ready", GET_READY, "GET_READY");
+    add("read_vc_scores", READ_VISUAL_CLASSIFIER_SCORES, "READ_VISUAL_CLASSIFIER_SCORES");
+    add("reset", RESET, "RESET");
+    
     dbgTag = "RPCData: ";
     
 }
@@ -62,13 +80,19 @@ void RPCData::add(string rpcLabel,RPCTaskCmdArgName enumLabel,string description
     taskCmdArgRevMap.insert(pair<string,RPCTaskCmdArgName>(rpcLabel,enumLabel));
 }
 
-void RPCData::add(string rpcLabel,RPCViewCmdArgName enumLabel,string description){
-    viewCmdArgMap.insert(pair<RPCViewCmdArgName,string>(enumLabel,rpcLabel));
-    viewCmdArgDescMap.insert(pair<RPCViewCmdArgName,string>(enumLabel,description));
-    viewCmdArgRevMap.insert(pair<string,RPCViewCmdArgName>(rpcLabel,enumLabel));
+void RPCData::add(string rpcLabel, RPCViewCmdArgName enumLabel, string description){
+    viewCmdArgMap.insert(pair<RPCViewCmdArgName, string>(enumLabel, rpcLabel));
+    viewCmdArgDescMap.insert(pair<RPCViewCmdArgName, string>(enumLabel, description));
+    viewCmdArgRevMap.insert(pair<string, RPCViewCmdArgName>(rpcLabel, enumLabel));
 }
 
-void RPCData::add(string rpcLabel,TaskName enumLabel,string description){
+void RPCData::add(string rpcLabel, RPCObjRecCmdArgName enumLabel, string description){
+    objRecCmdArgMap.insert(pair<RPCObjRecCmdArgName, string>(enumLabel, rpcLabel));
+    objRecCmdArgDescMap.insert(pair<RPCObjRecCmdArgName, string>(enumLabel, description));
+    objRecCmdArgRevMap.insert(pair<string, RPCObjRecCmdArgName>(rpcLabel, enumLabel));
+}
+
+void RPCData::add(string rpcLabel, TaskName enumLabel, string description){
     taskMap.insert(pair<TaskName,string>(enumLabel,rpcLabel));
     taskDescMap.insert(pair<TaskName,string>(enumLabel,description));
     taskRevMap.insert(pair<string,TaskName>(rpcLabel,enumLabel));
@@ -133,6 +157,7 @@ std::string RPCData::showHelp(){
     help << showCommandHelp(SET_GRIP_STRENGTH);
     help << showCommandHelp(SET_MIN_FORCE);
     help << showCommandHelp(DISABLE_MIN_FORCE);
+    help << showCommandHelp(OBJECT_RECOGNITION);
     help << showCommandHelp(QUIT);
     help << std::endl;
 

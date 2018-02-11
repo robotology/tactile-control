@@ -134,6 +134,11 @@ bool RPCUtil::processCommand(const Bottle &rpcCmdBottle){
         break;
     case DISABLE_MIN_FORCE: // do nothing
         break;
+    case OBJECT_RECOGNITION:
+        if (!processObjRecCommand(rpcCmdBottle)){
+            return false;
+        }
+        break;
     case QUIT: // do nothing
         break;
 
@@ -146,11 +151,12 @@ bool RPCUtil::processTaskCommand(const Bottle &rpcCmdBottle){
 
     try {
         taskCmdArg = rpcData->taskCmdArgRevMap.at(rpcCmdBottle.get(1).asString());
-    } catch(const std::out_of_range& oor){
+    }
+    catch (const std::out_of_range& oor){
         wrongSyntaxMessage(TASK);
         return false;
     }
-        
+
     switch (taskCmdArg){
 
     case ADD:
@@ -160,13 +166,15 @@ bool RPCUtil::processTaskCommand(const Bottle &rpcCmdBottle){
         }
         try {
             task = rpcData->taskRevMap.at(rpcCmdBottle.get(2).asString());
-        } catch(const std::out_of_range& oor){
+        }
+        catch (const std::out_of_range& oor){
             errMsg << "wrong task name, available: step (STEP task), appr (APPROACH task), ctrl (CONTROL task)" << std::endl;
             return false;
         }
         if (rpcCmdBottle.size() > 3){
             argValue = rpcCmdBottle.get(3);
-        } else {
+        }
+        else {
             if (task == STEP){
                 errMsg << "provide target values for the STEP task" << std::endl;
                 return false;
@@ -176,6 +184,48 @@ bool RPCUtil::processTaskCommand(const Bottle &rpcCmdBottle){
         break;
     case CLEAR: // do nothing
         break;
+    }
+
+    return true;
+}
+
+bool RPCUtil::processObjRecCommand(const Bottle &rpcCmdBottle){
+
+    try {
+        objRecCmdArg = rpcData->objRecCmdArgRevMap.at(rpcCmdBottle.get(1).asString());
+    }
+    catch (const std::out_of_range& oor){
+        wrongSyntaxMessage(OBJECT_RECOGNITION);
+        return false;
+    }
+
+    switch (objRecCmdArg){
+
+    case LOAD_TRAINING_SET:
+    case SAVE_TRAINING_SET:
+    case LOAD_OBJECTS:
+    case SAVE_OBJECTS:
+    case LOAD_MODEL:
+    case SAVE_MODEL:
+    case ADD_NEW_OBJECT:
+    case GET_READY:
+        if (rpcCmdBottle.size() < 3){
+            wrongSyntaxMessage(OBJECT_RECOGNITION);
+            return false;
+        }
+        argValue = rpcCmdBottle.get(2);
+        break;
+
+    case VIEW_DATA:
+    case TRAIN:
+    case DISCARD_LAST_FEATURES:
+    case CLEAR_COLLECTED_FEATURES:
+    case PROCESS_COLLECTED_DATA:
+    case READ_VISUAL_CLASSIFIER_SCORES:
+    case RESET:
+        // do nothing
+        break;
+
     }
 
     return true;

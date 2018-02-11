@@ -28,6 +28,7 @@ namespace tactileControlWrapper {
         tactileControlWrapper::RPCMainCmdName mainCmd;
         tactileControlWrapper::RPCTaskCmdArgName taskCmdArg;
         tactileControlWrapper::RPCViewCmdArgName viewCmdArg;
+        tactileControlWrapper::RPCObjRecCmdArgName objRecCmdArg;
         tactileControlWrapper::TaskName task;
         yarp::os::ConstString paramName;
         std::stringstream errMsg;
@@ -45,6 +46,8 @@ namespace tactileControlWrapper {
     private:
 
         bool processTaskCommand(const yarp::os::Bottle &rpcCmdBottle);
+
+        bool processObjRecCommand(const yarp::os::Bottle &rpcCmdBottle);
 
         void wrongSyntaxMessage(tactileControlWrapper::RPCMainCmdName mainCmd);
 

@@ -2,6 +2,7 @@
 #define TACTILECONTROLWRAPPER_HANDCONTROLLERWRAPPER_H
 
 #include "TactileControl/HandController.h"
+#include "TactileControl/../../../../robotology/tactile-control/tactile-control-lib/src/TactileControl/include/TactileControl/ObjectRecognitionManager.h"
 #include "tactileControlWrapper/RPCUtil.h"
 #include "tactileControlWrapper/RPCData.h"
 
@@ -21,6 +22,7 @@ namespace tactileControlWrapper {
         private:
 
             tactileControl::HandController handController;
+            tactileControl::ObjectRecognitionManager objRecManager;
 
             /* ****** Module attributes                             ****** */
             int moduleThreadPeriod;
@@ -66,6 +68,7 @@ namespace tactileControlWrapper {
             bool setGripStrength(const yarp::os::Value &paramValue);
             bool setMinForce(const yarp::os::Value &paramValue);
             bool disableMinForce();
+            bool objectRecognition(tactileControlWrapper::RPCObjRecCmdArgName paramName, const yarp::os::Value &paramValue);
             bool help();
 
     };
