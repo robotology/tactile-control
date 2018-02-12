@@ -425,6 +425,7 @@ bool PortUtil::release(){
     portSkinRawIn.interrupt();
     portSkinCompIn.interrupt();
     portHandEncodersRawIn.interrupt();
+    portVisualScoresIn.interrupt();
     portInfoDataOut.interrupt();
     portControlDataOut.interrupt();
     portGMMDataOut.interrupt();
@@ -435,6 +436,7 @@ bool PortUtil::release(){
     portSkinRawIn.close();
     portSkinCompIn.close();
     portHandEncodersRawIn.close();
+    portVisualScoresIn.close();
     portInfoDataOut.close();
     portControlDataOut.close();
     portGMMDataOut.close();

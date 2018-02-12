@@ -38,6 +38,8 @@ namespace tactileControl {
         std::vector<double> tactileScores;
         std::vector<double> visualScores;
 
+        bool objectRecognitionTaskComplete;
+
     private:
 
         /* ****** Debug attributes                              ****** */

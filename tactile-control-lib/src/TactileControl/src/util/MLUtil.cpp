@@ -149,6 +149,7 @@ bool MLUtil::viewData(){
 
     yInfo() << dbgTag << "-- X training --";
     for (int i = 0; i < mlData->xTr.rows(); i++){
+        std::cout << "[ " << i << " ] - ";
         for (int j = 0; j < mlData->xTr.cols(); j++){
             std::cout << mlData->xTr(i, j) << "\t";
         }
@@ -169,10 +170,11 @@ bool MLUtil::viewData(){
 
     yInfo() << dbgTag << "-- Collected features --";
     for (int i = 0; i < collectedFeatures.size(); i++){
+        std::cout << "[ " << i << " ] - ";
         for (int j = 0; j < collectedFeatures[i].size(); j++){
             std::cout << collectedFeatures[i][j] << "\t";
         }
-        std::cout << std::endl;
+        std::cout << " - objID " << objectIDs[i] << std::endl;
     }
     std::cout << std::endl;
 
@@ -328,7 +330,6 @@ bool MLUtil::reset(){
     mlData->reset();
 
     clearCollectedFeatures();
-    objectIDs.clear();
 
     return true;
 }
@@ -346,6 +347,7 @@ bool MLUtil::release(){
 bool MLUtil::clearCollectedFeatures(){
 
     collectedFeatures.clear();
+    objectIDs.clear();
 
     return true;
 }
@@ -419,6 +421,8 @@ bool MLUtil::processCollectedData(){
                 }
             }
         }
+
+        clearCollectedFeatures();
 
         mlData->trainingSetLoaded = true;
 

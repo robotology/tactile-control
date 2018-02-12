@@ -147,6 +147,8 @@ bool TaskData::init(const yarp::os::Property &options) {
     gmmDataStandard = new GMMData(STANDARD_GMM);
     graspIsStable = false;
 
+    objectRecognitionTaskComplete = false;
+
     return true;
 }
 
@@ -452,6 +454,25 @@ std::string TaskData::getDataDescription(){
     description << getParameterDescription(PAR_CTRL_MIN_FORCE_ENABLED) << endl;
     description << getParameterDescription(PAR_CTRL_MIN_FORCE) << endl;
     description << getParameterDescription(PAR_CTRL_RING_LITTLE_PWM) << endl;
+    description << endl;
+
+    description << "<<< Machine Learning Data >>>" << endl;
+    description << endl;
+    description << getParameterDescription(PAR_ML_OBJECT_RECOGNITION_TASK_ENABLED) << endl;
+    description << getParameterDescription(PAR_ML_DATA_COLLECTION_ENABLED) << endl;
+    description << getParameterDescription(PAR_ML_OBJECT_CLASSIFICATION_ENABLED) << endl;
+    description << getParameterDescription(PAR_ML_CLASSIFIER_TYPE) << endl;
+    description << getParameterDescription(PAR_ML_TRAINING_DATA_PATH) << endl;
+    description << getParameterDescription(PAR_ML_GRASP_STABILIZATION_TIME) << endl;
+    description << getParameterDescription(PAR_ML_OBJECT_SQUEEZING_TIME) << endl;
+    description << getParameterDescription(PAR_ML_TACTILE_DATA_COLLECTION_TIME) << endl;
+    description << getParameterDescription(PAR_ML_BENDING_PROXIMAL_JOINTS_TIME) << endl;
+    description << getParameterDescription(PAR_ML_BENDING_DISTAL_JOINTS_TIME) << endl;
+    description << getParameterDescription(PAR_ML_OBJECT_ID) << endl;
+    description << getParameterDescription(PAR_ML_GRIP_STRENGTH_FOR_SQUEEZING) << endl;
+    description << getParameterDescription(PAR_ML_HAND_ENCLOSURE_INDEX_PROX_JOINT_PWM) << endl;
+    description << getParameterDescription(PAR_ML_HAND_ENCLOSURE_RING_LITTLE_JOINT_PWM) << endl;
+    description << getParameterDescription(PAR_ML_HAND_ENCLOSURE_INDEX_DIST_JOINT_PWM) << endl;
     description << endl;
 
     return description.str();

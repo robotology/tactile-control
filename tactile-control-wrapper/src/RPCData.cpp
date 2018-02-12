@@ -31,7 +31,7 @@ RPCData::RPCData(){
     add("set_grip_strength",SET_GRIP_STRENGTH,"sets the desired grip strength (usage: 'set_grip_strength <value>')");
     add("set_min_force", SET_MIN_FORCE, "sets the minimum force reference at the fingertips (usage: 'set_min_force <value>')");
     add("disable_min_force", DISABLE_MIN_FORCE, "disables the minimum force reference mode");
-    add("obj_rec", OBJECT_RECOGNITION, "introduces to several commands related to the object recognition task (usage: 'obj_rec <cmd> [param]')");
+    add("obj_rec", OBJECT_RECOGNITION, "introduces to several commands related to the object recognition task (usage: 'obj_rec <cmd> <param>')");
     add("quit", QUIT, "Closes the module");
     
     // TASK <?>

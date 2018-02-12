@@ -2,7 +2,7 @@
 #define TACTILECONTROLWRAPPER_HANDCONTROLLERWRAPPER_H
 
 #include "TactileControl/HandController.h"
-#include "TactileControl/../../../../robotology/tactile-control/tactile-control-lib/src/TactileControl/include/TactileControl/ObjectRecognitionManager.h"
+#include "TactileControl/ObjectRecognitionManager.h"
 #include "tactileControlWrapper/RPCUtil.h"
 #include "tactileControlWrapper/RPCData.h"
 
@@ -34,7 +34,7 @@ namespace tactileControlWrapper {
             std::stringstream screenMsg;
 
             /* ****** RPC Ports                                     ****** */
-            yarp::os::RpcServer portPlantIdentificationRPC;
+            yarp::os::RpcServer portHandControllerWrapperRPC;
 
             tactileControlWrapper::RPCUtil rpcCmdUtil;
             tactileControlWrapper::RPCData rpcCmdData;

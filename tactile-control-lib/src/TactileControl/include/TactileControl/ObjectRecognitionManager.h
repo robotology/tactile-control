@@ -106,6 +106,11 @@ namespace tactileControl {
         bool readVisualClassifierOutputScores();
 
         /**
+        * Checks if the object recognition task is complete.
+        */
+        bool isObjectRecognitionTaskComplete();
+
+        /**
         * Resets everything so that data collection can be restared. Returns true in case of success.
         */
         bool reset();

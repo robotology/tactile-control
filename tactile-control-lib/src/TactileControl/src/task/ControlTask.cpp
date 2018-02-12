@@ -343,6 +343,10 @@ void ControlTask::calculateControlInput(){
         controllerUtil->sendPwm(RING_LITTLE_JOINT, pwmSign*taskData->getDouble(PAR_CTRL_RING_LITTLE_PWM));
     }
 
+    if (objectRecognitionTaskEnabled){
+        manageObjectRecognitionTask();
+    }
+
 }
 
 
@@ -631,7 +635,6 @@ bool ControlTask::manageObjectRecognitionTask(){
     case TASK_COMPLETE:
 
         if (!featuresProcessingComplete){
-
             // compute tactile average
             double tactileDataCollectionCalls = getNumThreadCalls(taskData->getDouble(PAR_ML_TACTILE_DATA_COLLECTION_TIME));
             for (int i = 0; i < averageTactileData.size(); i++){
@@ -658,6 +661,7 @@ bool ControlTask::manageObjectRecognitionTask(){
 
             case MULTIMODAL_CLASSIFIER:
                 mlUtil->testClassifierOneShot(objRecFeatures, taskData->tactileScores, false, TACTILE_CLASSIFIER);
+
                 featuresForClassification.resize(taskData->visualScores.size() + taskData->tactileScores.size());
                 for (int i = 0; i < taskData->visualScores.size(); i++){
                     featuresForClassification[i] = taskData->visualScores[i];
@@ -676,6 +680,7 @@ bool ControlTask::manageObjectRecognitionTask(){
             }
 
             featuresProcessingComplete = true;
+            taskData->objectRecognitionTaskComplete = true;
         }
 
         break;
@@ -698,10 +703,10 @@ tactileControl::ObjectRecognitionTaskState ControlTask::getObjectRecognitionTask
     if (time < startSqueezingTime){
         objRecState = GRASP_STABILIZATION;
     }
-    else if (time < startBendingProximalJointsTime){
+    else if (time < startTactileDataCollectionTime){
         objRecState = OBJECT_SQUEEZING;
     }
-    else if (time < startTactileDataCollectionTime){
+    else if (time < startBendingProximalJointsTime){
         objRecState = TACTILE_DATA_COLLECTION;
     }
     else if (time < startBendingDistalJointsTime){

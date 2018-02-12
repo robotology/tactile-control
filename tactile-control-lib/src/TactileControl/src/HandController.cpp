@@ -162,6 +162,8 @@ bool HandController::openHand(bool fullyOpen, bool wait){
 
     if (!controllerInitialized) return false;
 
+    taskData->objectRecognitionTaskComplete = false;
+
     if (taskRunning == true){
 
         taskRunning = false;
@@ -235,7 +237,6 @@ bool HandController::close(){
     delete(taskData);
     delete(controllerUtil);
     delete(portUtil);
-    delete(mlUtil);
 
     yInfo() << dbgTag << "hand controller succesfully closed";
 

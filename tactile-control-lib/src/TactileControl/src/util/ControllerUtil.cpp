@@ -273,20 +273,20 @@ bool ControllerUtil::openHand(bool fullyOpen,bool wait) {
 
     iVel->stop();
 
-    for(int i = 0; i < NUM_HAND_JOINTS; i++){
+    for(int i = FIRST_HAND_JOINT; i < FIRST_HAND_JOINT + NUM_HAND_JOINTS; i++){
 
         double jointAngle;
 
-        if (fullyOpen && ICubUtil::isDistal(FIRST_HAND_JOINT + i) || i == INDEX_DISTAL_JOINT && numFingers == 2){
+        if (fullyOpen && ICubUtil::isDistal(i) || i == INDEX_DISTAL_JOINT && numFingers == 2){
 
             jointAngle = STRAIGHT_DISTAL_ANGLE;
 
         } else {
 
-            jointAngle = openHandJoints[i];
+            jointAngle = openHandJoints[i - FIRST_HAND_JOINT];
         }
 
-        iPos->positionMove(FIRST_HAND_JOINT + i,jointAngle);
+        iPos->positionMove(i,jointAngle);
 
     }
 

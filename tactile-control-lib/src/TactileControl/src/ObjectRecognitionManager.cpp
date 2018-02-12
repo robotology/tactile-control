@@ -1,5 +1,7 @@
 #include "TactileControl/ObjectRecognitionManager.h"
 
+#include "TactileControl/data/Parameters.h"
+
 #include <yarp/os/LogStream.h>
 
 using tactileControl::ObjectRecognitionManager;
@@ -127,6 +129,11 @@ bool ObjectRecognitionManager::readVisualClassifierOutputScores(){
     return portUtil->readVisualClassifierAvgScores(taskData->visualScores);
 }
 
+bool ObjectRecognitionManager::isObjectRecognitionTaskComplete(){
+
+    return (taskData->objectRecognitionTaskComplete && taskData->getBool(PAR_ML_OBJECT_RECOGNITION_TASK_ENABLED));
+}
+
 bool ObjectRecognitionManager::reset(){
 
     if (!managerInitialized) return false;
@@ -139,6 +146,7 @@ bool ObjectRecognitionManager::close(){
     if (!managerInitialized) return false;
 
     mlUtil->release();
+    delete(mlUtil);
 
     yInfo() << dbgTag << "object recognition manager succesfully closed";
 

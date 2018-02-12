@@ -37,8 +37,8 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
     moduleThreadPeriod = rf.check("moduleThreadPeriod", 1000).asInt();
 
     // open ports
-    portPlantIdentificationRPC.open("/" + portPrefix + "/cmd:i");
-    attach(portPlantIdentificationRPC);
+    portHandControllerWrapperRPC.open("/" + portPrefix + "/cmd:i");
+    attach(portHandControllerWrapperRPC);
 
     // initialize rpc commands utility
     rpcCmdUtil.init(&rpcCmdData);
@@ -64,6 +64,10 @@ bool HandControllerWrapper::configure(ResourceFinder &rf) {
 
 bool HandControllerWrapper::updateModule() { 
 
+    if (objRecManager.isObjectRecognitionTaskComplete()){
+        handController.openHand(false);
+    }
+
     return !closing; 
 }
 
@@ -71,7 +75,7 @@ bool HandControllerWrapper::interruptModule() {
     cout << dbgTag << "Interrupting... ";
     
     // Interrupt port
-    portPlantIdentificationRPC.interrupt();
+    portHandControllerWrapperRPC.interrupt();
 
     cout << dbgTag << "interrupted correctly." << endl;
 
@@ -163,7 +167,7 @@ bool HandControllerWrapper::close() {
     objRecManager.close();
 
     // close rpc port
-    portPlantIdentificationRPC.close();
+    portHandControllerWrapperRPC.close();
 
     return true;
 }
@@ -376,6 +380,9 @@ bool HandControllerWrapper::objectRecognition(tactileControlWrapper::RPCObjRecCm
         success = objRecManager.viewData();
         break;
 
+    case TRAIN:
+        success = objRecManager.train();
+        break;
     case DISCARD_LAST_FEATURES:
         success = objRecManager.discardLastFeatures();
         break;

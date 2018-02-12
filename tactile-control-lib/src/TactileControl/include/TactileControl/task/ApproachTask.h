@@ -25,7 +25,7 @@ namespace tactileControl {
         double finalCheckThreshold;
         int positionIndex;
 
-        iCub::ctrl::AWQuadEstimator *awPolyEst;
+        iCub::ctrl::AWLinEstimator *awPolyEst;
 
     public:
 
