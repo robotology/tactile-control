@@ -93,7 +93,7 @@ Here is an example of the steps to be followed to carry out tactile object recog
   * `load_objects / save_objects <file_suffix>`: the object names list is loaded from / saved to the file `<path>/objectNames_<file_suffix>.dat`
   * `load_model / save_model <file_suffix>`: the trained model is loaded from / saved to the file `<path>/model_<file_suffix>.dat` 
   
-** Tips and Tricks
+## Tips and Tricks
 
 When the module properties are not properly tuned for the current robot, during the grasping process many things can go wrong (when not specified, the module parameters mentioned below are assumed to be in the _tactile library robot-specific configuration file_):
 * during the approach phase, one or more fingers involved do not move at all: check that `approach.maxPwm` or `approach.timeout` are not too low.
