@@ -1,6 +1,6 @@
 # Modules description
 
-The `tactile-control-lib` library allows to carry out a two/three-finger stable grasp. First, the fingers move towards the object and stop when a contact is detected, then the hand configuration changes to improve stability, exploiting a Gaussian mixture model trained using learning by demonstration. In addiction, it provides a useful interface to carry out tactile object recognition.  
+The `tactile-control-lib` library allows to carry out a two/three-finger stable grasp, according to which: the fingers move towards the object and stop when a contact is detected, then the hand configuration changes to improve stability, exploiting a Gaussian mixture model trained using learning by demonstration. In addiction, the library provides a useful interface to carry out tactile object recognition.  
 The `tactile-control-wrapper` module exposes a rpc interface with several commands that can be used to play with all the functionalities offered by the `tactile-control-lib` library.
 
 ## Dependencies
